@@ -1,0 +1,321 @@
+[
+  {
+    "pmid": "39536238",
+    "field": "medicine",
+    "model": "claude-haiku-4-5-20251001",
+    "body_type": "ABSTRACT ONLY",
+    "body_chars": 2458,
+    "input_tokens": 1020,
+    "output_tokens": 144,
+    "cost_usd": 0.00174,
+    "cost_gbp": 0.001392,
+    "latency_s": 2.34,
+    "result": {
+      "classification": "primary",
+      "primary_data_produced": true,
+      "primary_code_produced": false,
+      "data_references_used": [
+        "SURMOUNT-1 trial (NCT04184622)"
+      ],
+      "code_references_used": [],
+      "data_availability_signal": "Not stated in abstract; trial registration NCT04184622 indicates clinical trial data may be available through ClinicalTrials.gov or sponsor",
+      "code_availability_signal": "Not stated",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "39579765",
+    "field": "biochem",
+    "model": "claude-haiku-4-5-20251001",
+    "body_type": "ABSTRACT ONLY",
+    "body_chars": 1190,
+    "input_tokens": 612,
+    "output_tokens": 145,
+    "cost_usd": 0.001337,
+    "cost_gbp": 0.00107,
+    "latency_s": 1.32,
+    "result": {
+      "classification": "primary",
+      "primary_data_produced": true,
+      "primary_code_produced": false,
+      "data_references_used": [
+        "UK Biobank",
+        "protein quantitative trait locus (pQTL) data"
+      ],
+      "code_references_used": [],
+      "data_availability_signal": "Open-access comprehensive proteome-phenome resource available at https://proteome-phenome-atlas.com/",
+      "code_availability_signal": "Not stated",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "38110704",
+    "field": "neuroscience",
+    "model": "claude-haiku-4-5-20251001",
+    "body_type": "FULL TEXT (methods/data availability sections)",
+    "body_chars": 30019,
+    "input_tokens": 6845,
+    "output_tokens": 210,
+    "cost_usd": 0.007895,
+    "cost_gbp": 0.006316,
+    "latency_s": 3.09,
+    "result": {
+      "classification": "secondary",
+      "primary_data_produced": false,
+      "primary_code_produced": false,
+      "data_references_used": [
+        "PubMed (for article citation analysis)",
+        "Positive and Negative Syndrome Scale (PANSS)",
+        "Measurement and Treatment to Improve Cognition in Schizophrenia test battery",
+        "UCSD Performance-based Skills Assessment",
+        "Clinical high risk (CHR) cohort studies",
+        "First episode psychosis (FEP) cohort studies"
+      ],
+      "code_references_used": [],
+      "data_availability_signal": "Not stated - review article analyzing published literature, no original data collection reported",
+      "code_availability_signal": "Not applicable - no software or code produced",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "39214324",
+    "field": "immunology",
+    "model": "claude-haiku-4-5-20251001",
+    "body_type": "ABSTRACT ONLY",
+    "body_chars": 806,
+    "input_tokens": 503,
+    "output_tokens": 105,
+    "cost_usd": 0.001028,
+    "cost_gbp": 0.000822,
+    "latency_s": 1.33,
+    "result": {
+      "classification": "secondary",
+      "primary_data_produced": false,
+      "primary_code_produced": false,
+      "data_references_used": [],
+      "code_references_used": [],
+      "data_availability_signal": "not applicable - no new data generated",
+      "code_availability_signal": "not applicable - no new code generated",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "38310664",
+    "field": "health-prof",
+    "model": "claude-haiku-4-5-20251001",
+    "body_type": "ABSTRACT ONLY",
+    "body_chars": 1777,
+    "input_tokens": 683,
+    "output_tokens": 144,
+    "cost_usd": 0.001403,
+    "cost_gbp": 0.001122,
+    "latency_s": 1.5,
+    "result": {
+      "classification": "secondary",
+      "primary_data_produced": false,
+      "primary_code_produced": false,
+      "data_references_used": [
+        "CINAHL",
+        "MEDLINE",
+        "PsycINFO",
+        "PubMed"
+      ],
+      "code_references_used": [],
+      "data_availability_signal": "Not stated - systematic review synthesizing existing literature",
+      "code_availability_signal": "Not applicable - no new software or code produced",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "37039129",
+    "field": "pharma",
+    "model": "claude-haiku-4-5-20251001",
+    "body_type": "FULL TEXT (methods/data availability sections)",
+    "body_chars": 30019,
+    "input_tokens": 7709,
+    "output_tokens": 127,
+    "cost_usd": 0.008344,
+    "cost_gbp": 0.006675,
+    "latency_s": 2.08,
+    "result": {
+      "classification": "secondary",
+      "primary_data_produced": false,
+      "primary_code_produced": false,
+      "data_references_used": [],
+      "code_references_used": [],
+      "data_availability_signal": "Not applicable - this is a clinical guideline paper, not a data-generating study",
+      "code_availability_signal": "Not applicable - this is a clinical guideline paper, not a software/code-producing study",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "38307149",
+    "field": "genetics",
+    "model": "claude-haiku-4-5-20251001",
+    "body_type": "ABSTRACT ONLY",
+    "body_chars": 1131,
+    "input_tokens": 563,
+    "output_tokens": 101,
+    "cost_usd": 0.001068,
+    "cost_gbp": 0.000854,
+    "latency_s": 1.23,
+    "result": {
+      "classification": "secondary",
+      "primary_data_produced": false,
+      "primary_code_produced": false,
+      "data_references_used": [],
+      "code_references_used": [],
+      "data_availability_signal": "not applicable - review article",
+      "code_availability_signal": "not applicable - review article",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "39282907",
+    "field": "public-health",
+    "model": "claude-haiku-4-5-20251001",
+    "body_type": "ABSTRACT ONLY",
+    "body_chars": 2167,
+    "input_tokens": 958,
+    "output_tokens": 122,
+    "cost_usd": 0.001568,
+    "cost_gbp": 0.001254,
+    "latency_s": 1.32,
+    "result": {
+      "classification": "primary",
+      "primary_data_produced": true,
+      "primary_code_produced": false,
+      "data_references_used": [],
+      "code_references_used": [],
+      "data_availability_signal": "Not stated in abstract; clinical trial data likely available through ClinicalTrials.gov (NCT05546476) per funding acknowledgment",
+      "code_availability_signal": "Not stated",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "39147461",
+    "field": "psychiatry",
+    "model": "claude-haiku-4-5-20251001",
+    "body_type": "ABSTRACT ONLY",
+    "body_chars": 0,
+    "input_tokens": 336,
+    "output_tokens": 95,
+    "cost_usd": 0.000811,
+    "cost_gbp": 0.000649,
+    "latency_s": 1.02,
+    "result": {
+      "classification": "secondary",
+      "primary_data_produced": false,
+      "primary_code_produced": false,
+      "data_references_used": [],
+      "code_references_used": [],
+      "data_availability_signal": "Not stated",
+      "code_availability_signal": "Not stated",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "38661623",
+    "field": "oncology",
+    "model": "claude-haiku-4-5-20251001",
+    "body_type": "ABSTRACT ONLY",
+    "body_chars": 704,
+    "input_tokens": 483,
+    "output_tokens": 135,
+    "cost_usd": 0.001158,
+    "cost_gbp": 0.000926,
+    "latency_s": 1.37,
+    "result": {
+      "classification": "secondary",
+      "primary_data_produced": false,
+      "primary_code_produced": false,
+      "data_references_used": [
+        "Epidemiological studies from the United Kingdom",
+        "Epidemiological studies from Sweden"
+      ],
+      "code_references_used": [],
+      "data_availability_signal": "Not stated - appears to be a review article citing existing epidemiological studies",
+      "code_availability_signal": "Not applicable",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "38110704",
+    "field": "neuroscience",
+    "model": "claude-sonnet-4-6",
+    "body_type": "FULL TEXT (methods/data availability sections)",
+    "body_chars": 30019,
+    "input_tokens": 6846,
+    "output_tokens": 164,
+    "cost_usd": 0.022998,
+    "cost_gbp": 0.018398,
+    "latency_s": 3.97,
+    "result": {
+      "classification": "secondary",
+      "primary_data_produced": false,
+      "primary_code_produced": false,
+      "data_references_used": [
+        "PubMed",
+        "PANSS (Positive and Negative Syndrome Scale)",
+        "MATRICS (Measurement and Treatment to Improve Cognition in Schizophrenia) test battery",
+        "UCSD Performance-based Skills Assessment"
+      ],
+      "code_references_used": [],
+      "data_availability_signal": "not stated; this is a narrative review with no original data",
+      "code_availability_signal": "not stated; no code produced",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "37039129",
+    "field": "pharma",
+    "model": "claude-sonnet-4-6",
+    "body_type": "FULL TEXT (methods/data availability sections)",
+    "body_chars": 30019,
+    "input_tokens": 7710,
+    "output_tokens": 160,
+    "cost_usd": 0.02553,
+    "cost_gbp": 0.020424,
+    "latency_s": 3.94,
+    "result": {
+      "classification": "secondary",
+      "primary_data_produced": false,
+      "primary_code_produced": false,
+      "data_references_used": [
+        "ICD-11",
+        "DSM-5-TR",
+        "DSM-IV",
+        "ICD-10",
+        "NICE Technology Appraisal TA59"
+      ],
+      "code_references_used": [],
+      "data_availability_signal": "not stated; this is a consensus guideline based on synthesis of published literature",
+      "code_availability_signal": "not stated",
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "39536238",
+    "field": "medicine",
+    "model": "claude-sonnet-4-6",
+    "body_type": "ABSTRACT ONLY",
+    "body_chars": 2458,
+    "input_tokens": 1021,
+    "output_tokens": 140,
+    "cost_usd": 0.005163,
+    "cost_gbp": 0.00413,
+    "latency_s": 2.72,
+    "result": {
+      "classification": "primary",
+      "primary_data_produced": true,
+      "primary_code_produced": false,
+      "data_references_used": [
+        "SURMOUNT-1 trial (NCT04184622)"
+      ],
+      "code_references_used": [],
+      "data_availability_signal": "not explicitly stated in abstract; trial data from SURMOUNT-1 registered at ClinicalTrials.gov (NCT04184622)",
+      "code_availability_signal": "not stated",
+      "confidence": "high"
+    }
+  }
+]

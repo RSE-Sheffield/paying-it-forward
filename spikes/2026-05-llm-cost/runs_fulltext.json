@@ -1,0 +1,54 @@
+[
+  {
+    "pmid": "38110704",
+    "field": "neuroscience",
+    "model": "claude-haiku-4-5-20251001",
+    "body_label": "FULL TEXT (untruncated)",
+    "body_chars": 119361,
+    "input_tokens": 27121,
+    "output_tokens": 275,
+    "cost_usd": 0.028496,
+    "cost_gbp": 0.022797,
+    "latency_s": 4.1,
+    "classification": "secondary"
+  },
+  {
+    "pmid": "38110704",
+    "field": "neuroscience",
+    "model": "claude-sonnet-4-6",
+    "body_label": "FULL TEXT (untruncated)",
+    "body_chars": 119361,
+    "input_tokens": 27122,
+    "output_tokens": 121,
+    "cost_usd": 0.083181,
+    "cost_gbp": 0.066545,
+    "latency_s": 3.9,
+    "classification": "secondary"
+  },
+  {
+    "pmid": "37039129",
+    "field": "pharma",
+    "model": "claude-haiku-4-5-20251001",
+    "body_label": "FULL TEXT (untruncated)",
+    "body_chars": 356086,
+    "input_tokens": 94900,
+    "output_tokens": 489,
+    "cost_usd": 0.097345,
+    "cost_gbp": 0.077876,
+    "latency_s": 6.65,
+    "classification": "secondary"
+  },
+  {
+    "pmid": "37039129",
+    "field": "pharma",
+    "model": "claude-sonnet-4-6",
+    "body_label": "FULL TEXT (untruncated)",
+    "body_chars": 356086,
+    "input_tokens": 94901,
+    "output_tokens": 505,
+    "cost_usd": 0.292278,
+    "cost_gbp": 0.233822,
+    "latency_s": 12.58,
+    "classification": "secondary"
+  }
+]

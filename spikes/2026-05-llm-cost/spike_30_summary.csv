@@ -1,0 +1,20 @@
+=== Per-method summary stats (N=30) ===
+Method,n,Avg input tokens,Avg output tokens,Avg cost GBP,Median cost GBP,Min cost GBP,Max cost GBP,Total cost GBP (30 papers),300k projection GBP
+Sonnet 4.6 — full text,30,23195,757,0.06475,0.05591,0.01498,0.23535,1.9426,19426
+Haiku 4.5 — full text,30,23194,931,0.02228,0.01985,0.00689,0.07990,0.6683,6683
+Haiku 4.5 — abstract only,30,761,659,0.00325,0.00314,0.00221,0.00456,0.0974,974
+
+=== Inter-method classification agreement (N=30) ===
+Pair,Agreement count,Total,Agreement %,Cohen's kappa
+Haiku-FT vs Sonnet-FT,18,30,60%,0.402
+Haiku-ABS vs Haiku-FT,24,30,80%,0.636
+Haiku-ABS vs Sonnet-FT,17,30,57%,0.310
+
+"=== Total cost for 30-paper, 3-method spike (90 API calls) ==="
+Total spike cost,,,,,,,,£2.7083
+
+=== Cost projections to full UK 300k stratified sample ===
+Method,Per call (GBP),300k all-method cost,Notes
+Sonnet-FT,0.0648,19426,Highest quality; expensive at scale
+Haiku-FT,0.0223,6683,Recommended Mode 2 workhorse
+Haiku-ABS,0.0032,974,Scaling baseline; lower quality

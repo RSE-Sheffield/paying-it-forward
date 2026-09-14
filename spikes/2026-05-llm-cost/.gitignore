@@ -1,0 +1,4 @@
+# Paper texts are not redistributed: licences are mixed (CC BY, CC BY-NC, CC BY-NC-ND,
+# unstated, and publisher-copyright abstracts). Rebuild them with fetch_corpus.py.
+papers/*.json
+.venv/

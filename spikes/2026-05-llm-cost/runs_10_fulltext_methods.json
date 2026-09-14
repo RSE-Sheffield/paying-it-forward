@@ -1,0 +1,1481 @@
+[
+  {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 20032,
+    "output_tokens": 1070,
+    "cost_gbp": 0.02031,
+    "latency_s": 12.7,
+    "result": {
+      "classification": "primary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": true,
+          "description": "National-scale geodatabase of 128 Philippine river catchments with 91 morphometric and topographic characteristics including elevation, slope, drainage density, stream order, and catchment shape metrics. Dataset contains 109,050 stream network segments aggregated over 1 km lengths."
+        },
+        "primary_software": {
+          "produced": true,
+          "description": "Interactive ArcGIS web-application (WebAppBuilder) designed and deployed to display simplified stream network and river catchment geodatabase with filtering, querying, and download capabilities. Publicly accessible at https://glasgow-uni.maps.arcgis.com/apps/webappviewer/index.html?id=a88b9ca0919f4400881eab4a26370cee"
+        },
+        "primary_computational_methods": {
+          "produced": true,
+          "description": "Systematic workflow for morphometric analysis including: (1) DEM preprocessing and bilinear resampling from 5m to 10m resolution; (2) flow-routing algorithms (D8 algorithm for flow direction); (3) constrained regularized smoothing (K=2, \u03c4=0.5) to correct DEM artefacts; (4) stream network delineation using 1 km\u00b2 upstream area threshold; (5) point aggregation over variable segment lengths (0.05, 0.1, 0.2, 1 km); (6) calculation of 91 morphometric characteristics (linear, areal, relief characteristics); (7) normalization of values by national mean for comparative analysis."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "2013 nationwide IfSAR DEM (5m resolution, 1m vertical accuracy) from National Mapping and Resource Information Authority (NAMRIA)",
+          "LIDAR data (1m resolution, 2012-2016) from DREAM and Phil-LiDAR programs (used for validation, not primary analysis)",
+          "Google Earth imagery (visual validation of stream network positions)",
+          "PHD program stream network maps (validation reference)",
+          "Existing hazard maps from NOAH program (cited for applications)",
+          "Philippine Statistics Authority and OpenStreetMap (mentioned for future water body masking)"
+        ],
+        "software_used": [
+          "TopoToolbox V2 (stream network delineation, flow accumulation, catchment extraction)",
+          "ArcGIS Web AppBuilder (web-application development)",
+          "ArcGIS platform (general GIS analysis)"
+        ],
+        "methods_used": [
+          "Standard flow-routing algorithms",
+          "D8 algorithm (flow direction)",
+          "Strahler stream order classification",
+          "Gravelius compactness coefficient (catchment shape)",
+          "Morphometric analysis techniques (linear, areal, relief characteristics)",
+          "Statistical normalization by mean values",
+          "Cumulative frequency distribution analysis",
+          "Choropleth mapping",
+          "Raincloud plot visualization"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Open access - National-scale geodatabase freely available through interactive ArcGIS web-application; data can be downloaded in open data formats; simplified version with 12 selected attributes displayed in web-app; full dataset with 91 characteristics available for download",
+        "software_availability": "ArcGIS web-application publicly accessible; built using ESRI ArcGIS Web AppBuilder (proprietary but widely available); TopoToolbox V2 is publicly available software",
+        "methods_availability": "Detailed workflow description provided in Methods section with specific parameter values (smoothing factor K=2, quantile \u03c4=0.5, upstream area threshold 1 km\u00b2, segment lengths 0.05-1 km); reproducible methodology described for application to other regions; workflow diagram (Fig 1) provided"
+      },
+      "novelty_phrases": [
+        "systematic national-scale assessment",
+        "national-scale geodatabase",
+        "consistent workflow applied to 128 catchments",
+        "interactive ArcGIS web-application",
+        "baseline understanding of fundamental topographic characteristics",
+        "morphometric and topographic diversity",
+        "topographic signatures of individual catchments",
+        "place-based analyses for sustainable river management",
+        "geomorphologically-informed sustainable river management"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "ecology",
+      "pmid": "36888610",
+      "pmcid": "PMC9994713",
+      "doi": "10.1371/journal.pone.0281933",
+      "title": "National-scale geodatabase of catchment characteristics in the Philippines for river management applications",
+      "year": "2023",
+      "journal": "PLOS ONE",
+      "fulltext_chars": 79427
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 20033,
+    "output_tokens": 1035,
+    "cost_gbp": 0.0605,
+    "latency_s": 20.1,
+    "result": {
+      "classification": "primary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": true,
+          "description": "National-scale geodatabase of 91 morphometric and topographic characteristics for 128 medium- to large-sized river catchments (>250 km\u00b2) in the Philippines, including stream network attributes (elevation, drainage area, stream slope, stream order, distance from outlet) and catchment characteristics (area, relief, slope, drainage density, Gravelius compactness coefficient, hypsometric integral, etc.), hosted in an interactive ArcGIS web-application with open download access."
+        },
+        "primary_software": {
+          "produced": true,
+          "description": "An interactive ArcGIS web-application built using ArcGIS Web AppBuilder to display, explore, filter and download the national-scale geodatabase of Philippine river catchment and stream network characteristics."
+        },
+        "primary_computational_methods": {
+          "produced": true,
+          "description": "A consistent, systematic analytical workflow for delineating stream networks and river catchments from a nationwide DEM using TopoToolbox V2 with D8 flow-routing, constrained regularized smoothing, upstream-area thresholding, and multi-scale segment aggregation (0.05, 0.1, 0.2, 1 km) to derive 91 morphometric and topographic characteristics at national scale."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Nationwide 5 m IfSAR DEM acquired in 2013 by NAMRIA covering ~300,000 km\u00b2 of the Philippines",
+          "Airborne LiDAR data (1 m resolution) from DREAM/Phil-LiDAR 1 programs for major floodplains",
+          "PHD program stream network and river catchment layers (Development of the Philippine Hydrologic Dataset for Watersheds)",
+          "Google Earth imagery (for visual validation of stream network positions)"
+        ],
+        "software_used": [
+          "TopoToolbox V2 (stream network delineation, catchment extraction, flow routing)",
+          "ArcGIS Web AppBuilder (web-application construction)",
+          "ArcGIS Online (hosting and display platform)"
+        ],
+        "methods_used": [
+          "D8 flow direction algorithm",
+          "Constrained regularized smoothing for hydrologically correct DEM (smoothing factor K=2, quantile \u03c4=0.5)",
+          "Strahler stream ordering",
+          "Gravelius compactness coefficient calculation",
+          "Hypsometric integral analysis",
+          "Bilinear resampling (5 m to 10 m DEM resolution)",
+          "Raincloud plots for probability density visualization",
+          "Cumulative frequency distribution (CFD) analysis",
+          "Normalisation by national mean for inter-catchment comparison"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Geodatabase openly accessible and downloadable via an ArcGIS web-application (https://glasgow-uni.maps.arcgis.com/apps/webappviewer/index.html?id=a88b9ca0919f4400881eab4a26370cee); no registration required.",
+        "software_availability": "ArcGIS web-application publicly accessible at no cost from any device; underlying processing scripts/workflow not explicitly stated as separately released.",
+        "methods_availability": "Workflow described in detail in the methods section; relies on TopoToolbox V2 (existing open-source tool) and ArcGIS Web AppBuilder (commercial platform)."
+      },
+      "novelty_phrases": [
+        "national-scale geodatabase",
+        "first systematic national-scale assessment of fundamental topographic characteristics of Philippine river systems",
+        "consistent workflow using TopoToolbox V2",
+        "91 morphometric and topographic characteristics",
+        "128 medium- to large-sized catchments",
+        "interactive ArcGIS web-application",
+        "improve data accessibility and enable users to freely access, explore and download the data",
+        "baseline understanding of fundamental topographic characteristics",
+        "topographic diversity and distinctiveness of river systems in the Philippines",
+        "distinctive topographic signatures of adjacent river catchments"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "ecology",
+      "pmid": "36888610",
+      "pmcid": "PMC9994713",
+      "doi": "10.1371/journal.pone.0281933",
+      "title": "National-scale geodatabase of catchment characteristics in the Philippines for river management applications",
+      "year": "2023",
+      "journal": "PLOS ONE",
+      "fulltext_chars": 79427
+    }
+  },
+  {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 34245,
+    "output_tokens": 1014,
+    "cost_gbp": 0.03145,
+    "latency_s": 10.4,
+    "result": {
+      "classification": "primary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No new primary datasets generated. Paper uses synthetic graphs via Erd\u0151s\u2013R\u00e9nyi model and existing public real-world graph datasets."
+        },
+        "primary_software": {
+          "produced": true,
+          "description": "MGDrawVis (Metaheuristics Graph Drawing Visualizer) - a Java-based visualization tool for comparing search algorithms for automatic graph layout. Code accessible from Open Science Framework."
+        },
+        "primary_computational_methods": {
+          "produced": true,
+          "description": "Novel application of Jaya algorithm to graph drawing with enhancement via Latin Hypercube Sampling (LHS) for population initialization. Includes implementation of updateCandidateJaya algorithm and weighted multi-criteria objective function combining four graph aesthetics metrics."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Erd\u0151s\u2013R\u00e9nyi random graph model (synthetic graphs)",
+          "10 public real-world graph datasets (dolphins, USA states, zebras, football, karate club, Les Mis\u00e9rables, C. Elegans neural network, US Airlines)"
+        ],
+        "software_used": [
+          "JavaFX for graphical libraries",
+          "Apache NetBeans 15",
+          "Java implementation environment"
+        ],
+        "methods_used": [
+          "Jaya algorithm (existing metaheuristic)",
+          "Hill Climbing (baseline comparison)",
+          "Simulated Annealing (baseline comparison)",
+          "Latin Hypercube Sampling (existing sampling technique)",
+          "Friedman statistical test",
+          "Cohen's effect size analysis",
+          "Weighted sum multi-objective optimization"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Code and data available at Open Science Framework (https://doi.org/10.17605/OSF.IO/6AFVR). Real-world datasets sourced from published public repositories.",
+        "software_availability": "MGDrawVis source code available via Open Science Framework. Implemented in Java with modular class structure for algorithm integration.",
+        "methods_availability": "All algorithms fully specified with pseudocode (Algorithms 1-3). Objective function formulas explicitly provided (Equations 1-4). Parameter tuning values documented."
+      },
+      "novelty_phrases": [
+        "Jaya algorithm has never been used in the field of graph drawing",
+        "first instance of employing the Jaya algorithm in graph drawing",
+        "pioneering the use of the Jaya algorithm in graph drawing",
+        "integrated LHS for efficient population initialization",
+        "novel application of the Jaya algorithm",
+        "improved Jaya implementation with Latin Hypercube Sampling",
+        "parameter-less algorithm in that it requires no algorithm-specific control parameters"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "methods-paper",
+      "pmid": "37368896",
+      "pmcid": "PMC10298802",
+      "doi": "10.1371/journal.pone.0287744",
+      "title": "Graph drawing using Jaya",
+      "year": "2023",
+      "journal": "PLOS ONE",
+      "fulltext_chars": 123592
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 34246,
+    "output_tokens": 822,
+    "cost_gbp": 0.09205,
+    "latency_s": 17.9,
+    "result": {
+      "classification": "primary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": true,
+          "description": "Synthetic graph datasets generated using the Erd\u0151s\u2013R\u00e9nyi model with varying nodes and edges, used for benchmarking and parameter tuning across multiple experimental phases."
+        },
+        "primary_software": {
+          "produced": true,
+          "description": "MGDrawVis (Metaheuristics Graph Drawing Visualizer), a Java-based visualization tool developed using JavaFX and Apache Netbeans 15 for comparing search algorithms for automatic graph layout; code available on Open Science Framework."
+        },
+        "primary_computational_methods": {
+          "produced": true,
+          "description": "Novel application of the Jaya optimization algorithm to graph drawing (first such use), including an enhanced variant integrating Latin Hypercube Sampling (LHS) for population initialization; formulation of a weighted multi-criteria objective function combining node distribution, edge length uniformity, edge crossings, and angular resolution metrics; and a structured algorithmic pipeline (Algorithms 1\u20133) for population-based graph layout optimization."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "dolphins social network dataset",
+          "contiguous USA graph dataset",
+          "moreno_zebra interaction network",
+          "simulated BlockModelGraph datasets (2017 Streaming Partition Challenge)",
+          "football network dataset",
+          "karate club network dataset",
+          "Les Mis\u00e9rables character co-appearance network",
+          "C. Elegans neural network dataset",
+          "US Airlines graph dataset"
+        ],
+        "software_used": [
+          "JavaFX (graphical libraries)",
+          "Apache Netbeans 15 (Java editor)",
+          "Microsoft Excel Worksheet format (data I/O)"
+        ],
+        "methods_used": [
+          "Jaya algorithm (original, Rao 2016)",
+          "Hill Climbing",
+          "Simulated Annealing",
+          "Latin Hypercube Sampling (LHS)",
+          "Erd\u0151s\u2013R\u00e9nyi random graph model",
+          "Friedman test (statistical significance)",
+          "Cohen's effect size analysis",
+          "Euclidean distance metric",
+          "Weighted sum multi-criteria optimization"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Code and data available on Open Science Framework at https://doi.org/10.17605/OSF.IO/6AFVR",
+        "software_availability": "MGDrawVis tool code available on Open Science Framework at https://doi.org/10.17605/OSF.IO/6AFVR",
+        "methods_availability": "Algorithms described in full pseudocode (Algorithms 1\u20133) within the paper; mathematical formulas for all objective function metrics provided"
+      },
+      "novelty_phrases": [
+        "first instance of employing the Jaya algorithm in graph drawing",
+        "pioneers the use of the Jaya algorithm in graph drawing",
+        "Jaya algorithm has not been previously used in the field of graph drawing",
+        "we propose the Jaya algorithm for automatic graph layout",
+        "we developed a visualization tool that simplifies the integration of search methods",
+        "we optimized the Jaya algorithm by integrating the Latin Hypercube Sampling (LHS) method for population initialization",
+        "breaking new ground in this field"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "methods-paper",
+      "pmid": "37368896",
+      "pmcid": "PMC10298802",
+      "doi": "10.1371/journal.pone.0287744",
+      "title": "Graph drawing using Jaya",
+      "year": "2023",
+      "journal": "PLOS ONE",
+      "fulltext_chars": 123592
+    }
+  },
+  {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 22883,
+    "output_tokens": 1130,
+    "cost_gbp": 0.02283,
+    "latency_s": 12.8,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "This is a trial protocol paper. It describes a planned RCT that will collect data, but no primary data has been produced yet. The study began recruitment in April 2023, so data collection is ongoing but results/analysis are not yet available."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No novel software is developed. The study uses existing software: REDCap for data management, R for randomization sequence generation, and standard statistical packages."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No novel computational methods are developed. The paper describes standard statistical approaches: linear mixed effects models, mediation analysis, intention-to-treat analysis, reliable change index calculation, and cost-consequences analysis\u2014all existing established methods."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Child Outcomes Research Consortium (CORC) clinical records (71,763 UK CAMHS records)",
+          "Published psychotherapy trials in CAMHS settings",
+          "Planned trial data collection from 320 children aged 6-12 (not yet collected)"
+        ],
+        "software_used": [
+          "REDCap (secure data management platform)",
+          "R software for statistical computing (randomization sequence generation)",
+          "Standard statistical analysis software (mixed effects models, mediation analysis)"
+        ],
+        "methods_used": [
+          "Randomized controlled trial (RCT) design",
+          "Linear mixed effects modeling with random intercepts",
+          "Mediation analysis",
+          "Intention-to-treat analysis",
+          "Reliable change index",
+          "Cost-consequences analysis (CCA)",
+          "Framework Analysis (qualitative analysis)",
+          "Parametric bootstrap for standard error estimation",
+          "Controlled multiple imputation under MNAR assumptions",
+          "Ordinal logistic regression"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Data not yet available\u2014trial protocol only. Future data will be stored at UCL Data Safe Haven and Anna Freud Centre secure servers. Access governed by collaboration agreements.",
+        "software_availability": "No novel software produced. Uses REDCap and R (both publicly available open-source/standard tools).",
+        "methods_availability": "All methods are standard established statistical and qualitative approaches (no novel methods developed). Treatment manuals and fidelity scales referenced as existing resources (some unpublished). MBT manual available at https://manuals.annafreud.org/mbt-c/index.html"
+      },
+      "novelty_phrases": [
+        "first full-scale, sufficiently powered clinical trial to evaluate MBT as an intervention for school-age children with mixed emotional and behavioural difficulties",
+        "innovative in the use of multiple measures to assess different components of ER, integrating the perspectives of the child and the parent/carer",
+        "examining parent-child co-regulation of emotions, this study represents a significant methodological advancement",
+        "manualized, transdiagnostic model designed for children aged 6\u201312",
+        "first randomised controlled trial of MBT for this population",
+        "time-limited MBT has yet to be evaluated as a transdiagnostic intervention for school-age children"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "clinical-trial",
+      "pmid": "37590277",
+      "pmcid": "PMC10434917",
+      "doi": "10.1371/journal.pone.0289503",
+      "title": "Emotion regulation in children (ERiC): A protocol for a randomised clinical trial to evaluate the clinical and cost effectiveness of Mentalization Based Treatment (MBT) vs Treatment as Usual for school-age children with mixed emotional and behavioural difficulties",
+      "year": "2023",
+      "journal": "PLOS ONE",
+      "fulltext_chars": 103172
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 22884,
+    "output_tokens": 773,
+    "cost_gbp": 0.0642,
+    "latency_s": 16.7,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No data has been produced yet; this is a protocol paper describing a planned RCT. Data collection began April 2023 but no results are reported."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No new software is developed or released. REDCap is used as an existing platform for data management."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "The statistical analysis plan (linear mixed effects models, mediation analysis, multiple imputation) uses established methods applied to a planned trial; no novel computational methods are introduced."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Child Outcomes Research Consortium (CORC) \u2014 71,763 UK CAMHS clinical records used for power calculation",
+          "Published psychotherapy trials in CAMHS settings (for effect size assumptions)",
+          "CAMHS referral data from BEH Mental Health NHS Trust and Oxford Health NHS Trust"
+        ],
+        "software_used": [
+          "R software for statistical computing (randomisation sequence generation)",
+          "REDCap (data management and randomisation platform)",
+          "UCL Data Safe Haven (secure data storage)"
+        ],
+        "methods_used": [
+          "Pragmatic individually randomised superiority RCT design",
+          "Permuted block randomisation stratified by site and age group",
+          "Linear mixed effects models with random intercepts for therapists and services",
+          "Mediation analysis (treatment allocation \u2192 emotion regulation \u2192 SDQ outcome)",
+          "Reliable change index for individual-level clinical significance",
+          "Ordinal logistic regression",
+          "Controlled multiple imputation under MNAR assumptions (sensitivity analysis)",
+          "Parametric bootstrap for standard error estimation",
+          "Intention-to-treat analysis",
+          "Cost-consequences analysis (CCA) for health economic evaluation",
+          "Framework Analysis (qualitative)",
+          "Power calculation using published formulae for clustered designs"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "No data available at time of publication; data collection ongoing. Data will be archived securely at AFC at end of study.",
+        "software_availability": "No new software produced. REDCap and R are existing tools.",
+        "methods_availability": "Statistical analysis plan described in protocol; MBT treatment manual available online at https://manuals.annafreud.org/mbt-c/index.html; MBT Fidelity Scale and interview instruments listed as unpublished."
+      },
+      "novelty_phrases": [
+        "first full-scale, sufficiently powered clinical trial to evaluate MBT as an intervention for school-age children with mixed emotional and behavioural difficulties",
+        "first randomised controlled trial of MBT for this population",
+        "novel multi-modal assessment approach integrating self-report, task-based, and observational measures of emotion regulation",
+        "examining parent-child co-regulation of emotions as a significant methodological advancement",
+        "transdiagnostic MBT adaptation for children aged 6\u201312 and their carers"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "clinical-trial",
+      "pmid": "37590277",
+      "pmcid": "PMC10434917",
+      "doi": "10.1371/journal.pone.0289503",
+      "title": "Emotion regulation in children (ERiC): A protocol for a randomised clinical trial to evaluate the clinical and cost effectiveness of Mentalization Based Treatment (MBT) vs Treatment as Usual for school-age children with mixed emotional and behavioural difficulties",
+      "year": "2023",
+      "journal": "PLOS ONE",
+      "fulltext_chars": 103172
+    }
+  },
+  {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 27228,
+    "output_tokens": 949,
+    "cost_gbp": 0.02558,
+    "latency_s": 11.0,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No new empirical data collected. Paper reviews existing literature and meta-analyses."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No software tools or computational implementations developed."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No novel computational methods, algorithms, or statistical approaches presented. Paper synthesizes existing methodologies."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Meta-analyses of neuroimaging studies",
+          "Post-mortem studies",
+          "Twin studies and GWAS databases",
+          "PubMed literature corpus",
+          "Neuroimaging datasets (fMRI, PET, EEG, MRS)",
+          "Clinical trial data",
+          "Published cognitive assessment batteries (PANSS, MATRICS)"
+        ],
+        "software_used": [
+          "Standard neuroimaging analysis packages (fMRI, PET, MRS, EEG analysis tools)",
+          "Statistical analysis software for meta-analyses",
+          "Cognitive assessment instruments (standardized batteries)"
+        ],
+        "methods_used": [
+          "Meta-analytic synthesis",
+          "Factor analysis of symptom scales",
+          "Network analysis of symptoms",
+          "Polygenic risk score analysis",
+          "Magnetic resonance spectroscopy (MRS) and functional MRS",
+          "PET imaging analysis",
+          "EEG/gamma oscillation analysis",
+          "fMRI functional connectivity analysis",
+          "Computational modeling of E/I balance",
+          "Biophysical network models",
+          "Machine learning for grey matter pattern identification",
+          "Post-mortem receptor density quantification"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Paper does not present new datasets; relies on published studies and meta-analyses. No data availability statement present.",
+        "software_availability": "No novel software developed or released. Uses established neuroimaging and statistical analysis tools.",
+        "methods_availability": "Describes existing analytical frameworks and methodologies from literature; does not introduce novel methods requiring code/tools distribution."
+      },
+      "novelty_phrases": [
+        "we review the latest meta-analyses",
+        "multimodal evidence that E/I balance is disrupted",
+        "computational models have demonstrated",
+        "recent machine learning studies identifying a pattern",
+        "a recent meta-analysis found that CHR individuals",
+        "the current literature suggests",
+        "there is thus multimodal evidence"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "neuroscience",
+      "pmid": "38110704",
+      "pmcid": "10575791",
+      "doi": null,
+      "title": "Schizophrenia: from neurochemistry to circuits, symptoms and treatments.",
+      "year": "2024",
+      "journal": "Nature reviews. Neurology",
+      "fulltext_chars": 119361
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 27229,
+    "output_tokens": 649,
+    "cost_gbp": 0.07314,
+    "latency_s": 14.0,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No new empirical data collected; the paper synthesizes existing literature, meta-analyses, and neuroimaging studies."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No software tools developed or released."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No new algorithms, models, or analytical pipelines developed; existing computational models (e.g., biophysical network models, machine learning studies) are cited and discussed but not created."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Published meta-analyses of cognitive function in schizophrenia",
+          "PubMed literature on schizophrenia and cognitive impairment",
+          "GWAS datasets for schizophrenia and cognitive ability",
+          "Neuroimaging studies (PET, fMRI, MRS, EEG)",
+          "Post-mortem brain studies",
+          "Clinical trial data (randomised controlled trials)",
+          "Longitudinal cohort studies",
+          "Cross-sectional epidemiological studies"
+        ],
+        "software_used": [
+          "Not explicitly described; statistical methods referenced in cited studies"
+        ],
+        "methods_used": [
+          "Systematic review and narrative synthesis",
+          "Meta-analysis (cited from existing literature)",
+          "Factor analysis (PANSS, MCCB)",
+          "Cluster analysis",
+          "Network analysis",
+          "Polygenic risk score analysis",
+          "Magnetic resonance spectroscopy (MRS/fMRS)",
+          "PET imaging",
+          "fMRI resting-state analysis",
+          "EEG/gamma oscillation measurement",
+          "Computational/biophysical network modelling (referenced)",
+          "Machine learning for grey matter classification (referenced)"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "No data availability statement; no new data generated.",
+        "software_availability": "No software availability statement; no new software produced.",
+        "methods_availability": "Methods are described conceptually in review form; no new methods made available."
+      },
+      "novelty_phrases": [
+        "we review the latest meta-analyses and other findings on the neurobiology",
+        "we consider how dysfunction in cortico-thalamo-striatal-midbrain circuits might alter brain information processing",
+        "we discuss the implications of these findings for developing new, mechanistically based treatments",
+        "regionally specific neurotransmitter alterations",
+        "precision medicine for psychotic symptoms"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "neuroscience",
+      "pmid": "38110704",
+      "pmcid": "10575791",
+      "doi": null,
+      "title": "Schizophrenia: from neurochemistry to circuits, symptoms and treatments.",
+      "year": "2024",
+      "journal": "Nature reviews. Neurology",
+      "fulltext_chars": 119361
+    }
+  },
+  {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 95007,
+    "output_tokens": 846,
+    "cost_gbp": 0.07939,
+    "latency_s": 10.8,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No primary empirical data collection was conducted. The guideline is a synthesis of existing literature."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No new software tools or computational applications were developed."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No novel computational methods, algorithms, or statistical models were developed. The guideline used established evidence grading schemas (Shekelle et al. framework)."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Systematic reviews of existing literature",
+          "Published case reports and case series",
+          "Randomized controlled trials (RCTs)",
+          "Observational studies",
+          "Clinical experience from international experts",
+          "Published epidemiological data on catatonia prevalence"
+        ],
+        "software_used": [
+          "Literature databases (implicit reference to PubMed, etc.)",
+          "Standard evidence synthesis methodologies"
+        ],
+        "methods_used": [
+          "Shekelle et al. (1999) evidence grading system",
+          "British Association for Pharmacology evidence classification schema",
+          "Systematic literature review methodology",
+          "Expert consensus group approach",
+          "Meta-analysis synthesis (referenced from existing reviews)",
+          "Clinical algorithm development based on existing evidence"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Not applicable - no primary data produced. Existing literature and expert consensus synthesized.",
+        "software_availability": "Not applicable - no primary software developed.",
+        "methods_availability": "High - evidence grading frameworks and methodologies are explicitly described in the document and reference established published frameworks."
+      },
+      "novelty_phrases": [
+        "evidence-based consensus guideline",
+        "comprehensive reviews the current evidence",
+        "gap in the literature for a multidisciplinary consensus guideline",
+        "strength of evidence and recommendations",
+        "treatment algorithms",
+        "clinical recommendations"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "pharma",
+      "pmid": "37039129",
+      "pmcid": "PMC10101189",
+      "doi": null,
+      "title": "Evidence-based consensus guidelines for the management of catatonia: Recommendations from the British Association for Psychopharmacology.",
+      "year": "2023",
+      "journal": "Journal of psychopharmacology (Oxford, England)",
+      "fulltext_chars": 356086
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 95008,
+    "output_tokens": 543,
+    "cost_gbp": 0.23454,
+    "latency_s": 13.1,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No new empirical data collected; evidence gathered from existing systematic reviews and primary literature"
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No software produced"
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No new computational methods, algorithms, or statistical models developed; uses an existing evidence grading schema (Shekelle et al., 1999)"
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Existing systematic reviews on catatonia treatment",
+          "Primary literature (RCTs, observational studies, case series, case reports)",
+          "Cochrane reviews",
+          "Meta-analyses (e.g., Leroy et al., 2018; Solmi et al., 2018)",
+          "Published epidemiological studies",
+          "Electronic healthcare records literature"
+        ],
+        "software_used": [],
+        "methods_used": [
+          "Evidence grading schema from Shekelle et al. (1999)",
+          "Evidence grading for non-causal relationships adapted from Barnes et al. (2020) BAP schizophrenia guidelines",
+          "Consensus expert panel process",
+          "Narrative synthesis of existing literature",
+          "Algorithm development for clinical management (Figure 1)"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "No new data produced; guidelines reference published literature",
+        "software_availability": "BFCRS Training Manual and videographic resources referenced as freely available online (https://bfcrs.urmc.edu); these are pre-existing resources not created by this paper",
+        "methods_availability": "Evidence grading schema and recommendations summarised in tables and supplemental materials"
+      },
+      "novelty_phrases": [
+        "first comprehensive multidisciplinary consensus guideline for catatonia management in the UK",
+        "evidence-based consensus guideline",
+        "clear gap in the literature for a multidisciplinary consensus guideline",
+        "recommendations graded in terms of their strength",
+        "quick reference algorithm for the management of catatonia"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "pharma",
+      "pmid": "37039129",
+      "pmcid": "PMC10101189",
+      "doi": null,
+      "title": "Evidence-based consensus guidelines for the management of catatonia: Recommendations from the British Association for Psychopharmacology.",
+      "year": "2023",
+      "journal": "Journal of psychopharmacology (Oxford, England)",
+      "fulltext_chars": 356086
+    }
+  },
+  {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 24164,
+    "output_tokens": 752,
+    "cost_gbp": 0.02234,
+    "latency_s": 8.1,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": true,
+          "description": "Survey data collected from 153 nurses and midwives across four cohorts (2019-2022) using Likert scales to measure confidence and importance of genomics competencies. Qualitative data from semi-structured interviews and thematic analysis of free-text responses."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No novel software or tools developed. Study used existing commercial/institutional tools: SurveyMonkey and Jisc online surveys platforms for data collection."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No novel computational methods developed. Study applied standard statistical methods: Student's t-test, ANOVA, Kruskal-Wallis test, Mann-Whitney U test, Shapiro-Wilk test, Tukey-Kramer test, Levene's test, thematic analysis using constant comparison approach. All analysis performed in Microsoft Excel."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Literature review (PubMed search up to Nov 2017)",
+          "NHS England Cancer Strategy",
+          "NHS Workforce Statistics (Aug 2021)",
+          "Health Education England (HEE) Genomic Education Programme data",
+          "100,000 Genomes Project results"
+        ],
+        "software_used": [
+          "SurveyMonkey",
+          "Jisc online surveys tool",
+          "Microsoft Excel"
+        ],
+        "methods_used": [
+          "Literature review methodology",
+          "Semi-structured qualitative interviews",
+          "Survey design using Likert scales",
+          "Student's t-test",
+          "ANOVA (Analysis of Variance)",
+          "Kruskal-Wallis test",
+          "Mann-Whitney U test",
+          "Shapiro-Wilk test",
+          "Tukey-Kramer test",
+          "Levene's test",
+          "Thematic analysis with constant comparison approach",
+          "Box plot analysis for outlier identification"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Study states: 'Ethical review and approval were not required for the study on human participants in accordance with the local legislation and institutional requirements. The participants provided their written informed consent.' Data collection methodology is described but no explicit statement regarding data repository or availability.",
+        "software_availability": "No software developed or released. Used existing commercial platforms.",
+        "methods_availability": "Standard statistical methods applied; no novel methods requiring dissemination. Proposed educational curriculum and module structure described in detail (Figure 5), suggesting framework designed for adoption by other institutions."
+      },
+      "novelty_phrases": [
+        "identified key competencies",
+        "devised a postgraduate level 7 module",
+        "proposed master's level 15 credit module structure",
+        "proposed content and delivery model of genomic education",
+        "simple competency framework"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "genomics-uk",
+      "pmid": "37396047",
+      "pmcid": "PMC10312078",
+      "doi": "10.3389/fgene.2023.1125599",
+      "title": "Competencies of the UK nursing and midwifery workforce to mainstream genomics in the National Health Service: the ongoing gap between perceived importance and confidence in genomics",
+      "year": "2023",
+      "journal": "Frontiers in Genetics",
+      "fulltext_chars": 94454
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 24165,
+    "output_tokens": 889,
+    "cost_gbp": 0.06866,
+    "latency_s": 16.9,
+    "result": {
+      "classification": "primary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": true,
+          "description": "Original survey data collected from 153 nurses and midwives across four cohorts (2019\u20132022) measuring confidence and perceived importance of 13 genomics competencies on Likert scales, plus qualitative free-text responses and transcribed tutorial/discussion forum data."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No new software was developed; existing tools (SurveyMonkey, Jisc Online Surveys, Microsoft Excel) were used."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "Standard statistical methods (ANOVA, t-test, Kruskal-Wallis, Mann-Whitney U, Bonferroni correction, Shapiro-Wilk, Levene's test, Tukey-Kramer) and thematic analysis were applied but not novel methodological contributions."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "PubMed literature review (papers up to Nov 2017 on nursing genomics competencies)",
+          "HEE GEP participation data on MSc Genomic Medicine Programme completions (up to June 2022)",
+          "NHS Workforce Statistics (National Audit Office, August 2021)",
+          "Qualitative interviews with Lead Cancer Nurses and national stakeholders"
+        ],
+        "software_used": [
+          "SurveyMonkey (survey collection for cancer CNS cohort)",
+          "Jisc Online Surveys (survey collection for CPD cohorts)",
+          "Microsoft Excel (data analysis)"
+        ],
+        "methods_used": [
+          "Literature review / systematic search",
+          "Semi-structured qualitative interviews",
+          "Likert-scale quantitative survey",
+          "ANOVA with Tukey-Kramer post-hoc test",
+          "Student's t-test with Bonferroni correction",
+          "Kruskal-Wallis test with Mann-Whitney U post-hoc",
+          "Shapiro-Wilk normality test",
+          "Levene's test for equality of variance",
+          "Box plot outlier identification",
+          "Thematic analysis (constant comparison approach, Glaser et al. 1968)",
+          "Kirkpatrick four-level training evaluation model (for ongoing impact assessment)"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Survey instrument provided as Supplementary Material; anonymised aggregate data presented in figures and supplementary tables; raw individual-level data not explicitly deposited in a repository.",
+        "software_availability": "No new software produced; commercial and institutional tools used.",
+        "methods_availability": "Competency framework (Table 2) and proposed training module structure (Figure 5) fully described in the paper and available to Higher Education Institutions for adoption."
+      },
+      "novelty_phrases": [
+        "identified easy to follow competencies for embedding genomics into routine clinical care",
+        "we propose a training programme that addresses the gap",
+        "We thus, devised a postgraduate level 7 module",
+        "We created a 'Talking Genetics' unit",
+        "Our framework also informs the HEE genomics competency for the nursing, midwifery, and health visiting professions",
+        "ongoing gap between perceived importance and confidence in genomics",
+        "nurses and midwives were found to be grossly underrepresented in formal genomic education courses",
+        "first study to survey four consecutive annual cohorts across England"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "genomics-uk",
+      "pmid": "37396047",
+      "pmcid": "PMC10312078",
+      "doi": "10.3389/fgene.2023.1125599",
+      "title": "Competencies of the UK nursing and midwifery workforce to mainstream genomics in the National Health Service: the ongoing gap between perceived importance and confidence in genomics",
+      "year": "2023",
+      "journal": "Frontiers in Genetics",
+      "fulltext_chars": 94454
+    }
+  },
+  {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 3771,
+    "output_tokens": 952,
+    "cost_gbp": 0.00682,
+    "latency_s": 9.0,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": true,
+          "description": "Abdullah et al. created 'E-learningDJUST' dataset from Jordan University of Science and Technology e-learning courses (2020-2021). This is the only explicitly NEW dataset created across the seven papers reviewed."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No new software tools or platforms appear to have been developed. Papers utilized existing frameworks and libraries."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "While papers applied feature selection, extraction, and engineering techniques, these represent applications of EXISTING methodologies rather than novel algorithm development. The methods are domain applications, not methodological innovations."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "E-learningDJUST (Abdullah et al.)",
+          "Psynary web-based tool dataset (Cousins et al.)",
+          "Portuguese secondary schools datasets (Huang et al.)",
+          "Publicly available microarray datasets (Nouri-Moghaddam et al.)",
+          "ADNI dataset (Zeng et al.)",
+          "Chest X-ray images (Wang et al.)"
+        ],
+        "software_used": [
+          "Random Forest",
+          "XGBoost",
+          "Feed-forward neural networks",
+          "LSTM (Long-Short Term Memory)",
+          "Support Vector Machine (SVM)",
+          "Artificial Neural Networks (ANN)",
+          "Kernel Extreme Learning Machine (KELM)",
+          "Light Gradient Boosted Machine (LightGBM)",
+          "Multi-Layer Perceptron (MLP)",
+          "Deep Belief Network (DBN)",
+          "SHAP (SHapley Additive exPlanations)"
+        ],
+        "methods_used": [
+          "Feature selection algorithms",
+          "Feature extraction techniques",
+          "Feature engineering",
+          "Information gain ratios",
+          "Multi-filter ensemble methods",
+          "Adaptive chaotic multi-objective forest optimisation (AC-MOFOA)",
+          "Principal Component Analysis (PCA)",
+          "Multi-task learning",
+          "Multi-scale network architecture",
+          "Dropout regularization",
+          "Zero masking"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Limited - only E-learningDJUST dataset appears to be newly created; other papers utilize existing public or institutional datasets without explicit availability statements",
+        "software_availability": "Not mentioned - no code repositories, open-source releases, or software availability statements provided",
+        "methods_availability": "Implicit - methods are applications of published, existing computational techniques; not novel methodologies requiring special documentation"
+      },
+      "novelty_phrases": [
+        "novel practical or potential applications of feature-driven ML",
+        "hybrid solution leveraging multi-filter and adaptive chaotic multi-objective forest optimisation",
+        "automatic feature engineering framework for modelling the trend-cycle",
+        "unpaired sample augmentation and multi-scale network",
+        "novel deep belief network (DBN)-based multi-task learning model"
+      ],
+      "confidence": "high",
+      "rationale": "This is a SPECIAL ISSUE EDITORIAL/REVIEW PAPER, not a primary research contribution. It curates and summarizes seven existing research papers. While one constituent paper (Abdullah et al.) produced a new dataset (E-learningDJUST), the editorial itself is SECONDARY research \u2014 it synthesizes, evaluates, and contextualizes primary research outputs from others. The paper explicitly states it 'welcomed submissions' and 'accepted seven articles,' making it a meta-level assessment rather than original research. No new computational methods are developed by the authors; they review applications of existing ML/DL techniques. The 'Babel Fish' framing emphasizes practical APPLICATION rather than methodological innovation."
+    },
+    "paper": {
+      "field": "ml-uk",
+      "pmid": "37193558",
+      "pmcid": "PMC10088622",
+      "doi": "10.1007/s00521-023-08543-8",
+      "title": "Innovative feature-driven machine learning and deep learning for finance, education, and healthcare",
+      "year": "2023",
+      "journal": "Neural Computing & Applications",
+      "fulltext_chars": 12603
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 3772,
+    "output_tokens": 785,
+    "cost_gbp": 0.01847,
+    "latency_s": 12.9,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No new dataset is produced by this editorial introduction itself; the E-learningDJUST dataset mentioned was created by one of the reviewed papers (Abdullah et al.), not by this editorial."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No software or code is introduced by this editorial/introduction paper."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No new computational methods, algorithms, or models are introduced. The MedIntellego Quality Assessment Scale (MQAS) is applied as an evaluation instrument, but it is not developed here; it is referenced as pre-existing."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "E-learningDJUST dataset (Abdullah et al.)",
+          "Psynary psychiatry dataset (Cousins et al.)",
+          "Portuguese secondary school datasets (Huang et al.)",
+          "Microarray datasets \u2014 nine publicly available (Nouri-Moghaddam et al.)",
+          "Time-series datasets (Selvam and Rajendran)",
+          "Chest X-ray image datasets (Wang et al.)",
+          "ADNI dataset for Alzheimer's/MCI classification (Zeng et al.)"
+        ],
+        "software_used": [
+          "Random Forest",
+          "XGBoost",
+          "Feedforward neural network",
+          "LSTM",
+          "SVM (feature-weighted)",
+          "ANN",
+          "AC-MOFOA (Adaptive Chaotic Multi-Objective Forest Optimisation Algorithm)",
+          "KELM (Kernel Extreme Learning Machine)",
+          "LightGBM",
+          "SHAP",
+          "MLP",
+          "Multi-scale segmentation network",
+          "Deep Belief Network (DBN)",
+          "PCA"
+        ],
+        "methods_used": [
+          "Feature selection",
+          "Feature extraction",
+          "Feature engineering",
+          "MedIntellego Quality Assessment Scale (MQAS) for paper evaluation",
+          "Decision tree-based classification",
+          "Deep learning (LSTM, DBN, neural networks)",
+          "Multi-task learning",
+          "Dimensionality reduction",
+          "Image segmentation",
+          "Time-series forecasting",
+          "Ensemble methods"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "No data availability statement for this editorial itself; data described belongs to reviewed papers.",
+        "software_availability": "No software availability statement; all software discussed belongs to reviewed papers.",
+        "methods_availability": "MQAS referenced as a pre-existing scale; no new methods made available by this paper."
+      },
+      "novelty_phrases": [
+        "novel practical or potential applications of feature-driven ML",
+        "Innovative feature-driven machine learning and deep learning",
+        "MedIntellego Quality Assessment Scale (MQAS)-based holistic evaluation",
+        "domain-agnostic features engineered to model the trend-cycle",
+        "novel deep belief network (DBN)-based multi-task learning model"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "ml-uk",
+      "pmid": "37193558",
+      "pmcid": "PMC10088622",
+      "doi": "10.1007/s00521-023-08543-8",
+      "title": "Innovative feature-driven machine learning and deep learning for finance, education, and healthcare",
+      "year": "2023",
+      "journal": "Neural Computing & Applications",
+      "fulltext_chars": 12603
+    }
+  },
+  {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 11345,
+    "output_tokens": 1200,
+    "cost_gbp": 0.01388,
+    "latency_s": 13.0,
+    "result": {
+      "classification": "mixed",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": true,
+          "description": "Patient imaging data (DW-MRI, CT scans) from 10 GBM patients acquired and processed; ADC maps derived and cell density maps calculated; TCP maps generated at voxel level for each patient"
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No custom software or tools developed; existing commercial/open-source tools used"
+        },
+        "primary_computational_methods": {
+          "produced": true,
+          "description": "Novel integrated computational workflow: (1) ADC-to-cell-density mapping using linear regression formula; (2) voxelized Linear-Quadratic TCP model implementation; (3) personalized SIB dose calculation via quadratic equation solving; (4) isotoxic dose escalation algorithm with BTV definition (lowest quartile TCP)"
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Patient imaging cohort (10 GBM patients, 2018-2019, retrospective)",
+          "Published ADC-cell density correlation data from Eidel et al. (2014)",
+          "Published LQ model radiobiological parameters (\u03b1=0.12 Gy\u207b\u00b9, \u03b2=0.015 Gy\u207b\u00b2)",
+          "EORTC protocol for target delineation",
+          "QUANTEC and RTOG 0825 protocols for OAR tolerance"
+        ],
+        "software_used": [
+          "NiftyReg (rigid image registration, ADC-CT alignment)",
+          "Varian Eclipse 13.6 (treatment planning system)",
+          "Siemens Magnetom Verio 3T scanner (DW-MRI acquisition)",
+          "Varian TrueBeam linear accelerator (dose calculation)"
+        ],
+        "methods_used": [
+          "Diffusion-weighted MRI (DW-MRI) imaging protocol with EPI sequences",
+          "Rigid registration with trilinear interpolation",
+          "Linear-Quadratic (LQ) radiobiological model",
+          "Volumetric-Modulated Arc Therapy (VMAT) planning",
+          "Dose-volume histogram analysis",
+          "Statistical analysis (Pearson/Spearman correlation)"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Patient data not explicitly stated as available; ethics approved retrospective cohort from 2018-2019; outcome data limited (only 1 of 10 patients with follow-up recurrence information)",
+        "software_availability": "No custom software released; uses existing commercial (Varian Eclipse, Siemens) and open-source (NiftyReg) tools",
+        "methods_availability": "Methods fully described with equations (cell density formula, TCP model, SIB dose calculation); reproducible in principle using standard TPS software; no algorithms/code repositories mentioned"
+      },
+      "novelty_phrases": [
+        "novel strategy using diffusion-weighted (DW-) MRI",
+        "personalized RT GBM treatments",
+        "voxel level SIB radiotherapy method",
+        "personalized biological model",
+        "dose painting by contours (DPBC)",
+        "ADC-driven SIB dose painting",
+        "combined ADC maps with voxelated TCP map",
+        "isotoxic dose escalation",
+        "individualized dose escalation"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "epidemiology-uk",
+      "pmid": "37102792",
+      "pmcid": "PMC10230387",
+      "doi": "10.1259/bjr.20220384",
+      "title": "Isotoxic dose escalated radiotherapy for glioblastoma based on diffusion-weighted MRI and tumor control probability\u2014an in-silico study",
+      "year": "2023",
+      "journal": "The British Journal of Radiology",
+      "fulltext_chars": 37401
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 11346,
+    "output_tokens": 875,
+    "cost_gbp": 0.03773,
+    "latency_s": 19.8,
+    "result": {
+      "classification": "primary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": true,
+          "description": "In-silico radiotherapy planning data for 10 GBM patients including ADC-derived cell density maps, voxelated TCP maps, BTV definitions, SIB dose calculations, and OAR dose-volume statistics for both standard and escalated plans"
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No novel software tool was developed or released; existing tools (NiftyReg, Varian Eclipse 13.6) were used"
+        },
+        "primary_computational_methods": {
+          "produced": true,
+          "description": "A novel DW-MRI-guided isotoxic SIB dose escalation pipeline for GBM was developed, comprising: (1) ADC-to-cell-density conversion via empirical linear formula, (2) voxelated 3D Poissonian LQ-TCP model applied per-voxel to derive TCP maps, (3) BTV definition based on lowest TCP quartile, (4) personalized SIB dose calculation by solving a quadratic equation to match median GTV TCP, and (5) integration into VMAT treatment planning workflow"
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Pre-treatment DW-MRI ADC maps from 10 GBM patients (2018\u20132019)",
+          "Planning CT images from the same 10 patients",
+          "Published ADC vs. cell density data from Eidel et al.",
+          "Published radiosensitivity parameters (\u03b1=0.12 Gy\u207b\u00b9, \u03b2=0.015 Gy\u207b\u00b2)"
+        ],
+        "software_used": [
+          "NiftyReg (image registration software)",
+          "Varian Eclipse 13.6 (treatment planning system)",
+          "True Beam linear accelerator (Varian Medical Systems) for reference clinical plans"
+        ],
+        "methods_used": [
+          "Rigid image registration to anatomical landmarks",
+          "Trilinear interpolation for image resampling",
+          "Volumetric-modulated arc therapy (VMAT) planning",
+          "Linear-quadratic (LQ) radiobiological model",
+          "EORTC target delineation protocol",
+          "QUANTEC/RTOG 0825 OAR dose tolerance constraints"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Patient data not publicly shared; ethics committee approval and informed consent mentioned; supplementary data referenced for dose-volume statistics and optimization objectives",
+        "software_availability": "No novel software released; pipeline described methodologically in the paper",
+        "methods_availability": "Methods fully described in the paper including equations; pipeline reproducible from description using existing tools"
+      },
+      "novelty_phrases": [
+        "novel strategy using diffusion-weighted (DW-) MRI to calculate the cellular density within the gross tumor volume",
+        "personalized and voxel level SIB radiotherapy method for GBM is proposed",
+        "combined ADC maps with the voxelated TCP map to achieve the personalized SIB isotoxic dose escalation for GBM",
+        "to our knowledge, the only approach using ADC-based dose painting for GBM",
+        "one of our novelties in the proposed method was to increase the dose individually",
+        "we use ADC maps to calculate tumor cell density and derive voxelised (3D) cell distributions",
+        "a personalized biological model is employed to calculate the voxel-level tumor control probability"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "epidemiology-uk",
+      "pmid": "37102792",
+      "pmcid": "PMC10230387",
+      "doi": "10.1259/bjr.20220384",
+      "title": "Isotoxic dose escalated radiotherapy for glioblastoma based on diffusion-weighted MRI and tumor control probability\u2014an in-silico study",
+      "year": "2023",
+      "journal": "The British Journal of Radiology",
+      "fulltext_chars": 37401
+    }
+  },
+  {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 15633,
+    "output_tokens": 1138,
+    "cost_gbp": 0.01706,
+    "latency_s": 12.9,
+    "result": {
+      "classification": "primary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": true,
+          "description": "Generated multiplexed immunofluorescence imaging data from 29 cases (15 NLPHL, 4 THRLBCL, 4 LRcHL, 6 tonsil controls) with 1,344+ image tiles analyzed. Raw data explicitly stated as available upon request."
+        },
+        "primary_software": {
+          "produced": true,
+          "description": "Developed innovative digital image analysis workflow including: dynamic image thresholding technique (Supplementary Figure S1), colocalisation-based resolution algorithm for multi-marker cells (Supplementary Figure S2), and custom non-hierarchical binary phenotyping pipeline in open-source software with cell segmentation and detection."
+        },
+        "primary_computational_methods": {
+          "produced": true,
+          "description": "Novel computational methods: (1) dynamic image thresholding to minimize technical signal/background variations; (2) colocalisation-based resolution technique to resolve spurious phenotypes from contaminating signals between immune cell membranes; (3) binary phenotyping workflow with nuclear detection segmentation; (4) nearest-neighbour distance analysis between tumor cells and lymphocyte phenotypes; (5) statistical analysis using Mann-Whitney U tests with Bonferroni correction."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Archival formalin-fixed paraffin-embedded tissue samples from routine diagnostic cases",
+          "Previously published immunofluorescence protocols (adapted from reference 20)"
+        ],
+        "software_used": [
+          "Opal 7-Color system (Akoya Biosciences) for multiplexed multispectral immunofluorescence",
+          "Vectra3 platform (Akoya Biosciences) for image acquisition",
+          "InForm software (Akoya Biosciences) for spectral unmixing",
+          "Open-source software for image analysis (specific software not named in methods)",
+          "Statistical analysis software (Mann-Whitney U tests, Bonferroni adjustment)"
+        ],
+        "methods_used": [
+          "Multiplexed multispectral immunofluorescence with three antibody panels",
+          "Flow cytometry (reference method for comparison/validation)",
+          "Histopathological classification (Fan et al. patterns A-F)",
+          "Established NK-cell immunobiology frameworks"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Raw data explicitly stated as available by authors without undue reservation (Data availability statement section)",
+        "software_availability": "Custom image analysis workflow developed but software availability not explicitly stated; methodology provided in Supplementary Methods; open-source software mentioned but specific implementation details proprietary",
+        "methods_availability": "Comprehensive methodology provided in main text and supplementary methods; workflow flowchart (Figure 2) included; validation results detailed (Supplementary Figures S3, S4); reproduction feasible but proprietary image analysis components may require reimplementation"
+      },
+      "novelty_phrases": [
+        "innovative multiplexed immunofluorescence workflow",
+        "innovative digital image analysis workflow",
+        "innovative image processing techniques",
+        "dynamic image thresholding",
+        "colocalisation-based resolution of cells",
+        "non-hierarchical binary phenotyping",
+        "single-cell resolution multiplexed immunofluorescence",
+        "millions of phenotyped cell detections from hundreds of histological images"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "immunology-uk",
+      "pmid": "37854674",
+      "pmcid": "PMC10579566",
+      "doi": "10.3389/fonc.2023.1267604",
+      "title": "Microenvironmental immune cell alterations across the spectrum of nodular lymphocyte predominant Hodgkin lymphoma and T-cell/histiocyte-rich large B-cell lymphoma",
+      "year": "2023",
+      "journal": "Frontiers in Oncology",
+      "fulltext_chars": 50851
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 15634,
+    "output_tokens": 830,
+    "cost_gbp": 0.04748,
+    "latency_s": 17.3,
+    "result": {
+      "classification": "mixed",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": true,
+          "description": "Multiplexed immunofluorescence data from archival FFPE tissue sections (NLPHL n=15, THRLBCL n=4, LRcHL n=4, tonsil controls) generating millions of phenotyped cell detections across hundreds of multispectral image tiles using three Opal 7-Color panels."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No standalone software tool was released; analysis was performed using existing open-source software with custom configurations."
+        },
+        "primary_computational_methods": {
+          "produced": true,
+          "description": "A novel digital image analysis and cell phenotyping workflow was developed, incorporating: (i) dynamic image thresholding to minimise sensitivity to technical signal/background variations, and (ii) colocalisation-based resolution of cells with provisional positivity for multiple membranous markers to reduce spurious phenotypes in crowded TME. Non-hierarchical binary phenotyping pipeline implemented in open-source software."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Archival formalin-fixed paraffin-embedded (FFPE) biopsy material from clinical histopathology archive",
+          "Tonsillar follicular hyperplasia control tissue"
+        ],
+        "software_used": [
+          "Vectra3 multispectral imaging platform (Akoya Biosciences)",
+          "InForm software for spectral unmixing (Akoya Biosciences)",
+          "Open-source image analysis software (unspecified, used for phenotyping workflow)"
+        ],
+        "methods_used": [
+          "Opal 7-Color multiplexed immunofluorescence (Akoya Biosciences), adapted from previously optimised protocols",
+          "Multispectral image acquisition and spectral unmixing",
+          "Mann-Whitney U tests with Bonferroni correction for statistical comparisons",
+          "Nearest-neighbour distance analysis for spatial cell relationships",
+          "Fan et al. (2003) histological pattern classification for NLPHL"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Raw data stated to be available from authors without undue reservation (data availability statement provided).",
+        "software_availability": "No explicit software availability statement; workflow described in Supplementary Methods but no code repository mentioned.",
+        "methods_availability": "Methods described in main text and Supplementary Methods; dynamic thresholding and colocalisation-based resolution techniques described but not formally published as standalone tools."
+      },
+      "novelty_phrases": [
+        "innovative digital image analysis workflow",
+        "dynamic image thresholding, which minimised sensitivity to technical variations in signal/background characteristics",
+        "colocalisation-based resolution of cells with provisional positivity for multiple membranous markers",
+        "non-hierarchical binary phenotyping performed in open-source software",
+        "single-cell resolution multiplexed immunofluorescence and innovative digital image analysis workflow",
+        "generate millions of phenotyped cell detections from hundreds of histological images",
+        "novel therapeutic program of immune checkpoint interruption targeting the PD1:PDL1 and/or NKG2A:HLA-E axes"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "immunology-uk",
+      "pmid": "37854674",
+      "pmcid": "PMC10579566",
+      "doi": "10.3389/fonc.2023.1267604",
+      "title": "Microenvironmental immune cell alterations across the spectrum of nodular lymphocyte predominant Hodgkin lymphoma and T-cell/histiocyte-rich large B-cell lymphoma",
+      "year": "2023",
+      "journal": "Frontiers in Oncology",
+      "fulltext_chars": 50851
+    }
+  },
+  {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 8435,
+    "output_tokens": 1005,
+    "cost_gbp": 0.01077,
+    "latency_s": 10.5,
+    "result": {
+      "classification": "mixed",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "Data collected from secondary sources (reference 31); survey data used but not newly generated or made available"
+        },
+        "primary_software": {
+          "produced": true,
+          "description": "GMDH neural network implementation coded manually in MATLAB; authors state 'no toolbox for implementing GMDH neural network' so 'we have coded all the steps of training and testing this neural network manually step by step'"
+        },
+        "primary_computational_methods": {
+          "produced": true,
+          "description": "GMDH (Group Method of Data Handling) neural network architecture with self-organization capability for automatic feature selection; novel application of GMDH to job burnout prediction with optimized feature reduction (10 inputs reduced to 7)"
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Maslach Burnout Inventory - General Survey (MBI-GS) [32, 33]",
+          "Brief Resilience Coping Scale (BRCS) [27]",
+          "Researcher-created COVID-19 stress questionnaire",
+          "Data sourced from previous research [31] - survey of 384 startup directors and representatives"
+        ],
+        "software_used": [
+          "MATLAB (primary implementation environment)",
+          "SPSS (descriptive and inferential statistics)"
+        ],
+        "methods_used": [
+          "Pearson correlation analysis",
+          "Cronbach's alpha reliability testing",
+          "K-Fold cross-validation (k=20)",
+          "Least squares method for coefficient estimation",
+          "Kolmogorov-Gabor polynomial regression",
+          "Confusion matrix analysis",
+          "Quantitative cross-sectional study design"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Data accessibility not mentioned; references data from previous work [31] with no explicit open data statement or repository link provided",
+        "software_availability": "MATLAB code for GMDH implementation not explicitly stated as available; custom coding performed but no mention of code repository, supplementary materials, or reproducibility link",
+        "methods_availability": "Methods described in detail (GMDH architecture, training/validation/test split ratios, feature selection process); reproducible methodology documented but implementation artifacts not explicitly shared"
+      },
+      "novelty_phrases": [
+        "coded all the steps of training and testing this neural network manually step by step",
+        "self-organizing method based on group method of data handling neural network",
+        "GMDH neural network's inherent potential for self-organization was used to choose the most useful properties automatically",
+        "introducing effective characteristics in determination of this parameter",
+        "reduced the computational load by using just 7 parameters",
+        "GMDH network has significantly reduced the computational load",
+        "novel numerical model for detecting burnout",
+        "automatic feature selection through self-organization"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "methods-uk",
+      "pmid": "37930996",
+      "pmcid": "PMC10627462",
+      "doi": "10.1371/journal.pone.0290267",
+      "title": "Introducing effective parameters for predicting job burnout using a self-organizing method based on group method of data handling neural network",
+      "year": "2023",
+      "journal": "PLOS ONE",
+      "fulltext_chars": 32690
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 8436,
+    "output_tokens": 784,
+    "cost_gbp": 0.02965,
+    "latency_s": 15.9,
+    "result": {
+      "classification": "mixed",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "Data was collected via questionnaires from 384 startup directors/employees, but this was gathered in a prior referenced study [31]; the current study reuses that dataset."
+        },
+        "primary_software": {
+          "produced": true,
+          "description": "A GMDH neural network was manually coded in MATLAB from scratch (no existing toolbox used), implementing all training and testing steps for job burnout classification."
+        },
+        "primary_computational_methods": {
+          "produced": true,
+          "description": "A novel application of GMDH (Group Method of Data Handling) neural network with self-organizing feature selection was developed and implemented for predicting job burnout, resulting in a specific three-hidden-layer architecture (4-3-2 neurons) with 7 selected input features, validated via 20-fold cross-validation."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Survey dataset from prior study [31] collected from 384 startup directors and employees (August\u2013September 2021)",
+          "Maslach Burnout Inventory \u2013 General Survey (MBI-GS)",
+          "Brief Resilience Coping Scale (BRCS)",
+          "Researcher-created Covid-19 stress questionnaire"
+        ],
+        "software_used": [
+          "SPSS (for descriptive and inferential statistics)",
+          "MATLAB (for implementing the GMDH neural network)"
+        ],
+        "methods_used": [
+          "Pearson correlation analysis",
+          "Cronbach's alpha reliability assessment",
+          "Least squares method (for computing polynomial coefficients)",
+          "Kolmogorov-Gabor polynomial formulation",
+          "K-fold cross-validation (K=20)",
+          "Confusion matrix evaluation",
+          "Radial basis function (RBF) neural network (referenced as prior comparison)",
+          "Multilayer perceptron (MLP) neural network (referenced as prior comparison)"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Data originates from a prior referenced study [31]; no explicit data availability statement for sharing in this paper, though S1 File is mentioned as supporting information.",
+        "software_availability": "MATLAB code for GMDH neural network was custom-written but no repository or public availability is mentioned.",
+        "methods_availability": "GMDH method and architecture are described in detail within the paper, including equations and network topology, enabling reproducibility."
+      },
+      "novelty_phrases": [
+        "a new numerical model for detecting burnout was developed",
+        "all the steps of training and testing this neural network manually step by step",
+        "GMDH neural network's inherent potential for self-organization was used to choose the most useful properties automatically",
+        "seven features were proposed as useful in predicting job burnout using the GMDH neural network and its self-organization capabilities",
+        "introducing effective parameters for predicting job burnout",
+        "this study improves the accuracy of job burnout predictions while decreasing the system's computational load",
+        "an attempt was made to both improve accuracy and contribute useful inputs by probing and finding the gaps in prior studies"
+      ],
+      "confidence": "high"
+    },
+    "paper": {
+      "field": "methods-uk",
+      "pmid": "37930996",
+      "pmcid": "PMC10627462",
+      "doi": "10.1371/journal.pone.0290267",
+      "title": "Introducing effective parameters for predicting job burnout using a self-organizing method based on group method of data handling neural network",
+      "year": "2023",
+      "journal": "PLOS ONE",
+      "fulltext_chars": 32690
+    }
+  }
+]

@@ -409,6 +409,31 @@ tbody tr:hover { background: var(--surface-2); }
 .linkish { background: none; border: 0; padding: 0; text-align: left; cursor: pointer;
   color: var(--text-primary); font-size: 13px; line-height: 1.4; }
 .linkish:hover { color: var(--series-1); text-decoration: underline; }
+.prose { max-width: 74ch; line-height: 1.6; color: var(--text-secondary); font-size: 13px; }
+.banner { border-left: 3px solid var(--baseline); }
+.commentary {
+  border-left: 3px solid var(--baseline); background: var(--surface-2);
+  border-radius: 0 8px 8px 0; padding: 11px 14px; margin: 16px 0;
+}
+.commentary .who {
+  display: flex; align-items: center; gap: 7px; margin-bottom: 7px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-muted); font-weight: 600;
+}
+.who-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.04em; padding: 1px 5px;
+  border-radius: 4px; border: 1px solid var(--baseline); color: var(--text-secondary);
+}
+.commentary .prose:last-child { margin-bottom: 0; }
+.case-verdict { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+.case-body { padding: 6px 0 14px 22px; }
+.quote { margin-bottom: 12px; }
+.quote-head { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+.quote-head .nm { font-size: 12px; font-weight: 600; }
+blockquote.prose {
+  margin: 0; padding: 0 0 0 12px; border-left: 2px solid var(--grid);
+  color: var(--text-secondary);
+}
 .empty { padding: 34px 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
 details.raw > summary { cursor: pointer; font-size: 12px; color: var(--text-muted); padding: 4px 0; }
 details.raw pre { background: var(--surface-2); border-radius: 8px; padding: 10px; overflow-x: auto; font-size: 11px; margin: 6px 0 0; }
@@ -1714,6 +1739,159 @@ function confusionMatrix(s, cellCount, opts) {
   ]);
 }
 
+/* ---------- view: reasoning ---------- */
+
+/** A short label naming who wrote the commentary that follows. */
+function commentary(kids) {
+  return el("div", { class: "commentary" }, [
+    el("div", { class: "who" }, [
+      el("span", { class: "who-badge", text: "AI" }),
+      el("span", { text: "Claude's reading — an interpretation of the text below, not a measurement" }),
+    ]),
+    ...[].concat(kids),
+  ]);
+}
+const para = (text) => el("p", { class: "prose", text });
+
+/** Papers where the human's category is one no model run picked. */
+function zeroAgreementCases() {
+  const humanRuns = selectedInConfig(HUMAN_ID);
+  const modelRuns = selectedRuns().filter((r) => !isHuman(r.config));
+  return DATA.papers.map((p) => {
+    const human = consensus(p.pmid, humanRuns).category;
+    const byRun = J_BY_PAPER.get(p.pmid) || new Map();
+    const votes = modelRuns.map((r) => ({ run: r, cat: (byRun.get(r.run_id) || {}).category }))
+      .filter((v) => v.cat);
+    const counts = {};
+    for (const v of votes) counts[v.cat] = (counts[v.cat] || 0) + 1;
+    const ranked = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || CATS.indexOf(a) - CATS.indexOf(b));
+    return {
+      paper: p, human, votes, counts, ranked,
+      humanRun: humanRuns[0] || null,
+      agree: human ? votes.filter((v) => v.cat === human).length : 0,
+    };
+  }).filter((c) => c.human && c.votes.length && c.agree === 0)
+    .sort((a, b) => (b.counts[b.ranked[0]] || 0) - (a.counts[a.ranked[0]] || 0));
+}
+
+function viewReasoning() {
+  const configs = activeConfigs();
+  if (!configs.length) return el("div", { class: "card empty", text: "No configurations selected — pick at least one above." });
+  if (!HUMAN_ID || !selectedInConfig(HUMAN_ID).length) {
+    return el("div", { class: "card empty", text: "This tab compares model reasoning against the human's, so the human pass needs to be in view." });
+  }
+
+  const cases = zeroAgreementCases();
+  const cards = [];
+
+  cards.push(el("div", { class: "card banner" }, [
+    el("h2", { text: "How to read this tab" }),
+    el("div", { class: "prose" }, [
+      el("p", { class: "prose", text:
+        "Every quote on this tab is the free-text justification a run recorded in Experiments/, shown verbatim. "
+        + "The commentary between the quotes — what the disagreement is about, and what rule each side seems to be "
+        + "applying — was written by Claude reading those justifications." }),
+      el("p", { class: "prose", text:
+        "That commentary is an interpretation of unstructured text by a language model, not a measurement. "
+        + "It is the one thing on this dashboard that is not derived arithmetically from the run files, so treat it "
+        + "as a reviewer's note and check it against the quotes underneath it, which are the evidence." }),
+    ]),
+  ]));
+
+  const caseCard = el("div", { class: "card" }, [
+    el("h2", { text: "What is actually being argued about — case by case" }),
+    el("div", { class: "card-note", text:
+      `The ${cases.length} paper${cases.length === 1 ? "" : "s"} where not one model run reached the human's category. `
+      + "These are the clearest read on what the disagreement is, because there is no partial agreement to explain away." }),
+  ]);
+
+  if (!cases.length) {
+    caseCard.appendChild(el("div", { class: "empty", text: "Every paper in view has at least one model run agreeing with the human." }));
+  } else {
+    caseCard.appendChild(commentary([
+      para("Reading the justifications for these papers, nearly all of the conflict is one question: does research "
+        + "code count as generated software? The human counts a usable artefact coming out of the study, however "
+        + "small. The models count software as generated only when building it was itself a research contribution."),
+      para("Both are defensible readings of criteria.md, which asks for “new or substantially extended software "
+        + "that plays a substantial role… or is itself a research goal, and is shared or published”. The human "
+        + "weights “new” and “shared”; the models weight “substantially extended” and “research goal”."),
+    ]));
+    caseCard.appendChild(el("div", {}, cases.map(caseRow)));
+    caseCard.appendChild(commentary([
+      para("The same ambiguity runs on the data axis: whether applying a new workflow to existing material creates a "
+        + "dataset, or merely describes the material you already had."),
+      para("It is worth saying plainly that the human is not automatically right. At least one of these cases reads "
+        + "as the model applying the stated criteria better than the reviewer did — these are 30 papers on which a "
+        + "second human reviewer would side with the model more than once."),
+    ]));
+  }
+  cards.push(caseCard);
+  return el("div", {}, cards);
+}
+
+/** One contested paper: the human's reasoning against the models'. */
+function caseRow(c) {
+  const key = "case:" + c.paper.pmid;
+  const open = state.openReasons.has(key);
+  const top = c.ranked[0];
+  const head = el("button", { class: "jhead", type: "button", "aria-expanded": String(open), onclick: () => {
+    open ? state.openReasons.delete(key) : state.openReasons.add(key);
+    render();
+  }}, [
+    el("span", { class: "caret", text: open ? "▾" : "▸" }),
+    el("span", { class: "case-verdict" }, [
+      el("span", { class: "swatch", style: `background:${configColor(HUMAN_ID)}` }),
+      codePill(c.human, { title: `human: ${categoryTitle(c.human)}` }),
+      el("span", { class: "muted", text: "vs" }),
+      codePill(top, { title: `models: ${categoryTitle(top)}` }),
+      el("span", { class: "muted num", text: `${c.counts[top]}/${c.votes.length}` }),
+    ]),
+    el("span", { class: "snip", style: "color:var(--text-primary); white-space:normal", text: c.paper.title || c.paper.pmid }),
+  ]);
+  const kids = [head];
+  if (open) {
+    // The human, then one run per configuration — whichever backed that
+    // configuration's most common answer for this paper.
+    const picks = [];
+    for (const id of activeConfigs().filter((x) => !isHuman(x))) {
+      const inCfg = c.votes.filter((v) => v.run.config === id);
+      if (!inCfg.length) continue;
+      const tally = {};
+      for (const v of inCfg) tally[v.cat] = (tally[v.cat] || 0) + 1;
+      const best = Object.keys(tally).sort((a, b) => tally[b] - tally[a] || CATS.indexOf(a) - CATS.indexOf(b))[0];
+      picks.push({ ...inCfg.find((v) => v.cat === best), n: tally[best], of: inCfg.length });
+    }
+    kids.push(el("div", { class: "case-body" }, [
+      el("div", { class: "card-note", style: "margin-bottom:8px" }, [
+        el("span", { text: `${c.paper.field || ""} · ${c.paper.year || ""} · the models spread over ` }),
+        el("b", { text: c.ranked.map((r) => `${r} ×${c.counts[r]}`).join(", ") }),
+      ]),
+      c.humanRun ? quoteBlock(configLabel(HUMAN_ID), configColor(HUMAN_ID), c.human,
+        (J_BY_PAPER.get(c.paper.pmid).get(c.humanRun.run_id) || {}).reasoning, c.humanRun.run_id) : null,
+      ...picks.map((v) => quoteBlock(configLabel(v.run.config), configColor(v.run.config), v.cat,
+        (J_BY_PAPER.get(c.paper.pmid).get(v.run.run_id) || {}).reasoning, v.run.run_id,
+        `${v.n} of ${v.of} runs said ${v.cat}`)),
+      el("button", { class: "btn", type: "button", style: "margin-top:4px",
+        onclick: () => { state.paper = c.paper.pmid; state.tab = "papers"; render(); },
+        text: "See every judgement on this paper →" }),
+    ]));
+  }
+  return el("div", { class: "jrow" }, kids);
+}
+
+function quoteBlock(who, color, cat, text, runId, note) {
+  return el("div", { class: "quote" }, [
+    el("div", { class: "quote-head" }, [
+      el("span", { class: "swatch", style: `background:${color}` }),
+      el("span", { class: "nm", text: who }),
+      codePill(cat),
+      note ? el("span", { class: "muted", style: "font-size:11px", text: note }) : null,
+      el("span", { class: "muted num", style: "font-size:11px; margin-left:auto", text: runId }),
+    ]),
+    el("blockquote", { class: "prose", text: text || "No reasoning recorded." }),
+  ]);
+}
+
 /* ---------- view: runs ---------- */
 function viewRuns() {
   const cards = CONFIG_IDS.filter((a) => RUNS_BY_CONFIG.get(a).length).map((a) => {
@@ -1803,6 +1981,7 @@ const TABS = [
   { id: "papers", label: "Papers", view: viewPapers },
   { id: "variation", label: "Variation", view: viewVariation },
   { id: "consensus", label: "Consensus vs human", view: viewConsensus },
+  { id: "reasoning", label: "Reasoning", view: viewReasoning },
   { id: "runs", label: "Runs", view: viewRuns },
 ];
 

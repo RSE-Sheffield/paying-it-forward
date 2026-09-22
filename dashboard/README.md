@@ -70,6 +70,12 @@ selected its toggle says so.
   don't (both pooled across every model run, row-normalised); and a leaderboard
   ranking every paper by how many model runs matched the human's call, each
   row expandable to the per-configuration split.
+- **Reasoning** — the free-text justifications rather than the labels. Shows
+  the papers where no model run reached the human's category, each expanding to
+  the human's reasoning beside one quote per configuration. The quotes come
+  straight from the run files; the commentary between them is written by Claude
+  and is labelled as such, because it is an LLM's interpretation of unstructured
+  text rather than something derived arithmetically from the data.
 - **Runs** — full `run.json` metadata for every run, plus derived totals
   (tokens, model time, category mix) and the shared task/criteria text.
 

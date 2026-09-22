@@ -1,0 +1,19 @@
+{
+  "run_id": "20260921_101000",
+  "name": "gemma_t1_repeat",
+  "started_at": "2026-09-21T09:10:00.825255+00:00",
+  "finished_at": "2026-09-21T09:35:32.976374+00:00",
+  "provider": "ollama",
+  "model": "gemma4:12b",
+  "content": "full",
+  "host": "http://localhost:11434",
+  "num_ctx": 262144,
+  "timeout_s": 600,
+  "limit": null,
+  "dataset_file": "/home/edwin/Documents/paying-it-forward/paying-it-forward/spikes/2026-05-llm-cost/papers/papers_fulltext_30.json",
+  "criteria_file": "/home/edwin/Documents/paying-it-forward/paying-it-forward/criteria.md",
+  "task_file": "/home/edwin/Documents/paying-it-forward/paying-it-forward/task.md",
+  "num_papers_total": 30,
+  "num_papers_run": 30,
+  "num_papers_classified": 30
+}

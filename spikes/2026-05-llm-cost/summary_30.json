@@ -1,0 +1,83 @@
+{
+  "summary": {
+    "Haiku-FT": {
+      "n": 30,
+      "avg_in": 23194.466666666667,
+      "avg_out": 930.5333333333333,
+      "avg_cost": 0.022276999999999998,
+      "median": 0.01985,
+      "min": 0.00689,
+      "max": 0.0799,
+      "proj_300k": 6683.099999999999
+    },
+    "Haiku-ABS": {
+      "n": 30,
+      "avg_in": 760.5666666666667,
+      "avg_out": 659.2333333333333,
+      "avg_cost": 0.0032459999999999998,
+      "median": 0.00314,
+      "min": 0.00221,
+      "max": 0.00456,
+      "proj_300k": 973.8
+    },
+    "Sonnet-FT": {
+      "n": 30,
+      "avg_in": 23195.466666666667,
+      "avg_out": 757.0333333333333,
+      "avg_cost": 0.064753,
+      "median": 0.05591,
+      "min": 0.01498,
+      "max": 0.23535,
+      "proj_300k": 19425.9
+    }
+  },
+  "agreement_pairs": {
+    "Haiku-FT_vs_Sonnet-FT": {
+      "agree": 18,
+      "total": 30,
+      "kappa": 0.4019933554817276
+    },
+    "Haiku-ABS_vs_Haiku-FT": {
+      "agree": 24,
+      "total": 30,
+      "kappa": 0.6363636363636365
+    },
+    "Haiku-ABS_vs_Sonnet-FT": {
+      "agree": 17,
+      "total": 30,
+      "kappa": 0.3097345132743363
+    }
+  },
+  "disagreements_haiku_ft_vs_abs": [
+    {
+      "pmid": "37102792",
+      "haiku_ft": "mixed",
+      "haiku_abs": "primary"
+    },
+    {
+      "pmid": "37139088",
+      "haiku_ft": "PARSE_ERR",
+      "haiku_abs": "secondary"
+    },
+    {
+      "pmid": "37186857",
+      "haiku_ft": "primary",
+      "haiku_abs": "mixed"
+    },
+    {
+      "pmid": "37590277",
+      "haiku_ft": "PARSE_ERR",
+      "haiku_abs": "secondary"
+    },
+    {
+      "pmid": "37930996",
+      "haiku_ft": "mixed",
+      "haiku_abs": "primary"
+    },
+    {
+      "pmid": "37933221",
+      "haiku_ft": "PARSE_ERR",
+      "haiku_abs": "primary"
+    }
+  ]
+}

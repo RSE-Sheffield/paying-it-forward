@@ -1,0 +1,270 @@
+[
+  {
+    "pmid": "38110704",
+    "field": "neuroscience",
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 27547,
+    "output_tokens": 735,
+    "cost_usd": 0.031222,
+    "cost_gbp": 0.024978,
+    "latency_s": 8.47,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No new primary data collected or generated. Paper reviews existing literature, meta-analyses, and previously published findings."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No new software, tools, or computational applications developed."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No new computational methods, algorithms, statistical approaches, or mathematical models introduced. Paper discusses and synthesizes existing methods from literature."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Meta-analyses of existing neuroimaging studies",
+          "PubMed literature database",
+          "Post-mortem brain studies (secondary analysis)",
+          "PET imaging studies (secondary analysis)",
+          "Magnetic resonance spectroscopy (MRS) studies (secondary analysis)",
+          "EEG studies (secondary analysis)",
+          "fMRI studies (secondary analysis)",
+          "GWAS datasets (secondary analysis)",
+          "Twin studies (secondary analysis)",
+          "Clinical trial data on antipsychotic medications",
+          "Cognitive assessment battery results from existing cohorts"
+        ],
+        "software_used": [
+          "PubMed search tools",
+          "Standard neuroimaging analysis pipelines (reviewed, not developed)",
+          "EEG analysis methods (standard)",
+          "fMRI analysis methods (standard)"
+        ],
+        "methods_used": [
+          "Meta-analysis",
+          "Factor analysis",
+          "Network analysis",
+          "Cluster analysis",
+          "Genome-wide association studies (GWAS)",
+          "Twin study methodology",
+          "Polygenic risk score analysis",
+          "Linear regression",
+          "Correlation analysis",
+          "Magnetic resonance spectroscopy (MRS) measurement",
+          "PET ligand binding analysis",
+          "EEG gamma power analysis",
+          "fMRI functional connectivity analysis",
+          "Post-mortem neurochemical analysis",
+          "Machine learning (for grey matter pattern identification, reviewed)",
+          "Computational modeling (E/I balance simulations, reviewed)"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Not applicable - review article. References cited studies with their original data availability statements.",
+        "software_availability": "Not applicable - no novel software produced.",
+        "methods_availability": "Methods extensively documented through citations to original papers. Conceptual frameworks (E/I balance model, computational models) discussed qualitatively without new mathematical specifications or detailed algorithms."
+      },
+      "novelty_phrases": [
+        "we review the latest meta-analyses and other findings",
+        "This evidence demonstrates",
+        "We now discuss",
+        "We consider how",
+        "We discuss the evidence for",
+        "the model of E/I imbalance discussed aims to explain",
+        "There is thus multimodal evidence that"
+      ],
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "38110704",
+    "field": "neuroscience",
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 27548,
+    "output_tokens": 561,
+    "cost_usd": 0.091059,
+    "cost_gbp": 0.072847,
+    "latency_s": 12.81,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No new datasets, measurements, or observations collected; paper reviews and synthesizes existing literature."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No new software, tools, or model weights produced."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No new algorithms, statistical methods, or computational models developed; existing computational models (e.g., biophysical network models, machine learning studies) are referenced and discussed but not created."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "PubMed literature database",
+          "Meta-analyses of longitudinal cognitive studies in schizophrenia",
+          "GWAS datasets for schizophrenia and cognitive ability",
+          "Post-mortem brain studies",
+          "Neuroimaging datasets (MRS, fMRS, PET, fMRI, EEG studies)",
+          "Twin studies",
+          "Randomised controlled trial data",
+          "PANSS factor analysis studies",
+          "MCCB (MATRICS Consensus Cognitive Battery) data"
+        ],
+        "software_used": [],
+        "methods_used": [
+          "Factor analysis",
+          "Network analysis",
+          "Cluster analysis",
+          "Meta-analysis",
+          "Polygenic risk score analysis",
+          "Genome-wide association studies (GWAS)",
+          "Magnetic resonance spectroscopy (MRS)",
+          "Functional MRS (fMRS)",
+          "Positron emission tomography (PET)",
+          "Functional MRI (fMRI)",
+          "Electroencephalography (EEG)",
+          "Biophysical network modelling",
+          "Computational modelling",
+          "Machine learning (grey matter pattern classification)",
+          "Dimensionality reduction"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "Not applicable; review paper does not generate new data.",
+        "software_availability": "Not applicable; no new software produced.",
+        "methods_availability": "Not applicable; no new methods developed. Existing methods are described narratively."
+      },
+      "novelty_phrases": [],
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "37039129",
+    "field": "pharma",
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 95326,
+    "output_tokens": 731,
+    "cost_usd": 0.098981,
+    "cost_gbp": 0.079185,
+    "latency_s": 9.42,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No new primary data collection. The guideline synthesizes existing literature and expert consensus."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No software developed. References existing catatonia rating scales (BFCRS, NCRS, PCRS) but does not create new tools."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No novel algorithms, statistical methods, or mathematical models developed. The guideline applies existing evidence grading schemas (Shekelle et al. 1999) and BAP classification systems."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Existing systematic reviews on catatonia",
+          "Published case reports and case series",
+          "RCTs from existing literature",
+          "Observational studies on catatonia epidemiology and treatment outcomes",
+          "Neuroimaging studies (structural and functional MRI, SPECT, PET)",
+          "Neurophysiology studies (EEG findings)"
+        ],
+        "software_used": [
+          "Bush-Francis Catatonia Rating Scale (BFCRS)",
+          "Northoff Catatonia Rating Scale (NCRS)",
+          "Rogers Catatonia Scale",
+          "Pediatric Catatonia Rating Scale (PCRS)",
+          "Br\u00e4unig Catatonia Rating Scale",
+          "Clinical Global Impression (CGI) scale"
+        ],
+        "methods_used": [
+          "Meta-analysis and systematic review methodology",
+          "Evidence grading schemas (Shekelle classification)",
+          "Clinical consensus development",
+          "Literature synthesis",
+          "Existing rating scale applications",
+          "Lorazepam challenge test protocol (established diagnostic method)",
+          "Existing pharmacological treatment protocols"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "No primary data generated. Guideline based on published literature synthesis. Supplementary materials provided (plain language summary, presentation slides).",
+        "software_availability": "No novel software created. References freely available resources: BFCRS Training Manual and videographic resources at https://bfcrs.urmc.edu",
+        "methods_availability": "Guideline documents methods transparently, including evidence grading categories (Table 1) and diagnostic algorithms (Figure 1, Supplemental Material 1). Treatment protocols outlined with specific doses and procedures (e.g., Table 9 for lorazepam challenge). However, these are applications of established methodologies, not novel computational methods."
+      },
+      "novelty_phrases": [
+        "developed an evidence-based consensus guideline",
+        "convened a group of experts",
+        "synthesized evidence from existing systematic reviews and primary literature",
+        "recommendations were made on the basis of this evidence and were graded"
+      ],
+      "confidence": "high"
+    }
+  },
+  {
+    "pmid": "37039129",
+    "field": "pharma",
+    "model": "claude-sonnet-4-6",
+    "input_tokens": 95327,
+    "output_tokens": 629,
+    "cost_usd": 0.295416,
+    "cost_gbp": 0.236333,
+    "latency_s": 13.82,
+    "result": {
+      "classification": "secondary",
+      "primary_outputs": {
+        "primary_data": {
+          "produced": false,
+          "description": "No new empirical data collected; the guideline synthesises existing systematic reviews and primary literature."
+        },
+        "primary_software": {
+          "produced": false,
+          "description": "No software, tool, or model weights produced."
+        },
+        "primary_computational_methods": {
+          "produced": false,
+          "description": "No new algorithms, statistical methods, or computational pipelines developed. The evidence-grading schema was adopted from Shekelle et al. (1999) and Barnes et al. (2020)."
+        }
+      },
+      "secondary_resources_used": {
+        "data_sources": [
+          "Existing systematic reviews on catatonia treatment and epidemiology",
+          "Primary literature (RCTs, observational studies, case series, case reports)",
+          "Cochrane reviews (e.g., Zaman et al., 2019 on benzodiazepines)",
+          "Meta-analyses (e.g., Leroy et al., 2018 on ECT; Solmi et al., 2018 on prevalence)",
+          "Electronic healthcare record databases cited in secondary analyses (e.g., Rogers et al., 2021)",
+          "DSM-5-TR and ICD-11 diagnostic criteria",
+          "Existing national and international clinical guidelines (NICE TA59, APA, WFSBP)"
+        ],
+        "software_used": [
+          "None explicitly mentioned"
+        ],
+        "methods_used": [
+          "Systematic review synthesis",
+          "Evidence grading (Shekelle et al. 1999 schema)",
+          "Expert consensus process",
+          "Meta-analysis results (referenced, not conducted de novo)",
+          "Cluster analysis (referenced from Peralta and Cuesta, 2001)",
+          "Standardised mean difference calculation (referenced from Leroy et al., 2018)"
+        ]
+      },
+      "availability_signals": {
+        "data_availability": "No new data produced; references existing published datasets and healthcare records studies.",
+        "software_availability": "No software produced. Reference made to freely available BFCRS training resources at https://bfcrs.urmc.edu (third-party resource).",
+        "methods_availability": "Evidence-grading schema fully documented in Table 1. Clinical algorithms and recommendations documented in Figure 1 and Supplemental Materials 1\u20133."
+      },
+      "novelty_phrases": [],
+      "confidence": "high"
+    }
+  }
+]

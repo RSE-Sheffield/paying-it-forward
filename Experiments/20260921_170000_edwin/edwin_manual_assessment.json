@@ -1,0 +1,302 @@
+[
+    {
+        "reviewer": "edwin",
+        "category": "S3D3",
+        "reasoning": "There is no meaninful software or data used in the research. It is largely a discussion around schizophrenia. ",
+        "pmid": "38110704",
+        "pmcid": "PMC10575791",
+        "field": "neuroscience",
+        "title": "Schizophrenia: from neurochemistry to circuits, symptoms and treatments.",
+        "year": "2024"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D2",
+        "reasoning": "Existing from existing systematic reviews and literature was used as the data. The study then manually analyses the data with human experts. No significant software was used or generated. Although recommendations are made, the study does not generate new data",
+        "pmid": "37039129",
+        "pmcid": "PMC10101189",
+        "field": "pharma",
+        "title": "Evidence-based consensus guidelines for the management of catatonia: Recommendations from the British Association for Psychopharmacology.",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S1D1",
+        "reasoning": "The studies main output is generating a national scale geodatabase of philippe river systems. Clearly data is generated. There is also a small arc gis web application for viewing the data which I also think means software is generated.",
+        "pmid": "36888610",
+        "pmcid": "PMC9994713",
+        "field": "ecology",
+        "title": "National-scale geodatabase of catchment characteristics in the Philippines for river management applications",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S1D2",
+        "reasoning": "Software tool for generated graphs. Used synthetic data to test the tool but doesn't publish any data of significance.",
+        "pmid": "37368896",
+        "pmcid": "PMC10298802",
+        "field": "methods-paper",
+        "title": "Graph drawing using Jaya",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D3",
+        "reasoning": "Study discusses a protocol for clinic trial. I don't think protocol fits into either data or software and therefore i determined the study didn't meaningfully use either software or data",
+        "pmid": "37590277",
+        "pmcid": "PMC10434917",
+        "field": "clinical-trial",
+        "title": "Emotion regulation in children (ERiC): A protocol for a randomised clinical trial to evaluate the clinical and cost effectiveness of Mentalization Based Treatment (MBT) vs Treatment as Usual for school-age children with mixed emotional and behavioural difficulties",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D1",
+        "reasoning": "The data collects data as part of a survey. It isn't clear if this data is published or made available to people. Microsoft excel was used for  data collection but I don't consider this significant enough to warrant software use. Likewise with survey monkey for collecting survey data.   ",
+        "pmid": "37396047",
+        "pmcid": "PMC10312078",
+        "field": "genomics-uk",
+        "title": "Competencies of the UK nursing and midwifery workforce to mainstream genomics in the National Health Service: the ongoing gap between perceived importance and confidence in genomics",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D2",
+        "reasoning": "Although the article is about machine learning, so software is used or created. Instead, it assess the scope of existing research in the domain of machine learning.",
+        "pmid": "37193558",
+        "pmcid": "PMC10088622",
+        "field": "ml-uk",
+        "title": "Innovative feature-driven machine learning and deep learning for finance, education, and healthcare",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S2D3",
+        "reasoning": "The study collected MRI images (and other medical data) and then processed them to make findings. Its not clear where or how the data is published but they did collect it. ",
+        "pmid": "37102792",
+        "pmcid": "PMC10230387",
+        "field": "epidemiology-uk",
+        "title": "Isotoxic dose escalated radiotherapy for glioblastoma based on diffusion-weighted MRI and tumor control probability—an in-silico study",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S2D2",
+        "reasoning": "This was a difficult one. Ultimately decided that a digital workflow was developed rather than a software, therefore S2. Difficult to say whether data was created but I don't think so.  ",
+        "pmid": "37854674",
+        "pmcid": "PMC10579566",
+        "field": "immunology-uk",
+        "title": "Microenvironmental immune cell alterations across the spectrum of nodular lymphocyte predominant Hodgkin lymphoma and T-cell/histiocyte-rich large B-cell lymphoma",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S1D1",
+        "reasoning": "Data was collected and a neural network code was written (although not shared) to analysis it",
+        "pmid": "37930996",
+        "pmcid": "PMC10627462",
+        "field": "methods-uk",
+        "title": "Introducing effective parameters for predicting job burnout using a self-organizing method based on group method of data handling neural network",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D1",
+        "reasoning": "Crstallography data was deposited into the protein data bank, meaning data was generated. I couldn't see any mention of software used at all. ",
+        "pmid": "37186857",
+        "pmcid": "PMC10214187",
+        "field": "biochem-1",
+        "title": "Design of rigid protein–protein interaction inhibitors enables targeting of undruggable Mcl-1",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D1",
+        "reasoning": "Trial that recorded the impact of community health workers on mental health. Don't see any serious mention of sfotware and not counting some statistical analysis as serious software use",
+        "pmid": "36862754",
+        "pmcid": "PMC9980736",
+        "field": "medicine-trial",
+        "title": "The effect of supervision on community health workers’ effectiveness with households in rural South Africa: A cluster randomized controlled trial",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S2D2",
+        "reasoning": "Analysis of UK BioBank data using existing software. There is mention of multivariable Poisson models, but that to me is more statistical analysis than creating software. ",
+        "pmid": "38100737",
+        "pmcid": "PMC10723831",
+        "field": "medicine-cohort",
+        "title": "Phenotypes and rates of cancer-relevant symptoms and tests in the year before cancer diagnosis in UK Biobank and CPRD Gold",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D3",
+        "reasoning": "A discussion piece. No mention of data or software throughout. ",
+        "pmid": "37388662",
+        "pmcid": "PMC10300435",
+        "field": "psychology-1",
+        "title": "Decolonising the psychology curriculum: a perspective",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "Study creates a climate dataset. From the software perspective, they publish r code for 'generating the plots in this paper, for reading in all files and extracting desired information, and for the forward modeling'. I think this qualifies as producing software because it allows the user to regenerate this dataset.",
+        "reasoning": "S1D1",
+        "pmid": "37353567",
+        "pmcid": "PMC10290071",
+        "field": "environ-1",
+        "title": "DOCU-CLIM: A global documentary climate dataset for climate reconstructions",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S1D1",
+        "reasoning": "Both code and data generated and published.",
+        "pmid": "37933221",
+        "pmcid": "PMC10629823",
+        "field": "environ-2",
+        "title": "100 years of anthropogenic impact causes changes in freshwater functional biodiversity",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D3",
+        "reasoning": "Article that provides an overview of BBB imaging. No significant data or software is used as part of the article.",
+        "pmid": "37139088",
+        "pmcid": "PMC10150073",
+        "field": "neuro-empirical",
+        "title": "Imaging blood-brain barrier dysfunction: A state-of-the-art review from a clinical perspective",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S2D1",
+        "reasoning": "Primary data collection is done via a survey. Logistic regression and Generalised Structural equation modelling waas performed with STATA which I intepretated as using software ",
+        "pmid": "37351094",
+        "pmcid": "PMC10282756",
+        "field": "immunology-2",
+        "title": "Is knowledge about COVID-19 associated with willingness to receive vaccine, vaccine uptake, and vaccine booster uptake in rural Malang, Indonesia?",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "",
+        "reasoning": "",
+        "pmid": "37359515",
+        "pmcid": "PMC10285485",
+        "field": "genetics-2",
+        "title": "Genetic insights into immune mechanisms of Alzheimer’s and Parkinson’s disease",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D3",
+        "reasoning": "Review of key pieces of literature in the domain. Although we could consider literature as data, I didn't here because it wasn't a systematic analysis of the literature, so therefore more of a discussion piece. ",
+        "pmid": "36911683",
+        "pmcid": "PMC9995591",
+        "field": "micro-1",
+        "title": "MAIT cells and the microbiome",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S1D2",
+        "reasoning": "Creating and training a machine learning model on existing dataset. Doesn't seem to publish software but they claim to have written the code.",
+        "pmid": "37113474",
+        "pmcid": "PMC10127123",
+        "field": "cs-deep",
+        "title": "Exploring Healthy Retinal Aging with Deep Learning",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S1D2",
+        "reasoning": "Natural language processing study where although data is synthetically generated at times, its not the main focus of the study. Software is generated and provided. ",
+        "pmid": "37257754",
+        "pmcid": "PMC11932972",
+        "field": "cs-nlp",
+        "title": "Theory-Driven Analysis of Natural Language Processing Measures of Thought Disorder Using Generative Language Modeling",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D1",
+        "reasoning": "Survey of surgical site infections. Although software is used to do the survey, its generic software. Liekwise, the analysis of the data is standard statistical measures. ",
+        "pmid": "37818209",
+        "pmcid": "PMC10560728",
+        "field": "health-survey",
+        "title": "PRESS survey: PREvention of surgical site infection—a global pan-specialty survey of practice protocol",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D1",
+        "reasoning": "Clinical study. Data was collected as part of the study and although statistical analysis was done, (least squares, ANOVA), they seemed pretty out the box statistical methods.",
+        "pmid": "37154682",
+        "pmcid": "PMC10269561",
+        "field": "pharma-2",
+        "title": "Absence of Clinically Meaningful Drug-Drug Interactions with Rezafungin: Outcome of Investigations",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D2",
+        "reasoning": "Anaylsis of the biobank dataset. No mention of software anywhere. ",
+        "pmid": "36845047",
+        "pmcid": "PMC9950547",
+        "field": "cancer-1",
+        "title": "Operationalisation of a standardised scoring system to assess adherence to the World Cancer Research Fund/American Institute for Cancer Research cancer prevention recommendations in the UK biobank",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D3",
+        "reasoning": "Literature review of cardiovascular risk prediction literature. No software or data used. Not counting literature as data. ",
+        "pmid": "37497700",
+        "pmcid": "PMC10636798",
+        "field": "cardio-1",
+        "title": "Appraisal of Cardiovascular Risk Factors, Biomarkers, and Ocular Imaging in Cardiovascular Risk Prediction",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S2D2",
+        "reasoning": "Analysis of google trend data using a piece of software called Joinpoint Regression Programme. Pehaps this could be considered S3 as it might be standard statistical measures. ",
+        "pmid": "37052999",
+        "pmcid": "PMC10141308",
+        "field": "public-h-1",
+        "title": "Online Health Information Seeking for Mpox in Endemic and Nonendemic Countries: Google Trends Study",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D1",
+        "reasoning": "Data collection of dental delivery in covid pandemic. No serious software mentioned.",
+        "pmid": "37368901",
+        "pmcid": "PMC10298780",
+        "field": "dental-1",
+        "title": "Effect of COVID-19 on dental service delivery in Fiji: Perspective of Dental Officers (Dos) and Dental Managers (DMs)",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S3D2",
+        "reasoning": "Systematic review. D2 because its a study of the literature which is the data in this case. Software is mentioned to do the review but I'm determining its not specialised enough to be considered S2. ",
+        "pmid": "37022989",
+        "pmcid": "PMC10079135",
+        "field": "nutrition-1",
+        "title": "A systematic review and meta-analysis of adolescent nutrition in Ethiopia: Transforming adolescent lives through nutrition (TALENT) initiative",
+        "year": "2023"
+    },
+    {
+        "reviewer": "edwin",
+        "category": "S2D1",
+        "reasoning": "Data collected from human participants and processed by existing commerical software. There is significant contributions from software in both the hardware and processing the signals recorded. ",
+        "pmid": "38144895",
+        "pmcid": "PMC10740205",
+        "field": "pediatric-1",
+        "title": "Children with developmental coordination disorder have less variable motor unit firing rate characteristics across contractions compared to typically developing children",
+        "year": "2023"
+    }
+]

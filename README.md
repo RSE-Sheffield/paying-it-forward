@@ -1,7 +1,14 @@
 # paying-it-forward
 
-How are research outputs changing in the age of AI?
+**How are research outputs changing in the age of AI?**
 
+This project aims to build a metric or set of criteria that describes whether a piece of research generates new research artefacts and what kind of artefacts are produced.
+
+For this project, we have limited the scope to only software and data. Arguably, there are many types of research artefact such as a new theoretical methodology, hardware or protocols.
+
+![Research Output Taxonomy](research_output_taxonomy.png)
+
+## Spike 0
 
 Spike 0 (`spikes/2026-05-llm-cost/`) tested classification cost and schema
 on 30 UK papers with frontier LLMs (write-up:
@@ -10,7 +17,7 @@ on 30 UK papers with frontier LLMs (write-up:
 dataset of papers into S\*D\* categories, one run per invocation, with
 results collected under `Experiments/`.
 
-## Getting the data
+###  Getting the data
 
 The paper corpus isn't committed (mixed licences). Rebuild it from
 `spikes/2026-05-llm-cost/papers_manifest.csv`:

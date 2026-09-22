@@ -72,6 +72,26 @@ Useful flags:
 - `--num-ctx` — context window size in tokens for every request, Ollama provider only (default `262144`)
 - `--name` — a label for this run, stored in `run.json`
 
+## Analysis write-up
+
+[`analysis/classification-reliability.md`](analysis/classification-reliability.md)
+is a statistical read of everything currently under `Experiments/` — how
+consistent each configuration is with itself, how well it agrees with the manual
+pass, where the disagreement concentrates, and what full text actually buys.
+Regenerate its figures and statistics with
+`python3 analysis/analyse_experiments.py`.
+
+## Exploring the results
+
+`dashboard/index.html` is a self-contained page for browsing every run in
+`Experiments/`. It groups runs into *configurations* — one model over one kind
+of input — and lets you compare the category each configuration settles on per
+paper, how much a configuration disagrees with its own repeats, the reasoning
+behind any individual judgement, and all of it against the manual human pass.
+Open it directly in a browser; rebuild it with
+`python3 dashboard/build_dashboard.py` after adding a run. See
+[`dashboard/README.md`](dashboard/README.md).
+
 ### 3. Find the results
 
 Each run creates a new timestamped folder under `Experiments/`:

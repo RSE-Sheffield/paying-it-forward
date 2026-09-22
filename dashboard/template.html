@@ -1,0 +1,1907 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paying It Forward — Classification Results</title>
+<style>
+:root {
+  color-scheme: light;
+  --page:           #f9f9f7;
+  --surface-1:      #fcfcfb;
+  --surface-2:      #f2f1ed;
+  --text-primary:   #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted:     #898781;
+  --grid:           #e1e0d9;
+  --baseline:       #c3c2b7;
+  --border:         rgba(11,11,11,0.10);
+  --series-1:       #2a78d6;  /* configuration colour slots, assigned */
+  --series-2:       #eb6834;  /* in configuration order by the build      */
+  --series-3:       #1baf7a;
+  --series-4:       #eda100;
+  --series-5:       #e87ba4;
+  --good:           #0ca30c;
+  --critical:       #d03b3b;
+  --warning:        #fab219;
+  --ramp-0: #cde2fb; --ramp-1: #b7d3f6; --ramp-2: #9ec5f4; --ramp-3: #6da7ec;
+  --ramp-4: #3987e5; --ramp-5: #256abf; --ramp-6: #184f95;
+  --ramp-ink-lo: #0b0b0b;  /* ink on ramp steps 0-4 */
+  --ramp-ink-hi: #ffffff;  /* ink on ramp steps 5-6 */
+  --shadow: 0 1px 2px rgba(11,11,11,0.05), 0 4px 12px rgba(11,11,11,0.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page:           #0d0d0d;
+    --surface-1:      #1a1a19;
+    --surface-2:      #232322;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --grid:           #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --series-1:       #3987e5;
+    --series-2:       #d95926;
+    --series-3:       #199e70;
+    --series-4:       #c98500;
+    --series-5:       #d55181;
+    --ramp-0: #0d366b; --ramp-1: #104281; --ramp-2: #184f95; --ramp-3: #1c5cab;
+    --ramp-4: #256abf; --ramp-5: #2a78d6; --ramp-6: #3987e5;
+    --ramp-ink-lo: #ffffff;
+    --ramp-ink-hi: #0b0b0b;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page:           #0d0d0d;
+  --surface-1:      #1a1a19;
+  --surface-2:      #232322;
+  --text-primary:   #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted:     #898781;
+  --grid:           #2c2c2a;
+  --baseline:       #383835;
+  --border:         rgba(255,255,255,0.10);
+  --series-1:       #3987e5;
+  --series-2:       #d95926;
+  --series-3:       #199e70;
+  --series-4:       #c98500;
+  --series-5:       #d55181;
+  --ramp-0: #0d366b; --ramp-1: #104281; --ramp-2: #184f95; --ramp-3: #1c5cab;
+  --ramp-4: #256abf; --ramp-5: #2a78d6; --ramp-6: #3987e5;
+  --ramp-ink-lo: #ffffff;
+  --ramp-ink-hi: #0b0b0b;
+  --shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--page);
+  color: var(--text-primary);
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+h1 { font-size: 20px; }
+h2 { font-size: 16px; }
+h3 { font-size: 14px; }
+h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 600; }
+p { margin: 0 0 10px; }
+a { color: var(--series-1); }
+button { font: inherit; color: inherit; }
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 16px 64px; }
+.muted { color: var(--text-muted); }
+.secondary { color: var(--text-secondary); }
+.num { font-variant-numeric: tabular-nums; }
+.hidden { display: none !important; }
+
+/* ---------- header ---------- */
+header.top {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-1);
+  position: sticky; top: 0; z-index: 30;
+}
+.top-inner { max-width: 1280px; margin: 0 auto; padding: 14px 16px; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+.top-inner .sub { font-size: 12px; color: var(--text-muted); }
+.top-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+.btn {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;
+  padding: 5px 10px; cursor: pointer; font-size: 12px; color: var(--text-secondary);
+}
+.btn:hover { background: var(--surface-2); color: var(--text-primary); }
+.btn[aria-pressed="true"] { background: var(--surface-2); color: var(--text-primary); border-color: var(--baseline); }
+
+/* ---------- filter row ---------- */
+.filters {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px 14px; margin: 16px 0; box-shadow: var(--shadow);
+}
+.filters-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+#config-rows { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; }
+.config-toggle {
+  display: flex; gap: 9px; align-items: flex-start; text-align: left; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--surface-1);
+  padding: 9px 11px; color: var(--text-secondary);
+}
+.config-toggle:hover { border-color: var(--baseline); }
+.config-toggle .swatch { margin-top: 4px; opacity: 0.3; }
+.config-toggle[aria-pressed="true"] { color: var(--text-primary); }
+.config-toggle[aria-pressed="true"] .swatch { opacity: 1; }
+.config-toggle[aria-pressed="true"].c1 { border-color: var(--series-1); background: color-mix(in srgb, var(--series-1) 8%, var(--surface-1)); }
+.config-toggle[aria-pressed="true"].c2 { border-color: var(--series-2); background: color-mix(in srgb, var(--series-2) 8%, var(--surface-1)); }
+.config-toggle[aria-pressed="true"].c3 { border-color: var(--series-3); background: color-mix(in srgb, var(--series-3) 8%, var(--surface-1)); }
+.config-toggle[aria-pressed="true"].c4 { border-color: var(--series-4); background: color-mix(in srgb, var(--series-4) 8%, var(--surface-1)); }
+.config-toggle[aria-pressed="true"].c5 { border-color: var(--series-5); background: color-mix(in srgb, var(--series-5) 8%, var(--surface-1)); }
+.config-toggle[data-partial="true"] { border-style: dashed; }
+.config-toggle .nm { font-weight: 600; font-size: 13px; display: block; line-height: 1.3; }
+.config-toggle .bl { font-size: 11px; color: var(--text-muted); display: block; margin-top: 2px; }
+.arm-key { display: flex; align-items: center; gap: 7px; min-width: 190px; padding-top: 3px; }
+.swatch { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.arm-key .nm { font-weight: 600; font-size: 13px; }
+.arm-key .bl { font-size: 11px; color: var(--text-muted); display: block; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+
+.chip {
+  border: 1px solid var(--border); background: var(--surface-1); border-radius: 999px;
+  padding: 3px 10px; font-size: 12px; cursor: pointer; color: var(--text-secondary);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.chip:hover { border-color: var(--baseline); }
+.chip[aria-pressed="true"] { color: var(--text-primary); font-weight: 600; }
+.chip[aria-pressed="true"].c1 { border-color: var(--series-1); background: color-mix(in srgb, var(--series-1) 12%, var(--surface-1)); }
+.chip[aria-pressed="true"].c2 { border-color: var(--series-2); background: color-mix(in srgb, var(--series-2) 12%, var(--surface-1)); }
+.chip[aria-pressed="true"].c3 { border-color: var(--series-3); background: color-mix(in srgb, var(--series-3) 12%, var(--surface-1)); }
+.chip[aria-pressed="true"].c4 { border-color: var(--series-4); background: color-mix(in srgb, var(--series-4) 12%, var(--surface-1)); }
+.chip[aria-pressed="true"].c5 { border-color: var(--series-5); background: color-mix(in srgb, var(--series-5) 12%, var(--surface-1)); }
+
+/* ---------- tabs ---------- */
+nav.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 18px; overflow-x: auto; }
+nav.tabs button {
+  background: none; border: 0; border-bottom: 2px solid transparent; padding: 9px 14px;
+  cursor: pointer; color: var(--text-secondary); font-size: 13px; white-space: nowrap;
+}
+nav.tabs button:hover { color: var(--text-primary); }
+nav.tabs button[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--series-1); font-weight: 600; }
+
+/* ---------- cards & layout ---------- */
+.card {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; box-shadow: var(--shadow);
+}
+.card + .card { margin-top: 16px; }
+.card-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; flex-wrap: wrap; }
+.card-head .btn { margin-left: auto; }
+.card-note { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+.card-row {
+  display: grid; gap: 16px; margin-bottom: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(500px, 100%), 1fr));
+  align-items: start;
+}
+.card-row > .card { margin-top: 0; min-width: 0; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+
+/* ---------- stat tiles ---------- */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px; box-shadow: var(--shadow); }
+.tile .lab { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 600; }
+.tile .val { font-size: 27px; line-height: 1.15; margin-top: 5px; font-weight: 600; }
+.tile .foot { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+/* ---------- legend ---------- */
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
+.legend .item { display: flex; align-items: center; gap: 6px; }
+.legend .rect { width: 12px; height: 9px; border-radius: 2px; }
+
+/* ---------- bar charts ---------- */
+.bars { display: flex; flex-direction: column; gap: 9px; max-width: 820px; }
+.bar-row { display: grid; grid-template-columns: var(--rl-w, 62px) 1fr; gap: 10px; align-items: center; }
+.bar-row .rl { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--text-secondary); text-align: right; overflow-wrap: anywhere; line-height: 1.3; }
+.bar-row .rl b { color: var(--text-primary); font-weight: 600; }
+.bar-stack { display: flex; flex-direction: column; gap: 2px; }
+.bar-line { display: flex; align-items: center; gap: 7px; min-height: 13px; }
+.bar-track { flex: 1; min-width: 0; position: relative; height: 13px; }
+.bar-fill { height: 100%; border-radius: 0 4px 4px 0; min-width: 2px; }
+.bar-fill.zero { background: none !important; }
+.bar-val { font-size: 11px; font-variant-numeric: tabular-nums; color: var(--text-secondary); min-width: 52px; white-space: nowrap; flex: 0 0 auto; }
+.bar-seg-row { display: flex; gap: 2px; height: 13px; align-items: stretch; }
+.bar-seg { border-radius: 0; }
+.bar-seg:last-child { border-radius: 0 4px 4px 0; }
+
+/* ---------- matrices ---------- */
+.matrix { display: inline-grid; gap: 2px; font-variant-numeric: tabular-nums; }
+.matrix .hd { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; padding: 2px 4px; text-align: center; }
+.matrix .hd.rowhd { justify-content: flex-end; padding-right: 6px; }
+.matrix .cell {
+  min-width: 54px; height: 44px; border-radius: 4px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; font-size: 13px; cursor: pointer;
+  border: 0; background: var(--surface-2); color: var(--text-secondary); padding: 0;
+}
+.matrix .cell .pct { font-size: 10px; opacity: 0.85; }
+.matrix .cell:hover { outline: 2px solid var(--baseline); outline-offset: -2px; }
+.matrix .cell[aria-pressed="true"] { outline: 2px solid var(--text-primary); outline-offset: -2px; }
+.matrix.small .cell { min-width: 38px; height: 32px; font-size: 12px; }
+.matrix.tiny { gap: 2px; }
+.matrix.tiny .cell { min-width: 0; height: 22px; font-size: 10px; border-radius: 3px; }
+.matrix.tiny .hd { font-size: 9px; padding: 1px 1px; letter-spacing: -0.02em; }
+.matrix.tiny .hd.rowhd { padding-right: 3px; }
+.panel-grid {
+  display: grid; gap: 14px 14px;
+  grid-template-columns: repeat(auto-fit, minmax(var(--panel-min, 270px), 1fr));
+}
+.panel { display: grid; grid-template-rows: subgrid; grid-row: span 2; gap: 0; min-width: 0; }
+@supports not (grid-template-rows: subgrid) {
+  .panel { grid-row: auto; grid-template-rows: auto auto; }
+  .panel-cap { min-height: 46px; }
+}
+.panel-cap { display: flex; gap: 6px; align-items: flex-start; font-size: 12px; padding-bottom: 6px; align-self: end; }
+.panel-cap .rect { width: 12px; height: 9px; border-radius: 2px; flex: none; margin-top: 3px; }
+.panel-cap .nm { display: block; color: var(--text-primary); font-weight: 600; line-height: 1.3; }
+.panel-cap .sub { display: block; color: var(--text-muted); font-size: 11px; }
+.matrix-frame { display: inline-flex; gap: 5px; align-items: stretch; max-width: 100%; }
+.matrix-frame > div:last-child { display: flex; flex-direction: column; min-width: 0; }
+.matrix-frame.grow { display: flex; }
+.matrix-frame.grow > div:last-child { flex: 1; }
+.axis-x, .axis-y {
+  font-size: 10px; color: var(--text-muted); letter-spacing: 0.04em;
+  text-transform: uppercase; font-weight: 600; white-space: nowrap;
+}
+.axis-x { text-align: center; padding-bottom: 3px; }
+.axis-y { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; padding-top: 14px; }
+.matrix-frame.compact .axis-x, .matrix-frame.compact .axis-y { font-size: 9px; letter-spacing: 0.02em; }
+.ramp-legend { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); margin-top: 10px; flex-wrap: wrap; }
+.ramp-legend .sw { width: 20px; height: 9px; border-radius: 2px; }
+
+/* ---------- tables ---------- */
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+.card-row table th, .card-row table td { padding: 7px 6px; }
+.card-row table th:first-child, .card-row table td:first-child { padding-left: 0; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tbody tr:hover { background: var(--surface-2); }
+.scroll-x { overflow-x: auto; }
+
+/* ---------- category code pill ---------- */
+.code {
+  display: inline-block; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 12px;
+  padding: 1px 7px; border-radius: 5px; background: var(--surface-2); border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.code.none { color: var(--text-muted); font-weight: 400; }
+.code.tied { border-style: dashed; }
+.match { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; }
+.match .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.match.yes { color: var(--good); } .match.yes .dot { background: var(--good); }
+.match.no { color: var(--critical); } .match.no .dot { background: var(--critical); }
+.match.part { color: var(--text-secondary); } .match.part .dot { background: var(--warning); }
+
+/* ---------- paper list / detail ---------- */
+.split { display: grid; grid-template-columns: minmax(260px, 360px) minmax(0, 1fr); gap: 16px; align-items: start; }
+.split > * { min-width: 0; }
+.grid2 > *, .grid3 > * { min-width: 0; }
+@media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+.paper-list { max-height: 72vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-1); }
+.paper-item { display: block; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--grid); padding: 10px 12px; cursor: pointer; }
+.paper-item:hover { background: var(--surface-2); }
+.paper-item[aria-pressed="true"] { background: color-mix(in srgb, var(--series-1) 9%, var(--surface-1)); box-shadow: inset 3px 0 0 var(--series-1); }
+.paper-item .t { font-size: 13px; line-height: 1.35; margin-bottom: 4px; }
+.paper-item .m { font-size: 11px; color: var(--text-muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.scatter { display: grid; grid-template-columns: 14px 20px 1fr; gap: 0 6px; padding-top: 9px; }
+.scatter-ylab {
+  writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; height: 200px;
+  font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+.scatter-y { position: relative; height: 200px; }
+.scatter-y span {
+  position: absolute; right: 0; transform: translateY(50%);
+  font-size: 11px; color: var(--text-muted); line-height: 1;
+}
+.scatter-plot {
+  position: relative; height: 200px; margin-right: 12px;
+  border-bottom: 1px solid var(--baseline);
+}
+.scatter-grid { position: absolute; left: 0; right: 0; height: 1px; background: var(--grid); }
+.dot-hit {
+  position: absolute; width: 26px; height: 26px; transform: translate(-50%, 50%);
+  background: none; border: 0; padding: 0; cursor: pointer;
+}
+.dot {
+  position: absolute; inset: 0; margin: auto; width: 9px; height: 9px;
+  border-radius: 50%; background: var(--series-1);
+  box-shadow: 0 0 0 2px var(--surface-1);
+}
+.dot-hit:hover .dot, .dot-hit:focus-visible .dot { width: 12px; height: 12px; }
+.dot-hit[aria-pressed="true"] .dot {
+  width: 13px; height: 13px;
+  box-shadow: 0 0 0 2px var(--surface-1), 0 0 0 4px var(--series-1);
+}
+.scatter-xlab {
+  display: flex; justify-content: space-between; gap: 10px;
+  margin: 6px 12px 0 40px; font-size: 11px; color: var(--text-secondary);
+}
+.mini-stats { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
+.mini-stat {
+  display: flex; align-items: center; gap: 7px; padding: 5px 9px;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--surface-1);
+}
+.mini-stat .swatch { flex: none; }
+.mini-stat .lab {
+  display: block; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-muted); font-weight: 600; line-height: 1.4; white-space: nowrap;
+}
+.mini-stat .val { font-size: 14px; font-weight: 600; line-height: 1.2; }
+.mini-stat .sub { font-size: 11px; color: var(--text-muted); }
+.spread { display: inline-flex; align-items: center; gap: 5px; flex: none; }
+.spread-bar {
+  width: 26px; height: 4px; border-radius: 2px; background: var(--surface-2);
+  overflow: hidden; flex: none;
+}
+.spread-bar > span { display: block; height: 100%; background: var(--series-1); border-radius: 2px; }
+.spread .num { font-size: 11px; color: var(--text-muted); }
+.list-head { position: sticky; top: 0; z-index: 2; background: var(--surface-1); border-radius: 12px 12px 0 0; }
+.sort-select {
+  width: 100%; border: 0; border-bottom: 1px solid var(--grid); background: var(--surface-1);
+  font: inherit; font-size: 12px; color: var(--text-secondary); padding: 6px 12px; cursor: pointer;
+}
+.sort-select:focus { outline: 2px solid var(--series-1); outline-offset: -2px; }
+.paper-item .t { display: flex; gap: 8px; align-items: baseline; justify-content: space-between; }
+.search { width: 100%; padding: 8px 12px; border: 0; border-bottom: 1px solid var(--grid); background: var(--surface-1); font: inherit; color: inherit; border-radius: 12px 12px 0 0; position: sticky; top: 0; z-index: 2; }
+.search:focus { outline: 2px solid var(--series-1); outline-offset: -2px; }
+.paper-list .search { position: static; border-radius: 12px 12px 0 0; }
+
+/* ---------- judgement rows ---------- */
+.jrow { border-bottom: 1px solid var(--grid); }
+.jrow:last-child { border-bottom: 0; }
+.jhead { display: flex; gap: 10px; align-items: center; width: 100%; background: none; border: 0; padding: 9px 4px; cursor: pointer; text-align: left; }
+.jhead:hover { background: var(--surface-2); }
+.jhead .run-nm { font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.jhead .snip { font-size: 12px; color: var(--text-muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.jhead .caret { color: var(--text-muted); font-size: 11px; flex: none; }
+.jbody { padding: 2px 4px 14px 4px; font-size: 13px; color: var(--text-secondary); max-width: 78ch; }
+.jbody .meta { margin-top: 8px; font-size: 11px; color: var(--text-muted); display: flex; gap: 12px; flex-wrap: wrap; }
+.vote-strip { display: inline-flex; gap: 2px; flex: 0 0 auto; }
+.vote-cell {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 42px; height: 20px; border-radius: 3px; font-size: 10px; font-weight: 600;
+  font-variant-numeric: tabular-nums; background: var(--surface-2); color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.vote-cell.modal { color: #0b0b0b; border-color: transparent; }
+.vote-strip .vote-cell:first-child { border-radius: 5px 3px 3px 5px; }
+.vote-strip .vote-cell:last-child { border-radius: 3px 5px 5px 3px; }
+.lb-rank { min-width: 26px; color: var(--text-muted); font-size: 12px; text-align: right; }
+.lb-score { min-width: 42px; font-weight: 600; font-size: 12px; }
+.lb-bar {
+  flex: 0 0 132px; height: 12px; border-radius: 4px; background: var(--surface-2);
+  display: inline-flex; gap: 1px; overflow: hidden;
+}
+.lb-seg:first-child { border-radius: 4px 0 0 4px; }
+.lb-seg:last-child { border-radius: 0 4px 4px 0; }
+.warnbox { border-left: 3px solid var(--warning); padding: 2px 0 2px 10px; margin-top: 6px; font-size: 12px; color: var(--text-secondary); }
+
+/* ---------- run cards ---------- */
+.run-card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
+.run-card .hd { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; font-size: 12px; margin-top: 12px; }
+.kv dt { color: var(--text-muted); }
+.kv dd { margin: 0; color: var(--text-secondary); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.strip { display: flex; gap: 2px; height: 10px; margin-top: 12px; border-radius: 3px; overflow: hidden; }
+
+/* ---------- tooltip ---------- */
+#tip {
+  position: fixed; z-index: 100; pointer-events: none; opacity: 0;
+  background: var(--surface-1); border: 1px solid var(--baseline); border-radius: 8px;
+  padding: 8px 10px; font-size: 12px; box-shadow: var(--shadow); max-width: 300px;
+  transition: opacity 90ms ease;
+}
+#tip .tv { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+#tip .tl { color: var(--text-secondary); }
+#tip .trow { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+#tip .key { width: 12px; height: 2px; border-radius: 1px; flex: none; }
+
+.linkish { background: none; border: 0; padding: 0; text-align: left; cursor: pointer;
+  color: var(--text-primary); font-size: 13px; line-height: 1.4; }
+.linkish:hover { color: var(--series-1); text-decoration: underline; }
+.empty { padding: 34px 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
+details.raw > summary { cursor: pointer; font-size: 12px; color: var(--text-muted); padding: 4px 0; }
+details.raw pre { background: var(--surface-2); border-radius: 8px; padding: 10px; overflow-x: auto; font-size: 11px; margin: 6px 0 0; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <h1>Paying It Forward</h1>
+    <span class="sub" id="hdr-sub"></span>
+    <div class="top-actions">
+      <button class="btn" id="theme-btn" type="button">Theme</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="filters" aria-label="Run selection">
+    <div class="filters-head">
+      <h4 style="margin:0">Configurations in view</h4>
+      <span class="sub muted" id="sel-count"></span>
+      <div style="margin-left:auto; display:flex; gap:6px;">
+        <button class="btn" data-preset="all" type="button">All runs</button>
+        <button class="btn" data-preset="models" type="button">Models only</button>
+        <button class="btn" data-preset="none" type="button">Clear</button>
+      </div>
+    </div>
+    <div id="config-rows"></div>
+  </section>
+
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="view"></main>
+</div>
+
+<div id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script id="payload" type="application/json">__DASHBOARD_DATA__</script>
+<script>
+"use strict";
+const DATA = JSON.parse(document.getElementById("payload").textContent);
+const CATS = DATA.categories;
+const S_AXIS = ["S1", "S2", "S3"], D_AXIS = ["D1", "D2", "D3"];
+/* A configuration is one model reading one kind of input. Runs sharing a
+   configuration are repeats of each other, and the configuration — not the
+   run — is the unit of comparison everywhere on this page. */
+const CONFIGS = DATA.configs;
+const CONFIG_IDS = CONFIGS.map((c) => c.id);
+const CONFIG_BY_ID = new Map(CONFIGS.map((c) => [c.id, c]));
+const cfgOf = (id) => CONFIG_BY_ID.get(id) || {};
+const configSlot = (id) => cfgOf(id).slot || 1;
+const configColor = (id) => `var(--series-${configSlot(id)})`;
+const configLabel = (id) => cfgOf(id).label || id;
+const isHuman = (id) => !!cfgOf(id).human;
+const HUMAN_ID = (CONFIGS.find((c) => c.human) || {}).id || null;
+
+/* ---------- tiny DOM helpers (all text via textContent — data is untrusted) ---------- */
+function el(tag, attrs, kids) {
+  const n = document.createElement(tag);
+  for (const k in attrs || {}) {
+    const v = attrs[k];
+    if (v === null || v === undefined || v === false) continue;
+    if (k === "text") n.textContent = v;
+    else if (k === "style") n.style.cssText = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of [].concat(kids || [])) {
+    if (c === null || c === undefined || c === false) continue;
+    n.appendChild(typeof c === "string" || typeof c === "number" ? document.createTextNode(String(c)) : c);
+  }
+  return n;
+}
+const clear = (n) => { while (n.firstChild) n.removeChild(n.firstChild); return n; };
+const pct = (x) => (x * 100).toFixed(x >= 0.995 || x === 0 ? 0 : 1) + "%";
+const fmtNum = (n) => n === null || n === undefined ? "—" : Number(n).toLocaleString();
+
+/* ---------- shared tooltip ---------- */
+const tipEl = document.getElementById("tip");
+function showTip(ev, nodes) {
+  clear(tipEl);
+  [].concat(nodes).forEach((n) => tipEl.appendChild(n));
+  tipEl.style.opacity = "1";
+  const r = tipEl.getBoundingClientRect();
+  let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - 14;
+  tipEl.style.left = Math.max(8, x) + "px";
+  tipEl.style.top = Math.max(8, y) + "px";
+}
+const hideTip = () => { tipEl.style.opacity = "0"; };
+function hoverable(node, build) {
+  node.addEventListener("pointermove", (e) => showTip(e, build()));
+  node.addEventListener("pointerleave", hideTip);
+  node.addEventListener("focus", (e) => {
+    const r = node.getBoundingClientRect();
+    showTip({ clientX: r.left + r.width / 2, clientY: r.bottom }, build());
+  });
+  node.addEventListener("blur", hideTip);
+  return node;
+}
+const tipLine = (label, value, color) =>
+  el("div", { class: "trow" }, [
+    color ? el("span", { class: "key", style: `background:${color}` }) : null,
+    el("span", { class: "tv num", text: value }),
+    el("span", { class: "tl", text: label }),
+  ]);
+
+/* ---------- indexes ---------- */
+const RUN_BY_ID = new Map(DATA.runs.map((r) => [r.run_id, r]));
+const PAPER_BY_ID = new Map(DATA.papers.map((p) => [p.pmid, p]));
+const J_BY_PAPER = new Map();   // pmid -> Map(run_id -> judgement)
+const J_BY_RUN = new Map();     // run_id -> judgement[]
+for (const j of DATA.judgements) {
+  if (!J_BY_PAPER.has(j.pmid)) J_BY_PAPER.set(j.pmid, new Map());
+  J_BY_PAPER.get(j.pmid).set(j.run, j);
+  if (!J_BY_RUN.has(j.run)) J_BY_RUN.set(j.run, []);
+  J_BY_RUN.get(j.run).push(j);
+}
+const RUNS_BY_CONFIG = new Map(CONFIG_IDS.map((id) => [id, DATA.runs.filter((r) => r.config === id)]));
+
+/* ---------- state ---------- */
+const state = {
+  tab: "overview",
+  runs: new Set(DATA.runs.map((r) => r.run_id)),
+  paper: null,           // set from the paper list, which is sorted by spread
+  config: null,          // the configuration under the microscope on Variation
+  varSort: "spread",
+  paperSort: "spread",
+  boardSort: "best",
+  search: "",
+  tables: new Set(),          // chart ids currently showing their table twin
+  openReasons: new Set(),     // "pmid|run_id"
+};
+
+const selectedRuns = () => DATA.runs.filter((r) => state.runs.has(r.run_id));
+const selectedInConfig = (id) => selectedRuns().filter((r) => r.config === id);
+const activeConfigs = () => CONFIG_IDS.filter((id) => selectedInConfig(id).length > 0);
+
+/* ---------- stats ---------- */
+function tally(judgements) {
+  const counts = Object.fromEntries(CATS.map((c) => [c, 0]));
+  let n = 0, missing = 0;
+  for (const j of judgements) {
+    if (j.category && counts[j.category] !== undefined) { counts[j.category]++; n++; }
+    else missing++;
+  }
+  return { counts, n, missing };
+}
+/** Most-chosen category for one paper across a set of runs. */
+function consensus(pmid, runs) {
+  const byRun = J_BY_PAPER.get(pmid);
+  const votes = [];
+  for (const r of runs) {
+    const j = byRun && byRun.get(r.run_id);
+    if (j && j.category) votes.push(j.category);
+  }
+  if (!votes.length) return { category: null, count: 0, n: 0, share: 0, tied: [], votes: [] };
+  const counts = {};
+  for (const v of votes) counts[v] = (counts[v] || 0) + 1;
+  const max = Math.max(...Object.values(counts));
+  const tied = CATS.filter((c) => counts[c] === max);
+  return { category: tied[0], count: max, n: votes.length, share: max / votes.length, tied, votes, counts };
+}
+/** How many of the nine categories at least one selected run gave this paper.
+    1 means every run agreed; 9 would mean the runs used every category going. */
+function spreadOf(pmid, runs) {
+  const byRun = J_BY_PAPER.get(pmid) || new Map();
+  const votes = runs.map((r) => (byRun.get(r.run_id) || {}).category).filter(Boolean);
+  const counts = {};
+  for (const v of votes) counts[v] = (counts[v] || 0) + 1;
+  const cats = CATS.filter((c) => counts[c]);
+  return {
+    n: votes.length, counts, cats, distinct: cats.length,
+    modal: votes.length ? Math.max(...Object.values(counts)) / votes.length : 0,
+  };
+}
+
+const axisMatch = (a, b, i) => !!a && !!b && a.slice(i * 2, i * 2 + 2) === b.slice(i * 2, i * 2 + 2);
+
+/** Consensus of every paper for one configuration, plus agreement against a
+    reference configuration (normally the human pass). */
+function configSummary(config, refConfig) {
+  const runs = selectedInConfig(config);
+  const refRuns = refConfig ? selectedInConfig(refConfig) : [];
+  const rows = DATA.papers.map((p) => {
+    const c = consensus(p.pmid, runs);
+    const ref = refRuns.length ? consensus(p.pmid, refRuns) : null;
+    return {
+      pmid: p.pmid, paper: p, cons: c, ref,
+      exact: ref && c.category && ref.category ? c.category === ref.category : null,
+      sMatch: ref ? axisMatch(c.category, ref.category, 0) : null,
+      dMatch: ref ? axisMatch(c.category, ref.category, 1) : null,
+    };
+  });
+  const scored = rows.filter((r) => r.exact !== null);
+  const withVotes = rows.filter((r) => r.cons.n > 0);
+  return {
+    config, runs, rows,
+    nPapers: withVotes.length,
+    unanimous: withVotes.filter((r) => r.cons.share === 1).length,
+    exact: scored.length ? scored.filter((r) => r.exact).length / scored.length : null,
+    exactN: scored.filter((r) => r.exact).length,
+    scoredN: scored.length,
+    sAgree: scored.length ? scored.filter((r) => r.sMatch).length / scored.length : null,
+    dAgree: scored.length ? scored.filter((r) => r.dMatch).length / scored.length : null,
+  };
+}
+
+/* ---------- reusable components ---------- */
+function codePill(cat, opts) {
+  opts = opts || {};
+  if (!cat) return el("span", { class: "code none", text: opts.emptyText || "—" });
+  const cls = "code" + (opts.tied ? " tied" : "");
+  return el("span", { class: cls, title: opts.title || categoryTitle(cat), text: cat + (opts.tied ? " *" : "") });
+}
+/** "Software Generated" -> "Generated", "No Data" -> "None". */
+function shortTax(key) {
+  const label = DATA.taxonomy[key].label;
+  return /^No /.test(label) ? "None" : label.replace(/^(Software|Data) /, "");
+}
+function categoryTitle(cat) {
+  const s = DATA.taxonomy[cat.slice(0, 2)], d = DATA.taxonomy[cat.slice(2, 4)];
+  return s && d ? `${s.label} · ${d.label}` : cat;
+}
+function legend(items) {
+  return el("div", { class: "legend" }, items.map((it) =>
+    el("div", { class: "item" }, [el("span", { class: "rect", style: `background:${it.color}` }), it.label])));
+}
+/** Card with a chart / table-twin toggle. */
+function chartCard(id, title, note, renderChart, renderTable) {
+  const body = el("div");
+  const draw = () => {
+    clear(body).appendChild(state.tables.has(id) ? renderTable() : renderChart());
+    btn.textContent = state.tables.has(id) ? "Chart" : "Table";
+    btn.setAttribute("aria-pressed", state.tables.has(id));
+  };
+  const btn = el("button", { class: "btn", type: "button", onclick: () => {
+    state.tables.has(id) ? state.tables.delete(id) : state.tables.add(id);
+    draw();
+  }});
+  const card = el("div", { class: "card" }, [
+    el("div", { class: "card-head" }, [el("h2", { text: title }), btn]),
+    note ? el("div", { class: "card-note", text: note }) : null,
+    body,
+  ]);
+  draw();
+  return card;
+}
+/** A stat tile's compact cousin, for rows of many small numbers. */
+function miniStat(lab, val, sub, color) {
+  return el("div", { class: "mini-stat" }, [
+    color ? el("span", { class: "swatch", style: `background:${color}` }) : null,
+    el("span", { style: "min-width:0" }, [
+      el("span", { class: "lab", text: lab }),
+      el("span", {}, [
+        el("span", { class: "val num", text: val }),
+        sub ? el("span", { class: "sub num", text: " " + sub }) : null,
+      ]),
+    ]),
+  ]);
+}
+
+function tile(lab, val, foot) {
+  return el("div", { class: "tile" }, [
+    el("div", { class: "lab", text: lab }),
+    el("div", { class: "val", text: val }),
+    foot ? el("div", { class: "foot", text: foot }) : null,
+  ]);
+}
+function table(headers, rows) {
+  return el("div", { class: "scroll-x" }, el("table", {}, [
+    el("thead", {}, el("tr", {}, headers.map((h) =>
+      el("th", { class: h.num ? "num" : null, text: h.label || h })))),
+    el("tbody", {}, rows.map((cells) => el("tr", {}, cells.map((c) =>
+      el("td", { class: c && c.num ? "num" : null }, c && c.node ? c.node : String(c && c.text !== undefined ? c.text : c)))))),
+  ]));
+}
+const numCell = (v) => ({ num: true, text: v });
+const nodeCell = (n, isNum) => ({ node: n, num: !!isNum });
+
+/** Simple horizontal bars over an arbitrary domain, one series, one colour. */
+function simpleBars(rows, opts) {
+  opts = opts || {};
+  const max = opts.max || Math.max(1, ...rows.map((r) => r.value));
+  return el("div", { class: "bars" }, rows.map((r) => {
+    const line = el("div", { class: "bar-line", tabindex: "0" }, [
+      el("div", { class: "bar-track" },
+        el("div", { class: "bar-fill" + (r.value ? "" : " zero"),
+          style: `width:${(r.value / max) * 100}%; background:${r.color || opts.color}` })),
+      el("span", { class: "bar-val", text: opts.format ? opts.format(r.value) : String(r.value) }),
+    ]);
+    return el("div", { class: "bar-row" }, [
+      el("div", { class: "rl" }, el("b", { text: r.label })),
+      hoverable(line, () => [
+        el("div", { class: "tl", text: r.tipTitle || r.label }),
+        tipLine(opts.unit || "", opts.format ? opts.format(r.value) : String(r.value), r.color || opts.color),
+      ]),
+    ]);
+  }));
+}
+
+/** Stacked horizontal bars: one row per category, segments coloured by configuration. */
+function stackedBars(rows, segments, opts) {
+  opts = opts || {};
+  const max = Math.max(1, ...rows.map((r) => segments.reduce((a, s) => a + r.values[s.key], 0)));
+  return el("div", {}, [
+    legend(segments.map((s) => ({ color: s.color, label: s.label }))),
+    el("div", { class: "bars" }, rows.map((r) => {
+      const total = segments.reduce((a, s) => a + r.values[s.key], 0);
+      const segs = segments.filter((s) => r.values[s.key] > 0).map((s) =>
+        hoverable(el("div", { class: "bar-seg", tabindex: "0",
+          style: `width:${(r.values[s.key] / max) * 100}%; background:${s.color}` }), () => [
+          el("div", { class: "tl", text: r.tipTitle || r.label }),
+          tipLine(s.label, String(r.values[s.key]), s.color),
+        ]));
+      return el("div", { class: "bar-row" }, [
+        el("div", { class: "rl" }, el("b", { text: r.label })),
+        el("div", { class: "bar-line" }, [
+          el("div", { class: "bar-seg-row", style: "flex:1; min-width:0" }, segs),
+          el("span", { class: "bar-val", text: total ? `${total} ${total === 1 ? "run" : "runs"}` : "—" }),
+        ]),
+      ]);
+    })),
+  ]);
+}
+
+/** 3x3 S x D matrix, sequential blue ramp by count. */
+function sdMatrix(getCount, opts) {
+  opts = opts || {};
+  const vals = [];
+  for (const s of S_AXIS) for (const d of D_AXIS) vals.push(getCount(s + d));
+  // Small multiples are read against each other, so the caller can pin one
+  // scale across the set rather than letting each panel rescale itself.
+  const max = Math.max(1, opts.max || 0, ...(opts.max ? [] : vals));
+  const total = vals.reduce((a, b) => a + b, 0);
+  const axisText = (k) => opts.small ? `${k} · ${shortTax(k)}` : `${k} · ${DATA.taxonomy[k].label}`;
+  const cells = [el("div", { class: "hd" })];
+  for (const d of D_AXIS) cells.push(el("div", { class: "hd", text: axisText(d) }));
+  for (const s of S_AXIS) {
+    cells.push(el("div", { class: "hd rowhd", text: axisText(s) }));
+    for (const d of D_AXIS) {
+      const cat = s + d, v = getCount(cat);
+      const step = v === 0 ? -1 : Math.min(6, Math.round((v / max) * 6));
+      const bg = step < 0 ? "var(--surface-2)" : `var(--ramp-${step})`;
+      const ink = step < 0 ? "var(--text-muted)" : `var(--ramp-ink-${step >= 5 ? "hi" : "lo"})`;
+      const cell = el("button", {
+        class: "cell", type: "button", style: `background:${bg}; color:${ink}`,
+        "aria-pressed": opts.selected === cat ? "true" : null,
+        "aria-label": `${cat}: ${v}`,
+        onclick: opts.onclick ? () => opts.onclick(cat) : null,
+      }, [
+        el("span", { class: "num", text: String(v) }),
+        total ? el("span", { class: "pct num", text: pct(v / total) }) : null,
+      ]);
+      const extra = opts.extraTip ? opts.extraTip(cat) : null;
+      cells.push(hoverable(cell, () => [
+        el("div", { class: "tl", text: `${cat} — ${categoryTitle(cat)}` }),
+        tipLine(opts.unit || "judgements", `${v}`),
+        total ? el("div", { class: "tl", text: `${pct(v / total)} of ${total}` }) : null,
+        extra ? el("div", { class: "tl", style: "color:var(--text-muted)", text: extra }) : null,
+      ]));
+    }
+  }
+  const bare = el("div", { class: "matrix" + (opts.small ? " small" : ""),
+    style: "grid-template-columns: max-content repeat(3, 1fr)" }, cells);
+  if (opts.noAxis) return bare;
+  const framed = matrixFrame(bare, "data axis →", "← software axis", opts.small);
+  return opts.noLegend ? framed : el("div", {}, [framed, rampLegend(max, opts.unit || "judgements")]);
+}
+
+/** Wraps a matrix with a caption over the columns and a rotated one down the
+    rows, so neither axis depends on the reader remembering the card note. */
+function matrixFrame(matrix, xLabel, yLabel, compact) {
+  const grow = matrix.classList && matrix.classList.contains("panel-grid");
+  return el("div", { class: "matrix-frame" + (compact ? " compact" : "") + (grow ? " grow" : "") }, [
+    el("div", { class: "axis-y", text: yLabel }),
+    el("div", { style: "min-width:0" }, [
+      el("div", { class: "axis-x", text: xLabel }),
+      matrix,
+    ]),
+  ]);
+}
+
+function rampLegend(max, unit) {
+  return el("div", { class: "ramp-legend" }, [
+    "0", el("span", { class: "sw", style: "background:var(--surface-2)" }),
+    ...[0, 1, 2, 3, 4, 5, 6].map((i) => el("span", { class: "sw", style: `background:var(--ramp-${i})` })),
+    String(max), el("span", { class: "muted", text: unit }),
+  ]);
+}
+
+/** A run's judgement for one paper, expandable to its reasoning. */
+function judgementRow(pmid, run, j) {
+  const key = pmid + "|" + run.run_id;
+  const open = state.openReasons.has(key);
+  const head = el("button", { class: "jhead", type: "button", "aria-expanded": String(open), onclick: () => {
+    open ? state.openReasons.delete(key) : state.openReasons.add(key);
+    render();
+  }}, [
+    el("span", { class: "caret", text: open ? "▾" : "▸" }),
+    el("span", { class: "swatch", style: `background:${configColor(run.config)}; border-radius:2px` }),
+    codePill(j && j.category, { emptyText: "none" }),
+    el("span", { class: "run-nm", text: run.run_id }),
+    el("span", { class: "snip", text: open ? "" : (j && j.reasoning ? j.reasoning : "no reasoning recorded") }),
+  ]);
+  const kids = [head];
+  if (open) {
+    const meta = [];
+    if (j && j.duration_s !== undefined) meta.push(`${j.duration_s}s`);
+    if (j && j.prompt_tokens !== undefined) meta.push(`${fmtNum(j.prompt_tokens)} prompt tokens`);
+    if (j && j.output_tokens !== undefined) meta.push(`${fmtNum(j.output_tokens)} output tokens`);
+    if (j && j.reviewer) meta.push(`reviewer: ${j.reviewer}`);
+    if (j && j.truncated) meta.push("TRUNCATED");
+    if (j && j.timestamp) meta.push(j.timestamp);
+    kids.push(el("div", { class: "jbody" }, [
+      el("div", { text: j && j.reasoning ? j.reasoning : "No reasoning recorded for this judgement." }),
+      j && j.note ? el("div", { class: "warnbox", text: "Data note: " + j.note }) : null,
+      meta.length ? el("div", { class: "meta" }, meta.map((m) => el("span", { text: m }))) : null,
+    ]));
+  }
+  return el("div", { class: "jrow" }, kids);
+}
+
+/* ---------- view: overview ---------- */
+function viewOverview() {
+  const configs = activeConfigs();
+  if (!configs.length) return el("div", { class: "card empty", text: "No configurations selected — pick at least one above." });
+
+  // One vote per paper per configuration: the category that configuration's
+  // repeats chose most often. Ties resolve in taxonomy order, so every matrix
+  // totals the paper count instead of double-counting.
+  const summaries = new Map(configs.map((id) => {
+    const runs = selectedInConfig(id);
+    const rows = DATA.papers.map((p) => ({ paper: p, cons: consensus(p.pmid, runs) })).filter((r) => r.cons.n > 0);
+    const counts = Object.fromEntries(CATS.map((c) => [c, 0]));
+    const tied = Object.fromEntries(CATS.map((c) => [c, 0]));
+    for (const r of rows) {
+      counts[r.cons.category]++;
+      if (r.cons.tied.length > 1) tied[r.cons.category]++;
+    }
+    return [id, { runs, rows, counts, tied, n: rows.length, ties: rows.filter((r) => r.cons.tied.length > 1).length }];
+  }));
+
+  const showTable = state.tables.has("overview-matrix");
+  const card = el("div", { class: "card" }, [
+    el("div", { class: "card-head" }, [
+      el("h2", { text: "Most-chosen category per paper" }),
+      el("button", { class: "btn", type: "button", "aria-pressed": String(showTable),
+        onclick: () => {
+          showTable ? state.tables.delete("overview-matrix") : state.tables.add("overview-matrix");
+          render();
+        }, text: showTable ? "Matrix" : "Table" }),
+    ]),
+    el("div", { class: "card-note", text:
+      `Each configuration's repeats reduced to one category per paper, so every matrix totals ${DATA.papers.length} papers. `
+      + "Rows are the software axis, columns the data axis. Where a configuration's repeats tie, the tie resolves in taxonomy order and still counts once." }),
+  ]);
+
+  if (showTable) {
+    card.appendChild(table(
+      [{ label: "Category" }, { label: "Taxonomy" }, ...configs.map((id) => ({ label: configLabel(id), num: true }))],
+      [...CATS.map((c) => [c, categoryTitle(c), ...configs.map((id) => numCell(summaries.get(id).counts[c]))]),
+       [{ text: "Total papers" }, "", ...configs.map((id) => numCell(summaries.get(id).n))]]));
+  } else {
+    const sharedMax = Math.max(1, ...configs.flatMap((id) =>
+      CATS.map((c) => summaries.get(id).counts[c])));
+    card.appendChild(matrixFrame(el("div", { class: "grid3 panel-grid", style: "grid-template-columns: repeat(auto-fit, minmax(214px, 1fr))" }, configs.map((id) => {
+      const s = summaries.get(id);
+      return el("div", {}, [
+        el("div", { class: "legend" }, el("div", { class: "item" }, [
+          el("span", { class: "rect", style: `background:${configColor(id)}` }),
+          el("span", {}, [
+            el("span", { style: "color:var(--text-primary); font-weight:600", text: configLabel(id) }),
+            el("span", { text: ` — ${s.n} papers from ${s.runs.length} run${s.runs.length === 1 ? "" : "s"}`
+              + (s.ties ? `, ${s.ties} tied` : "") }),
+          ]),
+        ])),
+        sdMatrix((c) => s.counts[c], {
+          small: true, unit: "papers", max: sharedMax, noLegend: true, noAxis: true,
+          extraTip: (c) => s.tied[c] ? `${s.tied[c]} of these was a tie` : null,
+        }),
+      ]);
+    })), "data axis →", "← software axis", true));
+    card.appendChild(el("div", { style: "margin-top:14px; border-top:1px solid var(--grid); padding-top:10px" }, [
+      rampLegend(sharedMax, "papers — one scale shared by every matrix above"),
+    ]));
+  }
+
+  const kids = [card];
+  if (DATA.warnings.length) {
+    kids.push(el("div", { class: "card" }, [
+      el("h2", { text: "Data notes" }),
+      el("div", { class: "card-note", text: "Raised while loading the run files." }),
+      el("ul", { style: "margin:0; padding-left:18px; font-size:13px; color:var(--text-secondary)" },
+        DATA.warnings.map((w) => el("li", { text: w }))),
+    ]));
+  }
+  return el("div", {}, kids);
+}
+
+/* ---------- view: papers ---------- */
+const PAPER_SORTS = {
+  spread: { label: "Most categories first", cmp: (a, b) => b.sp.distinct - a.sp.distinct || a.sp.modal - b.sp.modal },
+  agree: { label: "Fewest categories first", cmp: (a, b) => a.sp.distinct - b.sp.distinct || b.sp.modal - a.sp.modal },
+  title: { label: "Title A–Z", cmp: (a, b) => (a.paper.title || "").localeCompare(b.paper.title || "") },
+};
+
+function viewPapers() {
+  const sel = selectedRuns();
+  const arms = activeConfigs();
+  const q = state.search.trim().toLowerCase();
+  const list = DATA.papers
+    .filter((p) => !q || (p.title || "").toLowerCase().includes(q)
+      || (p.field || "").toLowerCase().includes(q) || p.pmid.includes(q))
+    .map((p) => ({ paper: p, sp: spreadOf(p.pmid, sel) }))
+    .sort((a, b) => (PAPER_SORTS[state.paperSort] || PAPER_SORTS.spread).cmp(a, b)
+      || (a.paper.title || "").localeCompare(b.paper.title || ""));
+
+  if (list.length && !list.some((x) => x.paper.pmid === state.paper)) state.paper = list[0].paper.pmid;
+
+  const listEl = el("div", { class: "paper-list" }, [
+    el("div", { class: "list-head" }, [
+      el("input", { class: "search", type: "search", placeholder: "Filter papers…", value: state.search,
+        oninput: (e) => { state.search = e.target.value; render(); } }),
+      el("select", { class: "sort-select", "aria-label": "Sort papers",
+        onchange: (e) => { state.paperSort = e.target.value; render(); } },
+        Object.keys(PAPER_SORTS).map((k) => el("option", {
+          value: k, selected: state.paperSort === k ? "selected" : null, text: PAPER_SORTS[k].label }))),
+    ]),
+    ...list.map(({ paper: p, sp }) => {
+      const cs = arms.map((a) => ({ arm: a, c: consensus(p.pmid, selectedInConfig(a)) }));
+      return el("button", {
+        class: "paper-item", type: "button", "aria-pressed": state.paper === p.pmid ? "true" : "false",
+        onclick: () => { state.paper = p.pmid; render(); },
+      }, [
+        el("div", { class: "t" }, [
+          el("span", { text: p.title || p.pmid }),
+          spreadMeter(sp),
+        ]),
+        el("div", { class: "m" }, [
+          el("span", { text: p.field || "" }),
+          el("span", { text: p.year || "" }),
+          ...cs.map(({ arm, c }) => el("span", { style: "display:inline-flex; align-items:center; gap:4px" }, [
+            el("span", { class: "swatch", style: `background:${configColor(arm)}` }),
+            el("span", { class: "num", text: c.category || "—" }),
+          ])),
+        ]),
+      ]);
+    }),
+  ]);
+  if (!list.length) listEl.appendChild(el("div", { class: "empty", text: "No papers match that filter." }));
+
+  return el("div", {}, [
+    chartCard("paper-scatter", "Papers ordered by how many categories they drew",
+      "One dot per paper, ordered left to right by how many of the nine categories at least one selected run put it in. "
+      + "A dot at 1 means every run agreed; the further right it sits, the more categories the runs spread across. "
+      + "The order here is always the score, whatever the list below is sorted by. Click a dot to open that paper.",
+      () => scatterPlot(list),
+      () => table(
+        [{ label: "#", num: true }, { label: "Paper" }, { label: "Categories", num: true }, { label: "Which" },
+         { label: "Runs", num: true }],
+        list.map(({ paper, sp }, i) => [
+          numCell(i + 1),
+          nodeCell(el("button", { class: "linkish", type: "button", style: "max-width:52ch",
+            onclick: () => { state.paper = paper.pmid; render(); }, text: paper.title || paper.pmid })),
+          numCell(sp.distinct), sp.cats.join(", ") || "—", numCell(sp.n),
+        ]))),
+    el("div", { class: "split" }, [listEl, el("div", {}, paperDetail())]),
+  ]);
+}
+
+/** Ordered dot plot: rank on x, distinct categories on y. Dots select a paper. */
+function scatterPlot(rows) {
+  if (!rows.length) return el("div", { class: "empty", text: "No papers match that filter." });
+  const list = rows.slice().sort((a, b) =>
+    a.sp.distinct - b.sp.distinct || (a.paper.title || "").localeCompare(b.paper.title || ""));
+  const maxY = Math.max(2, ...list.map((x) => x.sp.distinct));
+  const ticks = [];
+  for (let v = 1; v <= maxY; v++) ticks.push(v);
+  const xOf = (i) => list.length === 1 ? 50 : (i / (list.length - 1)) * 100;
+  const yOf = (v) => ((v - 1) / Math.max(1, maxY - 1)) * 100;
+
+  const plot = el("div", { class: "scatter-plot" }, [
+    ...ticks.map((v) => el("div", { class: "scatter-grid", style: `bottom:${yOf(v)}%` })),
+    ...list.map(({ paper, sp }, i) => {
+      const on = state.paper === paper.pmid;
+      const btn = el("button", {
+        class: "dot-hit", type: "button", "aria-pressed": String(on),
+        "aria-label": `${paper.title || paper.pmid}: ${sp.distinct} categories`,
+        style: `left:${xOf(i)}%; bottom:${yOf(sp.distinct)}%`,
+        onclick: () => { state.paper = paper.pmid; render(); },
+      }, el("span", { class: "dot" }));
+      return hoverable(btn, () => [
+        el("div", { class: "tv num", text: String(sp.distinct) }),
+        el("div", { class: "tl", text: `categor${sp.distinct === 1 ? "y" : "ies"} across ${sp.n} runs` }),
+        el("div", { class: "tl", style: "margin-top:4px; color:var(--text-primary)", text: paper.title || paper.pmid }),
+        el("div", { class: "tl", text: sp.cats.join(", ") }),
+      ]);
+    }),
+  ]);
+
+  return el("div", {}, [
+    el("div", { class: "scatter" }, [
+      el("div", { class: "scatter-ylab" }, el("span", { text: "categories used" })),
+      el("div", { class: "scatter-y" }, ticks.map((v) =>
+        el("span", { class: "num", style: `bottom:${yOf(v)}%`, text: String(v) }))),
+      plot,
+    ]),
+    el("div", { class: "scatter-xlab" }, [
+      el("span", { text: "every run agreed" }),
+      el("span", { class: "muted", text: `${list.length} papers, ordered` }),
+      el("span", { text: "widest disagreement" }),
+    ]),
+  ]);
+}
+
+/** Compact read-out of the category count. */
+function spreadMeter(sp) {
+  const node = el("span", { class: "spread", tabindex: "0" }, [
+    el("span", { class: "spread-bar" },
+      el("span", { style: `width:${(sp.distinct / CATS.length) * 100}%` })),
+    el("span", { class: "num", text: sp.n ? String(sp.distinct) : "—" }),
+  ]);
+  return hoverable(node, () => spreadTip(sp));
+}
+
+function spreadTip(sp) {
+  return [
+    el("div", { class: "tv num", text: String(sp.distinct) }),
+    el("div", { class: "tl", text: `distinct categor${sp.distinct === 1 ? "y" : "ies"} across ${sp.n} run${sp.n === 1 ? "" : "s"}` }),
+    el("div", { class: "tl", style: "margin-top:3px", text: sp.cats.join(", ") }),
+  ];
+}
+
+function paperDetail() {
+  const p = PAPER_BY_ID.get(state.paper);
+  const sel = selectedRuns();
+  if (!p) return el("div", { class: "card empty", text: "Pick a paper from the list." });
+  if (!sel.length) return el("div", { class: "card empty", text: "No runs selected — pick at least one above." });
+  const arms = activeConfigs();
+
+  const all = consensus(p.pmid, sel);
+  const spread = spreadOf(p.pmid, sel);
+  const rows = CATS.map((cat) => ({
+    label: cat,
+    tipTitle: `${cat} — ${categoryTitle(cat)}`,
+    values: Object.fromEntries(arms.map((a) =>
+      [a, selectedInConfig(a).filter((r) => { const j = J_BY_PAPER.get(p.pmid).get(r.run_id); return j && j.category === cat; }).length])),
+  })).filter((r) => arms.some((a) => r.values[a] > 0) || true);
+
+  const head = el("div", { class: "card" }, [
+    el("h2", { text: p.title || p.pmid }),
+    el("div", { class: "card-note" }, [
+      el("span", { text: `${p.field || ""} · ${p.year || ""} · PMID ` }),
+      el("a", { href: `https://pubmed.ncbi.nlm.nih.gov/${p.pmid}/`, target: "_blank", rel: "noopener", text: p.pmid }),
+      p.pmcid ? el("span", { text: " · " }) : null,
+      p.pmcid ? el("a", { href: `https://www.ncbi.nlm.nih.gov/pmc/articles/${p.pmcid}/`, target: "_blank", rel: "noopener", text: p.pmcid }) : null,
+    ]),
+    el("div", { class: "mini-stats" }, [
+      miniStat("Most chosen", all.category || "—",
+        `${all.count}/${all.n} runs${all.tied.length > 1 ? " · tied" : ""}`),
+      miniStat("Categories used", spread.n ? String(spread.distinct) : "—",
+        spread.n ? `of 9 · ${spread.cats.join(" ")}` : ""),
+      ...arms.map((a) => {
+        const c = consensus(p.pmid, selectedInConfig(a));
+        return miniStat(configLabel(a), c.category || "—",
+          c.n > 1 ? `${c.count}/${c.n} runs` : (c.n === 1 ? "1 run" : "—"), configColor(a));
+      }),
+    ]),
+  ]);
+
+  const distCard = chartCard("paper-dist", "Classification distribution",
+    "One row per category; each segment is a run that chose it.",
+    () => stackedBars(rows, arms.map((a) => ({ key: a, color: configColor(a), label: configLabel(a) }))),
+    () => table([{ label: "Category" }, { label: "Taxonomy" }, ...arms.map((a) => ({ label: configLabel(a), num: true })), { label: "Total", num: true }],
+      CATS.map((c) => {
+        const r = rows.find((x) => x.label === c);
+        return [c, categoryTitle(c), ...arms.map((a) => numCell(r.values[a])),
+          numCell(arms.reduce((s, a) => s + r.values[a], 0))];
+      })));
+
+  const judgeCard = el("div", { class: "card" }, [
+    el("h2", { text: "Every judgement" }),
+    el("div", { class: "card-note", text: "Click a row to read the full reasoning." }),
+    el("div", {}, sel.map((r) => judgementRow(p.pmid, r, J_BY_PAPER.get(p.pmid).get(r.run_id)))),
+  ]);
+
+  return [head, distCard, judgeCard];
+}
+
+/* ---------- view: variation ---------- */
+
+/** Per-paper spread of one configuration's repeats. */
+function variationOf(configId) {
+  const runs = selectedInConfig(configId);
+  const rows = DATA.papers.map((p) => {
+    const byRun = J_BY_PAPER.get(p.pmid) || new Map();
+    const votes = runs.map((r) => ({ run: r, cat: (byRun.get(r.run_id) || {}).category || "" }))
+      .filter((v) => v.cat);
+    const counts = {};
+    for (const v of votes) counts[v.cat] = (counts[v.cat] || 0) + 1;
+    const max = votes.length ? Math.max(...Object.values(counts)) : 0;
+    const tied = CATS.filter((c) => counts[c] === max && max > 0);
+    const modal = tied[0] || null;
+    // Modal votes first, then dissent grouped by category — run order is
+    // arbitrary, so sorting makes the split readable at a glance.
+    const ordered = votes.slice().sort((a, b) =>
+      (a.cat === modal ? 0 : 1) - (b.cat === modal ? 0 : 1)
+      || CATS.indexOf(a.cat) - CATS.indexOf(b.cat));
+    return {
+      paper: p, pmid: p.pmid, votes: ordered, counts, modal,
+      n: votes.length, agree: max, share: votes.length ? max / votes.length : 0,
+      distinct: Object.keys(counts).length, tied: tied.length > 1,
+      dissent: ordered.filter((v) => v.cat !== modal),
+    };
+  }).filter((r) => r.n > 0);
+  return { configId, runs, rows };
+}
+
+function viewVariation() {
+  const configs = activeConfigs();
+  if (!configs.length) return el("div", { class: "card empty", text: "No configurations selected — pick at least one above." });
+
+  // Default to the first selected configuration that actually has repeats.
+  if (!configs.includes(state.config)) {
+    state.config = configs.find((id) => selectedInConfig(id).length > 1) || configs[0];
+  }
+  const vars = new Map(configs.map((id) => [id, variationOf(id)]));
+  const meanShare = (v) => v.rows.length ? v.rows.reduce((a, r) => a + r.share, 0) / v.rows.length : 0;
+  const cards = [];
+
+  // --- stability across the configurations in view -------------------------
+  const repeated = configs.filter((id) => selectedInConfig(id).length > 1);
+  const single = configs.filter((id) => selectedInConfig(id).length === 1);
+  if (repeated.length > 1) {
+    const bars = repeated.map((id) => ({
+      label: configLabel(id), value: meanShare(vars.get(id)), color: configColor(id),
+      tipTitle: `${configLabel(id)} — ${vars.get(id).runs.length} runs`,
+    }));
+    cards.push(chartCard("var-stability", "How steady is each configuration?",
+      "Mean share of a configuration's repeats landing on that paper's most-chosen category, averaged over every paper. 100% means every repeat agreed every time."
+      + (single.length ? ` Left out: ${single.map(configLabel).join(", ")} — a single run has nothing to vary against.` : ""),
+      () => el("div", { style: "--rl-w:220px" }, simpleBars(bars, { format: (x) => pct(x), unit: "mean agreement", max: 1 })),
+      () => table([{ label: "Configuration" }, { label: "Runs", num: true }, { label: "Mean agreement", num: true },
+                   { label: "Unanimous papers", num: true }, { label: "Papers with dissent", num: true }],
+        configs.map((id) => {
+          const v = vars.get(id);
+          const unan = v.rows.filter((r) => r.distinct === 1).length;
+          return [configLabel(id), numCell(v.runs.length), numCell(pct(meanShare(v))),
+                  numCell(`${unan}/${v.rows.length}`), numCell(v.rows.length - unan)];
+        }))));
+  }
+
+  // --- configuration picker -------------------------------------------------
+  cards.push(el("div", { class: "card" }, [
+    el("h2", { text: "Look inside one configuration" }),
+    el("div", { class: "card-note", text: "Pick the configuration to break down paper by paper." }),
+    el("div", { class: "chips" }, configs.map((id) => el("button", {
+      class: `chip c${configSlot(id)}`, type: "button",
+      "aria-pressed": String(state.config === id),
+      onclick: () => { state.config = id; render(); },
+      text: `${configLabel(id)} · ${selectedInConfig(id).length} run${selectedInConfig(id).length === 1 ? "" : "s"}`,
+    }))),
+  ]));
+
+  const v = vars.get(state.config);
+  const color = configColor(state.config);
+  const n = v.runs.length;
+
+  if (n < 2) {
+    cards.push(el("div", { class: "card empty",
+      text: `${configLabel(state.config)} has a single run in view, so there is no repeat-to-repeat variation to show. Pick a configuration with repeats, or re-add its runs on the Runs tab.` }));
+    return el("div", {}, cards);
+  }
+
+  const unanimous = v.rows.filter((r) => r.distinct === 1);
+  const split = v.rows.filter((r) => r.distinct > 1);
+
+  cards.push(el("div", { class: "tiles" }, [
+    tile("Mean agreement", pct(meanShare(v)), `across ${v.rows.length} papers, ${n} runs each`),
+    tile("Unanimous", String(unanimous.length), `of ${v.rows.length} papers — all ${n} runs agreed`),
+    tile("Split", String(split.length), "papers where the repeats disagreed"),
+    tile("No majority", String(v.rows.filter((r) => r.tied).length), "papers where the top category tied"),
+    tile("Widest spread", String(Math.max(...v.rows.map((r) => r.distinct))), "distinct categories on one paper"),
+  ]));
+
+  // --- how often do k of n runs agree? -------------------------------------
+  const levels = [];
+  for (let k = n; k >= 1; k--) {
+    const papers = v.rows.filter((r) => r.agree === k);
+    if (!papers.length && k * 3 < n) continue;
+    levels.push({ label: `${k} of ${n}`, value: papers.length, color, tipTitle: `${k} of ${n} runs agreed` });
+  }
+  cards.push(chartCard("var-levels", "How often do the repeats agree?",
+    `Papers grouped by how many of the ${n} runs landed on the same category. ${n} of ${n} is unanimous.`,
+    () => simpleBars(levels, { color, unit: "papers", format: (x) => `${x} paper${x === 1 ? "" : "s"}` }),
+    () => table([{ label: "Runs agreeing" }, { label: "Papers", num: true }, { label: "Share of papers", num: true }],
+      levels.map((l) => [l.label, numCell(l.value), numCell(pct(l.value / v.rows.length))]))));
+
+  // --- paper by paper -------------------------------------------------------
+  const sorted = v.rows.slice().sort((a, b) =>
+    state.varSort === "paper"
+      ? (a.paper.title || "").localeCompare(b.paper.title || "")
+      : a.share - b.share || b.distinct - a.distinct);
+  cards.push(el("div", { class: "card" }, [
+    el("div", { class: "card-head" }, [
+      el("h2", { text: `Every paper, every repeat — ${configLabel(state.config)}` }),
+      el("button", { class: "btn", type: "button",
+        onclick: () => { state.varSort = state.varSort === "paper" ? "spread" : "paper"; render(); },
+        text: state.varSort === "paper" ? "Sort by spread" : "Sort by title" }),
+    ]),
+    el("div", { class: "card-note", text:
+      "One cell per run. Coloured cells chose the majority category; grey cells are dissenting runs, each labelled with what it chose instead. Click a row to read the reasoning behind every vote." }),
+    el("div", {}, sorted.map((r) => variationRow(r, color))),
+  ]));
+
+  // --- where the dissent lands ---------------------------------------------
+  const dissentCount = (modal, other) =>
+    v.rows.filter((r) => r.modal === modal)
+      .reduce((a, r) => a + r.dissent.filter((d) => d.cat === other).length, 0);
+  if (CATS.some((m) => CATS.some((o) => dissentCount(m, o) > 0))) {
+    cards.push(chartCard("var-drift", "Where does it waver?",
+      "Rows are the majority category for a paper, columns what the dissenting runs chose instead. A column that keeps filling up means this configuration slides the same way whenever it wavers.",
+      () => driftMatrix(dissentCount),
+      () => table([{ label: "Majority / dissent" }, ...CATS.map((c) => ({ label: c, num: true })), { label: "Total", num: true }],
+        CATS.map((m) => [m, ...CATS.map((o) => numCell(dissentCount(m, o))),
+          numCell(CATS.reduce((a, o) => a + dissentCount(m, o), 0))]))));
+  }
+
+  return el("div", {}, cards);
+}
+
+/** One paper: a cell per run, majority first, each labelled with its category. */
+function variationRow(r, color) {
+  const key = "var:" + state.config + ":" + r.pmid;
+  const open = state.openReasons.has(key);
+  const cells = r.votes.map((vote) => {
+    const isModal = vote.cat === r.modal;
+    return hoverable(el("span", {
+      class: "vote-cell" + (isModal ? " modal" : ""), tabindex: "0",
+      style: isModal ? `background:${color}` : null, text: vote.cat,
+    }), () => [
+      el("div", { class: "tl", text: vote.run.run_id }),
+      tipLine(isModal ? "majority category" : "dissenting vote", vote.cat, isModal ? color : "var(--baseline)"),
+    ]);
+  });
+  const head = el("button", { class: "jhead", type: "button", "aria-expanded": String(open), onclick: () => {
+    open ? state.openReasons.delete(key) : state.openReasons.add(key);
+    render();
+  }}, [
+    el("span", { class: "caret", text: open ? "▾" : "▸" }),
+    el("span", { class: "num", style: "min-width:40px; font-weight:600", text: `${r.agree}/${r.n}` }),
+    el("span", { class: "vote-strip" }, cells),
+    el("span", { class: "snip", style: "color:var(--text-primary); white-space:normal", text: r.paper.title || r.pmid }),
+    r.tied ? el("span", { class: "code tied", title: "no single majority", text: "tie" }) : null,
+  ]);
+  const kids = [head];
+  if (open) {
+    kids.push(el("div", { style: "padding: 4px 0 12px 22px" }, [
+      el("div", { class: "card-note", style: "margin-bottom:6px",
+        text: `${r.paper.field || ""} · ${r.paper.year || ""} · ${r.distinct} distinct categor${r.distinct === 1 ? "y" : "ies"} across ${r.n} runs` }),
+      el("div", {}, r.votes.map((vote) =>
+        judgementRow(r.pmid, vote.run, J_BY_PAPER.get(r.pmid).get(vote.run.run_id)))),
+      el("button", { class: "btn", type: "button", style: "margin-top:8px",
+        onclick: () => { state.paper = r.pmid; state.tab = "papers"; render(); },
+        text: "See every configuration on this paper →" }),
+    ]));
+  }
+  return el("div", { class: "jrow" }, kids);
+}
+
+/** Human category (rows) x what the model runs chose (columns), row-normalised
+    so each row reads as "when the human said X, the models said ...". */
+function substitutionMatrix(used, grid, rowTotal) {
+  const cells = [el("div", { class: "hd" })];
+  for (const m of CATS) cells.push(el("div", { class: "hd", text: m }));
+  for (const h of used) {
+    const n = rowTotal(h);
+    cells.push(el("div", { class: "hd rowhd", text: h }));
+    for (const m of CATS) {
+      const v = grid[h][m], share = n ? v / n : 0;
+      const step = v === 0 ? -1 : Math.min(6, Math.round(share * 6));
+      const bg = step < 0 ? "var(--surface-2)" : `var(--ramp-${step})`;
+      const ink = step < 0 ? "var(--text-muted)" : `var(--ramp-ink-${step >= 5 ? "hi" : "lo"})`;
+      const cell = el("div", {
+        class: "cell", tabindex: "0",
+        style: `background:${bg}; color:${ink}; min-width:40px; height:32px; font-size:11px`
+          + (h === m ? "; outline:2px solid var(--good); outline-offset:-2px" : ""),
+      }, el("span", { class: "num", text: v ? pct(share) : "" }));
+      cells.push(hoverable(cell, () => [
+        el("div", { class: "tl", text: `human ${h} → models said ${m}` }),
+        tipLine("of model runs", pct(share)),
+        el("div", { class: "tl", text: `${v} of ${n} runs` }),
+      ]));
+    }
+  }
+  return el("div", {}, [
+    el("div", { class: "scroll-x" }, matrixFrame(
+      el("div", { class: "matrix", style: "grid-template-columns: max-content repeat(9, 1fr)" }, cells),
+      "the model runs chose →", "← human said")),
+    el("div", { class: "ramp-legend" }, [
+      el("span", { class: "sw", style: "background:var(--surface-2)" }), "0%",
+      ...[0, 1, 2, 3, 4, 5, 6].map((i) => el("span", { class: "sw", style: `background:var(--ramp-${i})` })),
+      "100%", el("span", { class: "muted", text: "of that row's model runs · green outline = agreement" }),
+    ]),
+  ]);
+}
+
+/** One axis of the taxonomy on its own: human level (rows) x model level
+    (columns), each row normalised to 100%. */
+function axisMatrix(x) {
+  const cells = [el("div", { class: "hd" })];
+  for (const m of x.levels) cells.push(el("div", { class: "hd", text: `${m} · ${shortTax(m)}` }));
+  for (const h of x.levels) {
+    const n = x.levels.reduce((a, m) => a + x.g[h][m], 0);
+    cells.push(el("div", { class: "hd rowhd", text: `${h} · ${shortTax(h)}` }));
+    for (const m of x.levels) {
+      const v = x.g[h][m], share = n ? v / n : 0;
+      const step = v === 0 ? -1 : Math.min(6, Math.round(share * 6));
+      const bg = step < 0 ? "var(--surface-2)" : `var(--ramp-${step})`;
+      const ink = step < 0 ? "var(--text-muted)" : `var(--ramp-ink-${step >= 5 ? "hi" : "lo"})`;
+      const cell = el("div", {
+        class: "cell", tabindex: "0",
+        style: `background:${bg}; color:${ink}; height:46px`
+          + (h === m ? "; outline:2px solid var(--good); outline-offset:-2px" : ""),
+      }, [
+        el("span", { class: "num", text: n ? pct(share) : "" }),
+        el("span", { class: "pct num", text: String(v) }),
+      ]);
+      cells.push(hoverable(cell, () => [
+        el("div", { class: "tl", text: `human ${h} (${DATA.taxonomy[h].label}) → model ${m}` }),
+        tipLine("of that row", n ? pct(share) : "—"),
+        el("div", { class: "tl", text: `${v} of ${n} judgements` }),
+      ]));
+    }
+  }
+  return el("div", { class: "matrix", style: "grid-template-columns: max-content repeat(3, 1fr)" }, cells);
+}
+
+/** 9x9 majority-vs-dissent heatmap; the diagonal is empty by construction. */
+function driftMatrix(cellCount) {
+  const vals = [];
+  for (const m of CATS) for (const o of CATS) vals.push(cellCount(m, o));
+  const max = Math.max(1, ...vals);
+  const cells = [el("div", { class: "hd" })];
+  for (const o of CATS) cells.push(el("div", { class: "hd", text: o }));
+  for (const m of CATS) {
+    cells.push(el("div", { class: "hd rowhd", text: m }));
+    for (const o of CATS) {
+      const val = cellCount(m, o);
+      const step = val === 0 ? -1 : Math.min(6, Math.round((val / max) * 6));
+      const bg = step < 0 ? "var(--surface-2)" : `var(--ramp-${step})`;
+      const ink = step < 0 ? "var(--text-muted)" : `var(--ramp-ink-${step >= 5 ? "hi" : "lo"})`;
+      const cell = el("div", {
+        class: "cell", tabindex: "0",
+        style: `background:${bg}; color:${ink}; min-width:34px; height:30px; font-size:12px`
+          + (m === o ? "; opacity:0.35" : ""),
+      }, el("span", { class: "num", text: val ? String(val) : "" }));
+      cells.push(hoverable(cell, () => [
+        el("div", { class: "tl", text: `majority ${m} · dissent chose ${o}` }),
+        tipLine("dissenting votes", String(val)),
+      ]));
+    }
+  }
+  return el("div", {}, [
+    el("div", { class: "scroll-x" }, matrixFrame(
+      el("div", { class: "matrix small", style: "grid-template-columns: max-content repeat(9, 1fr)" }, cells),
+      "the dissenting runs chose →", "← majority category"),),
+    el("div", { class: "ramp-legend" }, [
+      el("span", { class: "sw", style: "background:var(--surface-2)" }), "0",
+      ...[0, 1, 2, 3, 4, 5, 6].map((i) => el("span", { class: "sw", style: `background:var(--ramp-${i})` })),
+      String(max), el("span", { class: "muted", text: "dissenting votes" }),
+    ]),
+  ]);
+}
+
+/* ---------- view: consensus ---------- */
+function viewConsensus() {
+  const arms = activeConfigs();
+  const modelArms = arms.filter((a) => !isHuman(a));
+  if (!arms.length) return el("div", { class: "card empty", text: "No configurations selected — pick at least one above." });
+  const hasHuman = !!HUMAN_ID && arms.includes(HUMAN_ID);
+
+  const summaries = arms.map((a) => configSummary(a, hasHuman && !isHuman(a) ? HUMAN_ID : null));
+  const byArm = new Map(summaries.map((s) => [s.config, s]));
+
+  const head = el("div", { class: "card" }, [
+    el("h2", { text: "Reduce the repeats, then compare" }),
+    el("div", { class: "card-note", text: "Each configuration's repeated runs collapse to the category chosen most often per paper. Ties are marked with * and resolved in taxonomy order for the comparison." }),
+    el("div", { class: "scroll-x" }, el("table", {}, [
+      el("thead", {}, el("tr", {}, [
+        el("th", { text: "Configuration" }), el("th", { class: "num", text: "Runs" }),
+        el("th", { class: "num", text: "Unanimous" }),
+        el("th", { class: "num", text: "Exact" }), el("th", { class: "num", text: "S axis" }),
+        el("th", { class: "num", text: "D axis" }),
+      ])),
+      el("tbody", {}, summaries.map((s) => el("tr", {}, [
+        el("td", {}, el("span", { style: "display:inline-flex; align-items:center; gap:7px" }, [
+          el("span", { class: "swatch", style: `background:${configColor(s.config)}` }), configLabel(s.config)])),
+        el("td", { class: "num", text: String(s.runs.length) }),
+        el("td", { class: "num", text: s.runs.length > 1 ? `${s.unanimous}/${s.nPapers}` : "—" }),
+        el("td", { class: "num", text: s.exact === null ? "—" : `${pct(s.exact)} (${s.exactN}/${s.scoredN})` }),
+        el("td", { class: "num", text: s.sAgree === null ? "—" : pct(s.sAgree) }),
+        el("td", { class: "num", text: s.dAgree === null ? "—" : pct(s.dAgree) }),
+      ]))),
+    ])),
+    el("div", { class: "card-note", style: "margin:10px 0 0",
+      text: "Unanimous counts the papers where every repeat picked the same category. "
+        + "Exact, S axis and D axis are agreement with the human: the whole category, and each axis on its own." }),
+  ]);
+
+  const cards = [];
+
+  if (hasHuman && modelArms.length) {
+    const counter = (a) => {
+      const s = byArm.get(a);
+      return (modelCat, humanCat) =>
+        s.rows.filter((r) => r.cons.category === modelCat && r.ref && r.ref.category === humanCat).length;
+    };
+    const sharedMax = Math.max(1, ...modelArms.flatMap((a) => {
+      const f = counter(a);
+      return CATS.flatMap((mc) => CATS.map((hc) => f(mc, hc)));
+    }));
+    cards.push(chartCard("cm-all", "Where each configuration lands against the human",
+      "One panel per configuration. Rows (left) are the human's category, columns (top) are the configuration's most-chosen one — the same way round as the substitution matrix below. The green outline marks the diagonal where they agree, so anything off it is a disagreement. All panels share one colour scale.",
+      () => el("div", {}, [
+        matrixFrame(el("div", { class: "panel-grid" }, modelArms.map((a) => {
+          const s = byArm.get(a);
+          return el("div", { class: "panel" }, [
+            el("div", { class: "panel-cap" }, [
+              el("span", { class: "rect", style: `background:${configColor(a)}` }),
+              el("span", { style: "min-width:0" }, [
+                el("span", { class: "nm", text: configLabel(a) }),
+                el("span", { class: "sub", text: s.exact === null ? "" : `${s.exactN}/${s.scoredN} papers agree` }),
+              ]),
+            ]),
+            confusionMatrix(s, counter(a), { compact: true, noLegend: true, noAxis: true, max: sharedMax }),
+          ]);
+        })), "each configuration chose →", "← human said"),
+        el("div", { style: "margin-top:12px; border-top:1px solid var(--grid); padding-top:10px" },
+          rampLegend(sharedMax, "papers — one scale shared by every panel · green outline = agreement")),
+      ]),
+      () => el("div", {}, modelArms.map((a) => {
+        const f = counter(a), s = byArm.get(a);
+        return el("div", { style: "margin-bottom:18px" }, [
+          el("h3", { style: "margin-bottom:6px", text: configLabel(a) }),
+          table([{ label: "Human / model" }, ...CATS.map((c) => ({ label: c, num: true })), { label: "Total", num: true }],
+            CATS.map((hc) => [hc, ...CATS.map((mc) => numCell(f(mc, hc))),
+              numCell(s.rows.filter((r) => r.ref && r.ref.category === hc).length)])),
+        ]);
+      }))));
+  }
+
+  // How the model runs respond to each call the human actually made. Pooled
+  // across every selected model run, so this is run-level, not consensus-level.
+  let swapCard = null;
+  if (hasHuman && modelArms.length) {
+    const modelRuns = selectedRuns().filter((r) => !isHuman(r.config));
+    const grid = Object.fromEntries(CATS.map((h) => [h, Object.fromEntries(CATS.map((m) => [m, 0]))]));
+    for (const p of DATA.papers) {
+      const human = consensus(p.pmid, selectedInConfig(HUMAN_ID)).category;
+      if (!human) continue;
+      const byRun = J_BY_PAPER.get(p.pmid) || new Map();
+      for (const r of modelRuns) {
+        const c = (byRun.get(r.run_id) || {}).category;
+        if (c) grid[human][c]++;
+      }
+    }
+    const rowTotal = (h) => CATS.reduce((a, m) => a + grid[h][m], 0);
+    const used = CATS.filter((h) => rowTotal(h) > 0);
+    if (used.length) {
+      swapCard = chartCard("agree-swap", "What the models pick instead",
+        "Each row is a category the human used, read across as the share of model runs landing in each category. "
+        + "The green outline is the diagonal, where the models matched; everything else in that row is what they chose instead.",
+        () => substitutionMatrix(used, grid, rowTotal),
+        () => table(
+          [{ label: "Human said" }, ...CATS.map((c) => ({ label: c, num: true })), { label: "Runs", num: true }],
+          used.map((h) => [h, ...CATS.map((m) => numCell(grid[h][m] || "—")), numCell(rowTotal(h))])));
+    }
+  }
+
+  // The same pooled judgements, split into the two axes the taxonomy is built
+  // from. A category can be wrong on software, on data, or on both, and the
+  // two axes fail in different directions — which the 9x9 view above hides.
+  let axisCard = null;
+  if (hasHuman && modelArms.length) {
+    const modelRuns = selectedRuns().filter((r) => !isHuman(r.config));
+    const AXES = [
+      { key: "S", levels: S_AXIS, from: 0, to: 2, label: "Software axis" },
+      { key: "D", levels: D_AXIS, from: 2, to: 4, label: "Data axis" },
+    ];
+    const grids = AXES.map((ax) => ({
+      ...ax,
+      g: Object.fromEntries(ax.levels.map((a) => [a, Object.fromEntries(ax.levels.map((b) => [b, 0]))])),
+    }));
+    let judged = 0, disagree = 0, both = 0;
+    for (const pa of DATA.papers) {
+      const h = consensus(pa.pmid, selectedInConfig(HUMAN_ID)).category;
+      if (!h) continue;
+      const byRun = J_BY_PAPER.get(pa.pmid) || new Map();
+      for (const r of modelRuns) {
+        const c = (byRun.get(r.run_id) || {}).category;
+        if (!c) continue;
+        judged++;
+        for (const x of grids) x.g[h.slice(x.from, x.to)][c.slice(x.from, x.to)]++;
+        const sDiff = h.slice(0, 2) !== c.slice(0, 2);
+        const dDiff = h.slice(2, 4) !== c.slice(2, 4);
+        if (sDiff || dDiff) disagree++;
+        if (sDiff && dDiff) both++;
+      }
+    }
+    const wrong = (x) => x.levels.reduce((a, h) =>
+      a + x.levels.reduce((b, m) => b + (h === m ? 0 : x.g[h][m]), 0), 0);
+
+    if (judged) {
+      axisCard = chartCard("axis-conf", "Each axis on its own",
+        `Every model judgement scored against the human on one axis at a time — ${fmtNum(judged)} judgements. `
+        + "Rows are the human's level, columns the model's, and each row is normalised to 100% so it reads as "
+        + `"when the human said this, the models said that". Of ${disagree} disagreeing judgements, `
+        + `${disagree - both} (${pct(disagree ? (disagree - both) / disagree : 0)}) are wrong on one axis only — `
+        + "the model usually has half the answer right.",
+        () => el("div", {}, [
+          matrixFrame(el("div", { class: "panel-grid", style: "grid-template-columns: repeat(auto-fit, minmax(230px, 1fr))" },
+            grids.map((x) => el("div", { class: "panel" }, [
+              el("div", { class: "panel-cap" }, [
+                el("span", { class: "rect", style: "background:var(--series-1)" }),
+                el("span", { style: "min-width:0" }, [
+                  el("span", { class: "nm", text: x.label }),
+                  el("span", { class: "sub", text: `${wrong(x)} of ${fmtNum(judged)} disagree` }),
+                ]),
+              ]),
+              axisMatrix(x),
+            ]))), "the model runs chose →", "← human said"),
+          el("div", { class: "ramp-legend" }, [
+            el("span", { class: "sw", style: "background:var(--surface-2)" }), "0%",
+            ...[0, 1, 2, 3, 4, 5, 6].map((i) => el("span", { class: "sw", style: `background:var(--ramp-${i})` })),
+            "100%", el("span", { class: "muted", text: "of that row · green outline = agreement" }),
+          ]),
+        ]),
+        () => el("div", {}, grids.map((x) => el("div", { style: "margin-bottom:18px" }, [
+          el("h3", { style: "margin-bottom:6px", text: x.label }),
+          table([{ label: "Human said" }, ...x.levels.map((l) => ({ label: l, num: true })), { label: "Runs", num: true }],
+            x.levels.map((h) => {
+              const n = x.levels.reduce((a, m) => a + x.g[h][m], 0);
+              return [`${h} · ${DATA.taxonomy[h].label}`,
+                ...x.levels.map((m) => numCell(n ? `${pct(x.g[h][m] / n)} (${x.g[h][m]})` : "—")),
+                numCell(n)];
+            })),
+        ]))));
+    }
+  }
+
+  // Summary and substitution share the top row; the axis split and the
+  // per-configuration panels follow.
+  cards.unshift(el("div", { class: "card-row" }, swapCard ? [head, swapCard] : [head]));
+  if (axisCard) cards.splice(1, 0, axisCard);
+
+  // Leaderboard: every model run scored against the human's call for that paper.
+  if (hasHuman && modelArms.length) {
+    const modelRuns = selectedRuns().filter((r) => !isHuman(r.config));
+    const board = DATA.papers.map((p) => {
+      const byRun = J_BY_PAPER.get(p.pmid) || new Map();
+      const human = consensus(p.pmid, selectedInConfig(HUMAN_ID)).category;
+      const perConfig = modelArms.map((a) => {
+        const runs = selectedInConfig(a);
+        const votes = runs.map((r) => (byRun.get(r.run_id) || {}).category || "").filter(Boolean);
+        const agree = human ? votes.filter((c) => c === human).length : 0;
+        const other = {};
+        for (const c of votes) if (c !== human) other[c] = (other[c] || 0) + 1;
+        return { id: a, runs: runs.length, votes: votes.length, agree, other };
+      });
+      const agree = perConfig.reduce((x, c) => x + c.agree, 0);
+      const scored = perConfig.reduce((x, c) => x + c.votes, 0);
+      return { paper: p, pmid: p.pmid, human, perConfig, agree, scored,
+               share: scored ? agree / scored : 0 };
+    }).filter((r) => r.human && r.scored);
+
+    const ranked = board.slice().sort((a, b) =>
+      state.boardSort === "worst"
+        ? a.agree - b.agree || (a.paper.title || "").localeCompare(b.paper.title || "")
+        : b.agree - a.agree || (a.paper.title || "").localeCompare(b.paper.title || ""));
+    const total = modelRuns.length;
+    const perfect = board.filter((r) => r.agree === r.scored).length;
+    const zero = board.filter((r) => r.agree === 0).length;
+    const mean = board.length ? board.reduce((x, r) => x + r.share, 0) / board.length : 0;
+
+    const lbCard = el("div", { class: "card" }, [
+      el("div", { class: "card-head" }, [
+        el("h2", { text: "Leaderboard — papers by agreement with the human" }),
+        el("button", { class: "btn", type: "button",
+          onclick: () => { state.boardSort = state.boardSort === "worst" ? "best" : "worst"; render(); },
+          text: state.boardSort === "worst" ? "Most agreed first" : "Least agreed first" }),
+      ]),
+      el("div", { class: "card-note", text:
+        `Every model run scored against the human's category for that paper — ${total} runs across `
+        + `${modelArms.length} configuration${modelArms.length === 1 ? "" : "s"}. `
+        + "The bar shows which configurations agreed. Click a row for the breakdown." }),
+      el("div", { class: "tiles", style: "margin-bottom:14px" }, [
+        tile("Mean agreement", pct(mean), `across ${board.length} papers`),
+        tile("Full house", String(perfect), `papers where all ${total} runs matched the human`),
+        tile("Nobody agreed", String(zero), "papers where no run matched the human"),
+      ]),
+      el("div", {}, ranked.map((r, i) => leaderboardRow(r, i + 1, total))),
+    ]);
+    if (!board.length) {
+      clear(lbCard).appendChild(el("div", { class: "empty", text: "The human pass has no category recorded for any paper in view." }));
+    }
+    cards.push(lbCard);
+  }
+
+  return el("div", {}, cards);
+}
+
+/** One paper on the leaderboard, expandable to the per-configuration split. */
+function leaderboardRow(r, rank, total) {
+  const key = "lb:" + r.pmid;
+  const open = state.openReasons.has(key);
+  const segs = r.perConfig.filter((c) => c.agree > 0).map((c) =>
+    hoverable(el("span", { tabindex: "0", class: "lb-seg",
+      style: `width:${(c.agree / Math.max(1, total)) * 100}%; background:${configColor(c.id)}` }), () => [
+      el("div", { class: "tl", text: r.paper.title || r.pmid }),
+      tipLine(`${configLabel(c.id)} runs matching ${r.human}`, `${c.agree}/${c.votes}`, configColor(c.id)),
+    ]));
+  const head = el("button", { class: "jhead", type: "button", "aria-expanded": String(open), onclick: () => {
+    open ? state.openReasons.delete(key) : state.openReasons.add(key);
+    render();
+  }}, [
+    el("span", { class: "caret", text: open ? "▾" : "▸" }),
+    el("span", { class: "lb-rank num", text: `${rank}` }),
+    el("span", { class: "lb-score num", text: `${r.agree}/${r.scored}` }),
+    el("span", { class: "lb-bar" }, segs),
+    codePill(r.human, { title: `human: ${categoryTitle(r.human)}` }),
+    el("span", { class: "snip", style: "color:var(--text-primary); white-space:normal", text: r.paper.title || r.pmid }),
+  ]);
+  const kids = [head];
+  if (open) {
+    kids.push(el("div", { style: "padding: 4px 0 14px 22px" }, [
+      el("div", { class: "card-note", style: "margin-bottom:8px" }, [
+        el("span", { text: `${r.paper.field || ""} · ${r.paper.year || ""} · the human called this ` }),
+        el("b", { text: r.human }),
+        el("span", { text: ` — ${categoryTitle(r.human)}` }),
+      ]),
+      table(
+        [{ label: "Configuration" }, { label: "Agreed", num: true }, { label: "What the rest said" }],
+        r.perConfig.map((c) => [
+          nodeCell(el("span", { style: "display:inline-flex; align-items:center; gap:7px" }, [
+            el("span", { class: "swatch", style: `background:${configColor(c.id)}` }), configLabel(c.id)])),
+          nodeCell(el("span", { class: "match " + (c.agree === c.votes ? "yes" : c.agree ? "part" : "no") },
+            [el("span", { class: "dot" }), `${c.agree}/${c.votes}`]), true),
+          nodeCell(el("span", { style: "display:inline-flex; gap:6px; flex-wrap:wrap" },
+            Object.keys(c.other).length
+              ? Object.keys(c.other).sort((x, y) => CATS.indexOf(x) - CATS.indexOf(y)).map((cat) =>
+                  el("span", { class: "code", title: axisMatch(cat, r.human, 0) ? "software axis matches"
+                    : axisMatch(cat, r.human, 1) ? "data axis matches" : categoryTitle(cat),
+                    text: `${cat} ×${c.other[cat]}` }))
+              : [el("span", { class: "muted", text: "—" })])),
+        ])),
+      el("button", { class: "btn", type: "button", style: "margin-top:10px",
+        onclick: () => { state.paper = r.pmid; state.tab = "papers"; render(); },
+        text: "Read every judgement on this paper →" }),
+    ]));
+  }
+  return el("div", { class: "jrow" }, kids);
+}
+
+function confusionMatrix(s, cellCount, opts) {
+  opts = opts || {};
+  const counts = [];
+  for (const mc of CATS) for (const hc of CATS) counts.push(cellCount(mc, hc));
+  // Panels shown side by side are read against each other, so the caller
+  // pins one scale across the set.
+  const max = Math.max(1, opts.max || 0, ...(opts.max ? [] : counts));
+  const cells = [el("div", { class: "hd" })];
+  for (const mc of CATS) cells.push(el("div", { class: "hd", text: mc }));
+  for (const hc of CATS) {
+    cells.push(el("div", { class: "hd rowhd", text: hc }));
+    for (const mc of CATS) {
+      const v = cellCount(mc, hc);
+      const step = v === 0 ? -1 : Math.min(6, Math.round((v / max) * 6));
+      const diag = mc === hc;
+      const bg = step < 0 ? "var(--surface-2)" : `var(--ramp-${step})`;
+      const ink = step < 0 ? "var(--text-muted)" : `var(--ramp-ink-${step >= 5 ? "hi" : "lo"})`;
+      const cell = el("div", {
+        class: "cell", tabindex: "0",
+        style: `background:${bg}; color:${ink}`
+          + (opts.compact ? "" : "; min-width:34px; height:30px; font-size:12px")
+          + (diag ? "; outline:2px solid var(--good); outline-offset:-2px" : ""),
+      }, el("span", { class: "num", text: v ? String(v) : "" }));
+      cells.push(hoverable(cell, () => [
+        el("div", { class: "tl", text: `human ${hc} → model ${mc}` }),
+        tipLine(diag ? "papers agreed" : "papers", String(v)),
+      ]));
+    }
+  }
+  const bare = el("div", { class: `matrix ${opts.compact ? "tiny" : "small"}`,
+    style: "grid-template-columns: max-content repeat(9, 1fr)" }, cells);
+  if (opts.noAxis) return bare;
+  const framed = matrixFrame(bare, "this configuration chose →", "← human said", opts.compact);
+  if (opts.noLegend) return framed;
+  return el("div", {}, [
+    el("div", { class: "scroll-x" }, framed),
+    rampLegend(max, "papers · green outline = agreement"),
+  ]);
+}
+
+/* ---------- view: runs ---------- */
+function viewRuns() {
+  const cards = CONFIG_IDS.filter((a) => RUNS_BY_CONFIG.get(a).length).map((a) => {
+    const conf = cfgOf(a);
+    return el("div", { style: "margin-bottom:22px" }, [
+      el("div", { class: "card-head", style: "margin-bottom:10px" }, [
+        el("span", { class: "swatch", style: `background:${configColor(a)}` }),
+        el("h2", { text: configLabel(a) }),
+        el("span", { class: "muted", style: "font-size:12px", text: conf.blurb }),
+      ]),
+      el("div", { class: "grid2" }, RUNS_BY_CONFIG.get(a).map(runCard)),
+    ]);
+  });
+  cards.push(el("div", { class: "card" }, [
+    el("h2", { text: "Prompt inputs" }),
+    el("div", { class: "card-note", text: "Every run in this set used the same task and criteria files (identical SHAs above)." }),
+    el("details", { class: "raw" }, [el("summary", { text: "task.md" }), el("pre", { text: DATA.task_md })]),
+    el("details", { class: "raw" }, [el("summary", { text: "criteria.md" }), el("pre", { text: DATA.criteria_md })]),
+  ]));
+  return el("div", {}, cards);
+}
+
+function runCard(r) {
+  const js = J_BY_RUN.get(r.run_id) || [];
+  const t = tally(js);
+  const on = state.runs.has(r.run_id);
+  const totalTokens = js.reduce((a, j) => a + (j.prompt_tokens || 0) + (j.output_tokens || 0), 0);
+  const totalDur = js.reduce((a, j) => a + (j.duration_s || 0), 0);
+  const m = r.meta;
+  const topCat = CATS.reduce((a, c) => t.counts[c] > t.counts[a] ? c : a, CATS[0]);
+
+  const kv = [];
+  const add = (k, v) => { if (v !== null && v !== undefined && v !== "") kv.push([k, String(v)]); };
+  add("Run id", r.run_id);
+  add("Name", r.name);
+  add("Provider", m.provider);
+  add("Model", m.model || "—");
+  add("Input", m.content === "metadata" ? "metadata (title + abstract)" : m.content);
+  add("Started", m.started_at);
+  add("Finished", m.finished_at);
+  if (m.started_at && m.finished_at) {
+    const mins = (new Date(m.finished_at) - new Date(m.started_at)) / 60000;
+    add("Wall clock", `${mins.toFixed(1)} min`);
+  }
+  add("Host", m.host);
+  add("Context window", m.num_ctx ? fmtNum(m.num_ctx) : null);
+  add("Timeout", m.timeout_s ? `${m.timeout_s}s` : null);
+  add("Papers", `${m.num_papers_classified} classified / ${m.num_papers_total} total`);
+  if (totalTokens) add("Tokens", `${fmtNum(totalTokens)} (${fmtNum(js.reduce((a, j) => a + (j.prompt_tokens || 0), 0))} in)`);
+  if (totalDur) add("Model time", `${(totalDur / 60).toFixed(1)} min · ${(totalDur / js.length).toFixed(1)}s per paper`);
+  add("Results file", r.results_file);
+  add("criteria.md", r.criteria_sha);
+  add("task.md", r.task_sha);
+  if (t.missing) add("Unclassified rows", t.missing);
+
+  const strip = el("div", { class: "strip" }, CATS.filter((c) => t.counts[c] > 0).map((c) =>
+    hoverable(el("div", { tabindex: "0", style: `flex:${t.counts[c]}; background:${configColor(r.config)}` }),
+      () => [el("div", { class: "tl", text: `${c} — ${categoryTitle(c)}` }), tipLine("judgements", String(t.counts[c]))])));
+
+  return el("div", { class: "run-card" }, [
+    el("div", { class: "hd" }, [
+      el("span", { class: "swatch", style: `background:${configColor(r.config)}` }),
+      el("h3", { text: r.name }),
+      el("button", { class: "btn", type: "button", style: "margin-left:auto", "aria-pressed": String(on),
+        onclick: () => { on ? state.runs.delete(r.run_id) : state.runs.add(r.run_id); render(); },
+        text: on ? "In view" : "Add to view" }),
+    ]),
+    el("div", { class: "muted", style: "font-size:12px", text: r.run_id }),
+    strip,
+    el("div", { class: "muted", style: "font-size:11px; margin-top:5px",
+      text: `category mix across ${js.length} papers — widest segment is ${topCat}` }),
+    el("dl", { class: "kv" }, kv.flatMap(([k, v]) => [el("dt", { text: k }), el("dd", { text: v })])),
+    el("details", { class: "raw" }, [
+      el("summary", { text: "raw run.json" }),
+      el("pre", { text: JSON.stringify(m, null, 2) }),
+    ]),
+    el("details", { class: "raw" }, [
+      el("summary", { text: `result fields (${r.fields.length})` }),
+      el("pre", { text: r.fields.join("\n") }),
+    ]),
+  ]);
+}
+
+/* ---------- chrome ---------- */
+const TABS = [
+  { id: "overview", label: "Overview", view: viewOverview },
+  { id: "papers", label: "Papers", view: viewPapers },
+  { id: "variation", label: "Variation", view: viewVariation },
+  { id: "consensus", label: "Consensus vs human", view: viewConsensus },
+  { id: "runs", label: "Runs", view: viewRuns },
+];
+
+function renderFilters() {
+  const holder = clear(document.getElementById("config-rows"));
+  for (const id of CONFIG_IDS) {
+    const runs = RUNS_BY_CONFIG.get(id);
+    if (!runs.length) continue;
+    const nOn = runs.filter((r) => state.runs.has(r.run_id)).length;
+    const all = nOn === runs.length, none = nOn === 0;
+    holder.appendChild(hoverable(el("button", {
+      class: `config-toggle c${configSlot(id)}`, type: "button",
+      "aria-pressed": String(!none),
+      "data-partial": String(!all && !none),
+      onclick: () => {
+        // A configuration is all-or-nothing here; per-run control lives on the Runs tab.
+        runs.forEach((r) => all ? state.runs.delete(r.run_id) : state.runs.add(r.run_id));
+        render();
+      },
+    }, [
+      el("span", { class: "swatch", style: `background:${configColor(id)}` }),
+      el("span", { style: "min-width:0" }, [
+        el("span", { class: "nm", text: configLabel(id) }),
+        el("span", { class: "bl", text: all || none
+          ? `${runs.length} run${runs.length === 1 ? "" : "s"}`
+          : `${nOn} of ${runs.length} runs — trimmed on the Runs tab` }),
+      ]),
+    ]), () => configToggleTip(id, runs, nOn)));
+  }
+  document.getElementById("sel-count").textContent =
+    `${activeConfigs().length} of ${CONFIGS.length} configurations · ${state.runs.size} runs · ${DATA.papers.length} papers`;
+}
+
+/** Hover card for a configuration toggle. */
+function configToggleTip(id, runs, nOn) {
+  const c = cfgOf(id), m = (RUN_BY_ID.get(runs[0].run_id) || {}).meta || {};
+  const lines = [el("div", { class: "tv", text: c.label }), el("div", { class: "tl", text: c.blurb })];
+  const add = (k, v) => { if (v) lines.push(el("div", { class: "tl", text: `${k}: ${v}` })); };
+  add("model", m.model || "human reviewer");
+  add("provider", m.provider);
+  add("repeats", `${runs.length} run${runs.length === 1 ? "" : "s"}`);
+  const js = runs.flatMap((r) => J_BY_RUN.get(r.run_id) || []);
+  const tokens = js.reduce((a, j) => a + (j.prompt_tokens || 0) + (j.output_tokens || 0), 0);
+  if (tokens) add("tokens", fmtNum(tokens));
+  lines.push(el("div", { class: "tl", style: "margin-top:5px; color:var(--text-muted)",
+    text: nOn === runs.length ? "click to remove from view" : "click to add to view" }));
+  return lines;
+}
+
+function renderTabs() {
+  const nav = clear(document.getElementById("tabs"));
+  for (const t of TABS) {
+    nav.appendChild(el("button", {
+      type: "button", role: "tab", "aria-selected": String(state.tab === t.id),
+      onclick: () => { state.tab = t.id; render(); }, text: t.label,
+    }));
+  }
+}
+
+function render() {
+  hideTip();
+  renderFilters();
+  renderTabs();
+  const view = clear(document.getElementById("view"));
+  const tab = TABS.find((t) => t.id === state.tab) || TABS[0];
+  const out = tab.view();
+  [].concat(out).forEach((n) => view.appendChild(n));
+}
+
+/* presets */
+document.querySelectorAll("[data-preset]").forEach((b) => b.addEventListener("click", () => {
+  const p = b.dataset.preset;
+  if (p === "all") state.runs = new Set(DATA.runs.map((r) => r.run_id));
+  else if (p === "none") state.runs = new Set();
+  else if (p === "models") state.runs = new Set(DATA.runs.filter((r) => !isHuman(r.config)).map((r) => r.run_id));
+  render();
+}));
+
+/* theme */
+const themeBtn = document.getElementById("theme-btn");
+themeBtn.addEventListener("click", () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const next = cur === "dark" ? "light" : cur === "light" ? null : "dark";
+  if (next) document.documentElement.setAttribute("data-theme", next);
+  else document.documentElement.removeAttribute("data-theme");
+  try { next ? localStorage.setItem("pif-theme", next) : localStorage.removeItem("pif-theme"); } catch (e) {}
+  themeBtn.textContent = next ? (next === "dark" ? "Dark" : "Light") : "Theme";
+  render();
+});
+try {
+  const saved = localStorage.getItem("pif-theme");
+  if (saved) { document.documentElement.setAttribute("data-theme", saved); themeBtn.textContent = saved === "dark" ? "Dark" : "Light"; }
+} catch (e) {}
+
+document.getElementById("hdr-sub").textContent =
+  `${CONFIGS.length} configurations · ${DATA.runs.length} runs · ${DATA.papers.length} papers`
+  + ` · built ${DATA.generated_at.slice(0, 16).replace("T", " ")} UTC`;
+
+render();
+</script>
+</body>
+</html>

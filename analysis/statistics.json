@@ -1,0 +1,797 @@
+{
+ "configs": {
+  "Gemma4 12B \u00b7 full": {
+   "fleiss": 0.6761941195759098,
+   "fleiss_S": 0.7854691075514874,
+   "fleiss_D": 0.7718631178707225,
+   "pairwise": 0.7366666666666667,
+   "unanimous": 0.4666666666666667,
+   "entropy": 0.4564669005056314,
+   "run_acc_mean": 0.4866666666666667,
+   "run_acc_min": 0.43333333333333335,
+   "run_acc_max": 0.5333333333333333,
+   "maj_acc": 0.5,
+   "maj_ci": [
+    0.33153851227173764,
+    0.6684614877282624
+   ],
+   "kappa_human": 0.4193548387096774,
+   "acc_S": 0.6333333333333333,
+   "acc_D": 0.7666666666666667,
+   "kappa_S": 0.42408376963350775,
+   "kappa_D": 0.6379310344827588,
+   "in_tok": 24311.7,
+   "out_tok": 93.18666666666667,
+   "sec": 45.0596,
+   "run_min": 22.5298,
+   "s1_rate": 0.13333333333333333,
+   "d1_rate": 0.5666666666666667,
+   "words": 58.333333333333336,
+   "names_tool": 0.2733333333333333
+  },
+  "Gemma4 12B \u00b7 abstract": {
+   "fleiss": 0.748239049086507,
+   "fleiss_S": 0.7653398227011994,
+   "fleiss_D": 0.8216409036860881,
+   "pairwise": 0.7966666666666666,
+   "unanimous": 0.6333333333333333,
+   "entropy": 0.3444463013433145,
+   "run_acc_mean": 0.5333333333333332,
+   "run_acc_min": 0.4666666666666667,
+   "run_acc_max": 0.5666666666666667,
+   "maj_acc": 0.5,
+   "maj_ci": [
+    0.33153851227173764,
+    0.6684614877282624
+   ],
+   "kappa_human": 0.40476190476190477,
+   "acc_S": 0.6666666666666666,
+   "acc_D": 0.7666666666666667,
+   "kappa_S": 0.3963782696177062,
+   "kappa_D": 0.6354166666666667,
+   "in_tok": 2921.04,
+   "out_tok": 75.70666666666666,
+   "sec": 28.546466666666664,
+   "run_min": 14.273233333333332,
+   "s1_rate": 0.1,
+   "d1_rate": 0.5666666666666667,
+   "words": 46.42666666666667,
+   "names_tool": 0.06666666666666667
+  },
+  "Sonnet 5 \u00b7 full": {
+   "fleiss": 0.858279890059551,
+   "fleiss_S": 0.9004061865333542,
+   "fleiss_D": 0.9114521841794571,
+   "pairwise": 0.89,
+   "unanimous": 0.8,
+   "entropy": 0.19092195225311331,
+   "run_acc_mean": 0.47333333333333333,
+   "run_acc_min": 0.4666666666666667,
+   "run_acc_max": 0.5,
+   "maj_acc": 0.4666666666666667,
+   "maj_ci": [
+    0.30232127224128236,
+    0.6385798671847496
+   ],
+   "kappa_human": 0.37823834196891193,
+   "acc_S": 0.6333333333333333,
+   "acc_D": 0.7,
+   "kappa_S": 0.4148936170212765,
+   "kappa_D": 0.536082474226804,
+   "in_tok": 33358.333333333336,
+   "out_tok": 270.26666666666665,
+   "sec": 4.567866666666665,
+   "run_min": 2.2839333333333327,
+   "s1_rate": 0.06666666666666667,
+   "d1_rate": 0.5666666666666667,
+   "words": 102.46,
+   "names_tool": 0.30666666666666664
+  },
+  "Sonnet 5 \u00b7 abstract": {
+   "fleiss": 0.9139217261563182,
+   "fleiss_S": 0.8718386876281614,
+   "fleiss_D": 0.9767405799348736,
+   "pairwise": 0.9333333333333333,
+   "unanimous": 0.8666666666666667,
+   "entropy": 0.11285857928946873,
+   "run_acc_mean": 0.5733333333333334,
+   "run_acc_min": 0.5333333333333333,
+   "run_acc_max": 0.6,
+   "maj_acc": 0.5666666666666667,
+   "maj_ci": [
+    0.3919700954540873,
+    0.7262276256938489
+   ],
+   "kappa_human": 0.4820717131474103,
+   "acc_S": 0.7,
+   "acc_D": 0.7666666666666667,
+   "kappa_S": 0.4685039370078739,
+   "kappa_D": 0.6404109589041097,
+   "in_tok": 2252.4,
+   "out_tok": 211.77333333333334,
+   "sec": 3.373066666666667,
+   "run_min": 1.6865333333333334,
+   "s1_rate": 0.1,
+   "d1_rate": 0.5666666666666667,
+   "words": 76.35333333333334,
+   "names_tool": 0.13333333333333333
+  }
+ },
+ "papers": [
+  {
+   "pmid": "36888610",
+   "field": "ecology",
+   "title": "National-scale geodatabase of catchment characteristics in the Philippines for river management applications",
+   "human": "S1D1",
+   "match": 0,
+   "ncat": 1,
+   "modal": "S2D1",
+   "modal_n": 20
+  },
+  {
+   "pmid": "37102792",
+   "field": "epidemiology-uk",
+   "title": "Isotoxic dose escalated radiotherapy for glioblastoma based on diffusion-weighted MRI and tumor control probability\u2014an in-silico study",
+   "human": "S2D3",
+   "match": 0,
+   "ncat": 3,
+   "modal": "S2D2",
+   "modal_n": 10
+  },
+  {
+   "pmid": "37193558",
+   "field": "ml-uk",
+   "title": "Innovative feature-driven machine learning and deep learning for finance, education, and healthcare",
+   "human": "S3D2",
+   "match": 0,
+   "ncat": 3,
+   "modal": "S3D3",
+   "modal_n": 10
+  },
+  {
+   "pmid": "37257754",
+   "field": "cs-nlp",
+   "title": "Theory-Driven Analysis of Natural Language Processing Measures of Thought Disorder Using Generative Language Modeling",
+   "human": "S1D2",
+   "match": 0,
+   "ncat": 2,
+   "modal": "S2D1",
+   "modal_n": 16
+  },
+  {
+   "pmid": "37353567",
+   "field": "environ-1",
+   "title": "DOCU-CLIM: A global documentary climate dataset for climate reconstructions",
+   "human": "S1D1",
+   "match": 0,
+   "ncat": 2,
+   "modal": "S3D1",
+   "modal_n": 18
+  },
+  {
+   "pmid": "37854674",
+   "field": "immunology-uk",
+   "title": "Microenvironmental immune cell alterations across the spectrum of nodular lymphocyte predominant Hodgkin lymphoma and T-cell/histiocyte-rich large B-cell lymphoma",
+   "human": "S2D2",
+   "match": 0,
+   "ncat": 3,
+   "modal": "S2D1",
+   "modal_n": 13
+  },
+  {
+   "pmid": "37818209",
+   "field": "health-survey",
+   "title": "PRESS survey: PREvention of surgical site infection\u2014a global pan-specialty survey of practice protocol",
+   "human": "S3D1",
+   "match": 1,
+   "ncat": 3,
+   "modal": "S2D1",
+   "modal_n": 17
+  },
+  {
+   "pmid": "38100737",
+   "field": "medicine-cohort",
+   "title": "Phenotypes and rates of cancer-relevant symptoms and tests in the year before cancer diagnosis in UK Biobank and CPRD Gold",
+   "human": "S2D2",
+   "match": 2,
+   "ncat": 4,
+   "modal": "S3D1",
+   "modal_n": 9
+  },
+  {
+   "pmid": "37039129",
+   "field": "pharma",
+   "title": "Evidence-based consensus guidelines for the management of catatonia: Recommendations from the British Association for Psychopharmacology.",
+   "human": "S3D2",
+   "match": 5,
+   "ncat": 2,
+   "modal": "S3D3",
+   "modal_n": 15
+  },
+  {
+   "pmid": "37930996",
+   "field": "methods-uk",
+   "title": "Introducing effective parameters for predicting job burnout using a self-organizing method based on group method of data handling neural network",
+   "human": "S1D1",
+   "match": 5,
+   "ncat": 5,
+   "modal": "S2D1",
+   "modal_n": 10
+  },
+  {
+   "pmid": "37368896",
+   "field": "methods-paper",
+   "title": "Graph drawing using Jaya",
+   "human": "S1D2",
+   "match": 6,
+   "ncat": 2,
+   "modal": "S1D1",
+   "modal_n": 14
+  },
+  {
+   "pmid": "37590277",
+   "field": "clinical-trial",
+   "title": "Emotion regulation in children (ERiC): A protocol for a randomised clinical trial to evaluate the clinical and cost effectiveness of Mentalization Based Treatment (MBT) vs Treatment as Usual for school-age children with mixed emotional and behavioural difficulties",
+   "human": "S3D3",
+   "match": 7,
+   "ncat": 4,
+   "modal": "S2D1",
+   "modal_n": 7
+  },
+  {
+   "pmid": "37933221",
+   "field": "environ-2",
+   "title": "100 years of anthropogenic impact causes changes in freshwater functional biodiversity",
+   "human": "S1D1",
+   "match": 9,
+   "ncat": 2,
+   "modal": "S2D1",
+   "modal_n": 11
+  },
+  {
+   "pmid": "37022989",
+   "field": "nutrition-1",
+   "title": "A systematic review and meta-analysis of adolescent nutrition in Ethiopia: Transforming adolescent lives through nutrition (TALENT) initiative",
+   "human": "S3D2",
+   "match": 10,
+   "ncat": 2,
+   "modal": "S2D2",
+   "modal_n": 10
+  },
+  {
+   "pmid": "37154682",
+   "field": "pharma-2",
+   "title": "Absence of Clinically Meaningful Drug-Drug Interactions with Rezafungin: Outcome of Investigations",
+   "human": "S3D1",
+   "match": 10,
+   "ncat": 2,
+   "modal": "S2D1",
+   "modal_n": 10
+  },
+  {
+   "pmid": "37113474",
+   "field": "cs-deep",
+   "title": "Exploring Healthy Retinal Aging with Deep Learning",
+   "human": "S1D2",
+   "match": 12,
+   "ncat": 2,
+   "modal": "S1D2",
+   "modal_n": 12
+  },
+  {
+   "pmid": "37186857",
+   "field": "biochem-1",
+   "title": "Design of rigid protein\u2013protein interaction inhibitors enables targeting of undruggable Mcl-1",
+   "human": "S3D1",
+   "match": 12,
+   "ncat": 2,
+   "modal": "S3D1",
+   "modal_n": 12
+  },
+  {
+   "pmid": "37351094",
+   "field": "immunology-2",
+   "title": "Is knowledge about COVID-19 associated with willingness to receive vaccine, vaccine uptake, and vaccine booster uptake in rural Malang, Indonesia?",
+   "human": "S2D1",
+   "match": 12,
+   "ncat": 2,
+   "modal": "S2D1",
+   "modal_n": 12
+  },
+  {
+   "pmid": "36862754",
+   "field": "medicine-trial",
+   "title": "The effect of supervision on community health workers\u2019 effectiveness with households in rural South Africa: A cluster randomized controlled trial",
+   "human": "S3D1",
+   "match": 14,
+   "ncat": 2,
+   "modal": "S3D1",
+   "modal_n": 14
+  },
+  {
+   "pmid": "37359515",
+   "field": "genetics-2",
+   "title": "Genetic insights into immune mechanisms of Alzheimer\u2019s and Parkinson\u2019s disease",
+   "human": "S3D3",
+   "match": 15,
+   "ncat": 2,
+   "modal": "S3D3",
+   "modal_n": 15
+  },
+  {
+   "pmid": "38144895",
+   "field": "pediatric-1",
+   "title": "Children with developmental coordination disorder have less variable motor unit firing rate characteristics across contractions compared to typically developing children",
+   "human": "S2D1",
+   "match": 15,
+   "ncat": 3,
+   "modal": "S2D1",
+   "modal_n": 15
+  },
+  {
+   "pmid": "37052999",
+   "field": "public-h-1",
+   "title": "Online Health Information Seeking for Mpox in Endemic and Nonendemic Countries: Google Trends Study",
+   "human": "S2D2",
+   "match": 18,
+   "ncat": 2,
+   "modal": "S2D2",
+   "modal_n": 18
+  },
+  {
+   "pmid": "36845047",
+   "field": "cancer-1",
+   "title": "Operationalisation of a standardised scoring system to assess adherence to the World Cancer Research Fund/American Institute for Cancer Research cancer prevention recommendations in the UK biobank",
+   "human": "S3D2",
+   "match": 19,
+   "ncat": 2,
+   "modal": "S3D2",
+   "modal_n": 19
+  },
+  {
+   "pmid": "36911683",
+   "field": "micro-1",
+   "title": "MAIT cells and the microbiome",
+   "human": "S3D3",
+   "match": 19,
+   "ncat": 2,
+   "modal": "S3D3",
+   "modal_n": 19
+  },
+  {
+   "pmid": "37139088",
+   "field": "neuro-empirical",
+   "title": "Imaging blood-brain barrier dysfunction: A state-of-the-art review from a clinical perspective",
+   "human": "S3D3",
+   "match": 19,
+   "ncat": 2,
+   "modal": "S3D3",
+   "modal_n": 19
+  },
+  {
+   "pmid": "37368901",
+   "field": "dental-1",
+   "title": "Effect of COVID-19 on dental service delivery in Fiji: Perspective of Dental Officers (Dos) and Dental Managers (DMs)",
+   "human": "S3D1",
+   "match": 20,
+   "ncat": 1,
+   "modal": "S3D1",
+   "modal_n": 20
+  },
+  {
+   "pmid": "37388662",
+   "field": "psychology-1",
+   "title": "Decolonising the psychology curriculum: a perspective",
+   "human": "S3D3",
+   "match": 20,
+   "ncat": 1,
+   "modal": "S3D3",
+   "modal_n": 20
+  },
+  {
+   "pmid": "37396047",
+   "field": "genomics-uk",
+   "title": "Competencies of the UK nursing and midwifery workforce to mainstream genomics in the National Health Service: the ongoing gap between perceived importance and confidence in genomics",
+   "human": "S3D1",
+   "match": 20,
+   "ncat": 1,
+   "modal": "S3D1",
+   "modal_n": 20
+  },
+  {
+   "pmid": "37497700",
+   "field": "cardio-1",
+   "title": "Appraisal of Cardiovascular Risk Factors, Biomarkers, and Ocular Imaging in Cardiovascular Risk Prediction",
+   "human": "S3D3",
+   "match": 20,
+   "ncat": 1,
+   "modal": "S3D3",
+   "modal_n": 20
+  },
+  {
+   "pmid": "38110704",
+   "field": "neuroscience",
+   "title": "Schizophrenia: from neurochemistry to circuits, symptoms and treatments.",
+   "human": "S3D3",
+   "match": 20,
+   "ncat": 1,
+   "modal": "S3D3",
+   "modal_n": 20
+  }
+ ],
+ "overall": {
+  "human_s1_rate": 0.23333333333333334,
+  "human_d1_rate": 0.4,
+  "human_s1_ci": [
+   0.11792239210501232,
+   0.40928672330324267
+  ],
+  "human_d1_ci": [
+   0.24590394326083403,
+   0.5767994750172616
+  ],
+  "confusion_S": {
+   "S1": {
+    "S1": 59,
+    "S2": 3,
+    "S3": 5
+   },
+   "S2": {
+    "S1": 62,
+    "S2": 78,
+    "S3": 67
+   },
+   "S3": {
+    "S1": 19,
+    "S2": 39,
+    "S3": 268
+   }
+  },
+  "confusion_D": {
+   "D1": {
+    "D1": 233,
+    "D2": 77,
+    "D3": 22
+   },
+   "D2": {
+    "D1": 5,
+    "D2": 98,
+    "D3": 17
+   },
+   "D3": {
+    "D1": 2,
+    "D2": 25,
+    "D3": 121
+   }
+  },
+  "mcnemar": {
+   "Gemma4 12B": {
+    "full_only": 5,
+    "abstract_only": 5,
+    "p": 1.0,
+    "agreement": 0.5666666666666667,
+    "s_shift": {
+     "S2->S3": 7,
+     "S1->S2": 2,
+     "S2->S1": 1
+    },
+    "d_shift": {
+     "D3->D2": 2,
+     "D1->D2": 1,
+     "D2->D1": 1
+    }
+   },
+   "Sonnet 5": {
+    "full_only": 2,
+    "abstract_only": 5,
+    "p": 0.453125,
+    "agreement": 0.7,
+    "s_shift": {
+     "S2->S3": 6,
+     "S3->S2": 1,
+     "S2->S1": 1
+    },
+    "d_shift": {
+     "D1->D3": 1,
+     "D2->D1": 1
+    }
+   }
+  },
+  "repeat_curve": {
+   "Gemma4 12B \u00b7 full": {
+    "1": 0.4866666666666667,
+    "3": 0.5,
+    "5": 0.5
+   },
+   "Gemma4 12B \u00b7 abstract": {
+    "1": 0.5333333333333332,
+    "3": 0.5199999999999999,
+    "5": 0.5
+   },
+   "Sonnet 5 \u00b7 full": {
+    "1": 0.47333333333333333,
+    "3": 0.4666666666666667,
+    "5": 0.4666666666666667
+   },
+   "Sonnet 5 \u00b7 abstract": {
+    "1": 0.5733333333333334,
+    "3": 0.5766666666666665,
+    "5": 0.5666666666666667
+   }
+  },
+  "ensembles": {
+   "all 20 runs": 0.5,
+   "Gemma4 12B \u00b7 full + Gemma4 12B \u00b7 abstract": 0.5,
+   "Gemma4 12B \u00b7 full + Sonnet 5 \u00b7 full": 0.43333333333333335,
+   "Gemma4 12B \u00b7 full + Sonnet 5 \u00b7 abstract": 0.5,
+   "Gemma4 12B \u00b7 abstract + Sonnet 5 \u00b7 full": 0.4666666666666667,
+   "Gemma4 12B \u00b7 abstract + Sonnet 5 \u00b7 abstract": 0.5,
+   "Sonnet 5 \u00b7 full + Sonnet 5 \u00b7 abstract": 0.4666666666666667
+  },
+  "triage": {
+   "unanimous_n": 83,
+   "unanimous_acc": 0.6024096385542169,
+   "unanimous_ci": [
+    0.4948463779413774,
+    0.7009123367759931
+   ],
+   "split_n": 37,
+   "split_acc": 0.2972972972972973,
+   "split_ci": [
+    0.17489302346408198,
+    0.45783439172043583
+   ],
+   "chi2": 9.532323326181727,
+   "gap_cluster_ci": [
+    0.13478767682621642,
+    0.46290491118077326
+   ]
+  },
+  "hedging": {
+   "n_hedged": 10,
+   "agr_hedged": 0.2,
+   "agr_plain": 0.6749999999999999,
+   "diff": 0.4749999999999999,
+   "p": 0.00042999570004299955
+  },
+  "between_config_agreement": {
+   "Gemma4 12B \u00b7 full": {
+    "Gemma4 12B \u00b7 full": 1.0,
+    "Gemma4 12B \u00b7 abstract": 0.5666666666666667,
+    "Sonnet 5 \u00b7 full": 0.7333333333333333,
+    "Sonnet 5 \u00b7 abstract": 0.6333333333333333,
+    "Human": 0.5
+   },
+   "Gemma4 12B \u00b7 abstract": {
+    "Gemma4 12B \u00b7 full": 0.5666666666666667,
+    "Gemma4 12B \u00b7 abstract": 1.0,
+    "Sonnet 5 \u00b7 full": 0.5,
+    "Sonnet 5 \u00b7 abstract": 0.6666666666666666,
+    "Human": 0.5
+   },
+   "Sonnet 5 \u00b7 full": {
+    "Gemma4 12B \u00b7 full": 0.7333333333333333,
+    "Gemma4 12B \u00b7 abstract": 0.5,
+    "Sonnet 5 \u00b7 full": 1.0,
+    "Sonnet 5 \u00b7 abstract": 0.7,
+    "Human": 0.4666666666666667
+   },
+   "Sonnet 5 \u00b7 abstract": {
+    "Gemma4 12B \u00b7 full": 0.6333333333333333,
+    "Gemma4 12B \u00b7 abstract": 0.6666666666666666,
+    "Sonnet 5 \u00b7 full": 0.7,
+    "Sonnet 5 \u00b7 abstract": 1.0,
+    "Human": 0.5666666666666667
+   },
+   "Human": {
+    "Gemma4 12B \u00b7 full": 0.5,
+    "Gemma4 12B \u00b7 abstract": 0.5,
+    "Sonnet 5 \u00b7 full": 0.4666666666666667,
+    "Sonnet 5 \u00b7 abstract": 0.5666666666666667,
+    "Human": 1.0
+   }
+  },
+  "between_config_kappa": {
+   "Gemma4 12B \u00b7 full": {
+    "Gemma4 12B \u00b7 full": 1.0,
+    "Gemma4 12B \u00b7 abstract": 0.4848084544253633,
+    "Sonnet 5 \u00b7 full": 0.6566523605150215,
+    "Sonnet 5 \u00b7 abstract": 0.5423023578363384,
+    "Human": 0.4193548387096774
+   },
+   "Gemma4 12B \u00b7 abstract": {
+    "Gemma4 12B \u00b7 full": 0.4848084544253633,
+    "Gemma4 12B \u00b7 abstract": 1.0,
+    "Sonnet 5 \u00b7 full": 0.39919893190921224,
+    "Sonnet 5 \u00b7 abstract": 0.5879120879120878,
+    "Human": 0.40476190476190477
+   },
+   "Sonnet 5 \u00b7 full": {
+    "Gemma4 12B \u00b7 full": 0.6566523605150215,
+    "Gemma4 12B \u00b7 abstract": 0.39919893190921224,
+    "Sonnet 5 \u00b7 full": 1.0,
+    "Sonnet 5 \u00b7 abstract": 0.615931721194879,
+    "Human": 0.37823834196891193
+   },
+   "Sonnet 5 \u00b7 abstract": {
+    "Gemma4 12B \u00b7 full": 0.5423023578363384,
+    "Gemma4 12B \u00b7 abstract": 0.5879120879120878,
+    "Sonnet 5 \u00b7 full": 0.615931721194879,
+    "Sonnet 5 \u00b7 abstract": 1.0,
+    "Human": 0.4820717131474103
+   },
+   "Human": {
+    "Gemma4 12B \u00b7 full": 0.4193548387096774,
+    "Gemma4 12B \u00b7 abstract": 0.40476190476190477,
+    "Sonnet 5 \u00b7 full": 0.37823834196891193,
+    "Sonnet 5 \u00b7 abstract": 0.4820717131474103,
+    "Human": 1.0
+   }
+  },
+  "pooled_cluster_ci": [
+   0.38166666666666665,
+   0.65
+  ],
+  "pooled_agreement": 0.5166666666666667,
+  "pooled_ci": [
+   0.4767017913707214,
+   0.5564194775183384
+  ],
+  "axis_errors": {
+   "S": 195,
+   "D": 148,
+   "both": 53
+  }
+ },
+ "reasoning": {
+  "frames_per_100_words": {
+   "novelty (new / novel)": {
+    "Gemma4 12B \u00b7 full": 2.5028571428571427,
+    "Gemma4 12B \u00b7 abstract": 2.886272257323377,
+    "Sonnet 5 \u00b7 full": 2.6872275359489883,
+    "Sonnet 5 \u00b7 abstract": 2.898803806862831,
+    "Human": 0.1287001287001287
+   },
+   "pre-existing": {
+    "Gemma4 12B \u00b7 full": 1.9542857142857142,
+    "Gemma4 12B \u00b7 abstract": 1.7375071797817347,
+    "Sonnet 5 \u00b7 full": 1.958487865183161,
+    "Sonnet 5 \u00b7 abstract": 1.5978346284816205,
+    "Human": 0.7722007722007722
+   },
+   "sharing / availability": {
+    "Gemma4 12B \u00b7 full": 0.26285714285714284,
+    "Gemma4 12B \u00b7 abstract": 0.11487650775416428,
+    "Sonnet 5 \u00b7 full": 0.9044179842540179,
+    "Sonnet 5 \u00b7 abstract": 0.43656683838295646,
+    "Human": 0.3861003861003861
+   },
+   "genericness": {
+    "Gemma4 12B \u00b7 full": 0.6628571428571428,
+    "Gemma4 12B \u00b7 abstract": 0.4164273406088455,
+    "Sonnet 5 \u00b7 full": 0.8133255254082894,
+    "Sonnet 5 \u00b7 abstract": 0.8382083296952764,
+    "Human": 0.3861003861003861
+   },
+   "study's purpose / output": {
+    "Gemma4 12B \u00b7 full": 0.5485714285714286,
+    "Gemma4 12B \u00b7 abstract": 0.7754164273406089,
+    "Sonnet 5 \u00b7 full": 0.6376472119200989,
+    "Sonnet 5 \u00b7 abstract": 1.0215664018161181,
+    "Human": 0.2574002574002574
+   }
+  },
+  "novelty_sharing_ratio": {
+   "Gemma4 12B \u00b7 full": 9.521739130434783,
+   "Gemma4 12B \u00b7 abstract": 25.125,
+   "Sonnet 5 \u00b7 full": 2.971223021582734,
+   "Sonnet 5 \u00b7 abstract": 6.64,
+   "Human": 0.3333333333333333
+  },
+  "dismissal": {
+   "rate": {
+    "Gemma4 12B \u00b7 full": 0.3466666666666667,
+    "Gemma4 12B \u00b7 abstract": 0.20666666666666667,
+    "Sonnet 5 \u00b7 full": 0.5866666666666667,
+    "Sonnet 5 \u00b7 abstract": 0.5266666666666666
+   },
+   "with_move": {
+    "n": 250,
+    "S1": 0.056,
+    "S2": 0.444,
+    "S3": 0.5,
+    "agree": 0.404
+   },
+   "without": {
+    "n": 350,
+    "S1": 0.15142857142857144,
+    "S2": 0.2742857142857143,
+    "S3": 0.5742857142857143,
+    "agree": 0.5971428571428572
+   },
+   "agree_gap": 0.19314285714285717,
+   "agree_gap_ci": [
+    0.029234215971367383,
+    0.3522374122932494
+   ],
+   "within_paper": {
+    "lower": 6.0,
+    "higher": 0.0,
+    "p": 0.03125
+   }
+  },
+  "toolname": {
+   "rate": {
+    "Gemma4 12B \u00b7 full": 0.3333333333333333,
+    "Gemma4 12B \u00b7 abstract": 0.10666666666666667,
+    "Sonnet 5 \u00b7 full": 0.3933333333333333,
+    "Sonnet 5 \u00b7 abstract": 0.13333333333333333
+   },
+   "with_tool": {
+    "n": 145,
+    "S2": 0.7310344827586207,
+    "agree": 0.16551724137931034
+   },
+   "without": {
+    "n": 455,
+    "S2": 0.22197802197802197,
+    "agree": 0.6285714285714286
+   },
+   "within_paper": {
+    "higher": 8.0,
+    "lower": 4.0,
+    "n_discordant": 12.0,
+    "p": 0.3876953125
+   }
+  },
+  "length": {
+   "paper_level_r": -0.5641006853435193,
+   "paper_level_ci": [
+    -0.7766215679088181,
+    -0.29082513088765777
+   ],
+   "within_cell_r": 0.0010518949400304483,
+   "by_config_raw": {
+    "Gemma4 12B \u00b7 full": -0.060073401384331857,
+    "Gemma4 12B \u00b7 abstract": -0.3143593580504356,
+    "Sonnet 5 \u00b7 full": -0.27606695230870437,
+    "Sonnet 5 \u00b7 abstract": -0.4108797274227774
+   },
+   "by_config_centred": {
+    "Gemma4 12B \u00b7 full": 0.037295209178006716,
+    "Gemma4 12B \u00b7 abstract": -0.07815584457912887,
+    "Sonnet 5 \u00b7 full": -0.005430939975273336,
+    "Sonnet 5 \u00b7 abstract": 0.03582677022355775
+   }
+  },
+  "argument_overlap": {
+   "same_label": 0.41016140261975514,
+   "diff_label": 0.2762777645074291,
+   "n_diff_pairs": 193,
+   "near_identical_but_different": 4
+  },
+  "hedging_model": {
+   "rate": {
+    "Gemma4 12B \u00b7 full": 0.0,
+    "Gemma4 12B \u00b7 abstract": 0.02,
+    "Sonnet 5 \u00b7 full": 0.06,
+    "Sonnet 5 \u00b7 abstract": 0.15333333333333332
+   },
+   "agree_hedged": 0.4,
+   "n_hedged": 35,
+   "agree_plain": 0.5238938053097345
+  },
+  "deficit_statements": {
+   "abstract_runs": 0,
+   "total": 1
+  },
+  "repository_mentions": {
+   "github": 1,
+   "zenodo": 0,
+   "figshare": 0,
+   "osf": 5,
+   "dryad": 0,
+   "'repository'": 13
+  }
+ }
+}

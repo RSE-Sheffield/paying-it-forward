@@ -141,8 +141,8 @@
     },
     {
         "reviewer": "edwin",
-        "category": "Study creates a climate dataset. From the software perspective, they publish r code for 'generating the plots in this paper, for reading in all files and extracting desired information, and for the forward modeling'. I think this qualifies as producing software because it allows the user to regenerate this dataset.",
-        "reasoning": "S1D1",
+        "category": "S1D1",
+        "reasoning": "Study creates a climate dataset. From the software perspective, they publish r code for 'generating the plots in this paper, for reading in all files and extracting desired information, and for the forward modeling'. I think this qualifies as producing software because it allows the user to regenerate this dataset.",
         "pmid": "37353567",
         "pmcid": "PMC10290071",
         "field": "environ-1",
@@ -181,8 +181,8 @@
     },
     {
         "reviewer": "edwin",
-        "category": "",
-        "reasoning": "",
+        "category": "S3D3",
+        "reasoning": "This is a review paper that is discussing the genetics of alzheimers and parkinsons disease. No significant data or software is used in the study.",
         "pmid": "37359515",
         "pmcid": "PMC10285485",
         "field": "genetics-2",

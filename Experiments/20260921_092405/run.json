@@ -15,5 +15,6 @@
   "task_file": "/home/edwin/Documents/paying-it-forward/paying-it-forward/task.md",
   "num_papers_total": 30,
   "num_papers_run": 30,
-  "num_papers_classified": 30
+  "num_papers_classified": 30,
+  "version": "0.0.0"
 }

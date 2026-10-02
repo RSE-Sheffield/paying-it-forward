@@ -6,7 +6,7 @@ This project aims to build a metric or set of criteria that describes whether a 
 
 For this project, we have limited the scope to only software and data. Arguably, there are many types of research artefact such as a new theoretical methodology, hardware or protocols.
 
-![Research Output Taxonomy](research_output_taxonomy.png)
+![Research Output Taxonomy](pif_image_generation/typology.png)
 
 ## Spike 0
 

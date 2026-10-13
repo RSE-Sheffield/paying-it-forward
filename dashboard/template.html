@@ -21,6 +21,9 @@
   --series-3:       #1baf7a;
   --series-4:       #eda100;
   --series-5:       #e87ba4;
+  --series-6:       #8a63d2;
+  --series-7:       #9a6b3f;
+  --series-8:       #3f8f9f;
   --good:           #0ca30c;
   --critical:       #d03b3b;
   --warning:        #fab219;
@@ -47,6 +50,9 @@
     --series-3:       #199e70;
     --series-4:       #c98500;
     --series-5:       #d55181;
+    --series-6:       #9d7ae6;
+    --series-7:       #b5824f;
+    --series-8:       #4fa9ba;
     --ramp-0: #0d366b; --ramp-1: #104281; --ramp-2: #184f95; --ramp-3: #1c5cab;
     --ramp-4: #256abf; --ramp-5: #2a78d6; --ramp-6: #3987e5;
     --ramp-ink-lo: #ffffff;
@@ -70,6 +76,9 @@
   --series-3:       #199e70;
   --series-4:       #c98500;
   --series-5:       #d55181;
+  --series-6:       #9d7ae6;
+  --series-7:       #b5824f;
+  --series-8:       #4fa9ba;
   --ramp-0: #0d366b; --ramp-1: #104281; --ramp-2: #184f95; --ramp-3: #1c5cab;
   --ramp-4: #256abf; --ramp-5: #2a78d6; --ramp-6: #3987e5;
   --ramp-ink-lo: #ffffff;
@@ -137,6 +146,9 @@ header.top {
 .config-toggle[aria-pressed="true"].c3 { border-color: var(--series-3); background: color-mix(in srgb, var(--series-3) 8%, var(--surface-1)); }
 .config-toggle[aria-pressed="true"].c4 { border-color: var(--series-4); background: color-mix(in srgb, var(--series-4) 8%, var(--surface-1)); }
 .config-toggle[aria-pressed="true"].c5 { border-color: var(--series-5); background: color-mix(in srgb, var(--series-5) 8%, var(--surface-1)); }
+.config-toggle[aria-pressed="true"].c6 { border-color: var(--series-6); background: color-mix(in srgb, var(--series-6) 8%, var(--surface-1)); }
+.config-toggle[aria-pressed="true"].c7 { border-color: var(--series-7); background: color-mix(in srgb, var(--series-7) 8%, var(--surface-1)); }
+.config-toggle[aria-pressed="true"].c8 { border-color: var(--series-8); background: color-mix(in srgb, var(--series-8) 8%, var(--surface-1)); }
 .config-toggle[data-partial="true"] { border-style: dashed; }
 .config-toggle .nm { font-weight: 600; font-size: 13px; display: block; line-height: 1.3; }
 .config-toggle .bl { font-size: 11px; color: var(--text-muted); display: block; margin-top: 2px; }
@@ -158,6 +170,9 @@ header.top {
 .chip[aria-pressed="true"].c3 { border-color: var(--series-3); background: color-mix(in srgb, var(--series-3) 12%, var(--surface-1)); }
 .chip[aria-pressed="true"].c4 { border-color: var(--series-4); background: color-mix(in srgb, var(--series-4) 12%, var(--surface-1)); }
 .chip[aria-pressed="true"].c5 { border-color: var(--series-5); background: color-mix(in srgb, var(--series-5) 12%, var(--surface-1)); }
+.chip[aria-pressed="true"].c6 { border-color: var(--series-6); background: color-mix(in srgb, var(--series-6) 12%, var(--surface-1)); }
+.chip[aria-pressed="true"].c7 { border-color: var(--series-7); background: color-mix(in srgb, var(--series-7) 12%, var(--surface-1)); }
+.chip[aria-pressed="true"].c8 { border-color: var(--series-8); background: color-mix(in srgb, var(--series-8) 12%, var(--surface-1)); }
 
 /* ---------- tabs ---------- */
 nav.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 18px; overflow-x: auto; }
@@ -458,6 +473,8 @@ details.raw pre { background: var(--surface-2); border-radius: 8px; padding: 10p
       <div style="margin-left:auto; display:flex; gap:6px;">
         <button class="btn" data-preset="all" type="button">All runs</button>
         <button class="btn" data-preset="models" type="button">Models only</button>
+        <button class="btn" data-preset="criteria" type="button"
+          title="Runs that used the current criteria.md">Current criteria</button>
         <button class="btn" data-preset="none" type="button">Clear</button>
       </div>
     </div>
@@ -487,7 +504,11 @@ const configSlot = (id) => cfgOf(id).slot || 1;
 const configColor = (id) => `var(--series-${configSlot(id)})`;
 const configLabel = (id) => cfgOf(id).label || id;
 const isHuman = (id) => !!cfgOf(id).human;
-const HUMAN_ID = (CONFIGS.find((c) => c.human) || {}).id || null;
+/* The human reference is every selected human run pooled, reduced per paper
+   to its most-chosen category like any configuration's repeats. A human
+   configuration is itself scored against the *other* humans, so their own
+   vote never props up their agreement. */
+const HUMAN_COLOR = "var(--text-secondary)";
 
 /* ---------- tiny DOM helpers (all text via textContent — data is untrusted) ---------- */
 function el(tag, attrs, kids) {
@@ -563,14 +584,27 @@ const state = {
   varSort: "spread",
   paperSort: "spread",
   boardSort: "best",
+  consRef: "combined",   // reviewer the consensus tab scores against, or "combined"
   search: "",
   tables: new Set(),          // chart ids currently showing their table twin
   openReasons: new Set(),     // "pmid|run_id"
 };
 
+// The run selection survives reloads and rebuilds. Stored as the runs switched
+// *off*, so a run added by a later rebuild shows up rather than staying hidden.
+const RUNS_KEY = "pif-runs-excluded";
+try {
+  for (const id of JSON.parse(localStorage.getItem(RUNS_KEY) || "[]")) state.runs.delete(id);
+} catch (e) {}
+function saveSelection() {
+  const off = DATA.runs.filter((r) => !state.runs.has(r.run_id)).map((r) => r.run_id);
+  try { off.length ? localStorage.setItem(RUNS_KEY, JSON.stringify(off)) : localStorage.removeItem(RUNS_KEY); } catch (e) {}
+}
+
 const selectedRuns = () => DATA.runs.filter((r) => state.runs.has(r.run_id));
 const selectedInConfig = (id) => selectedRuns().filter((r) => r.config === id);
 const activeConfigs = () => CONFIG_IDS.filter((id) => selectedInConfig(id).length > 0);
+const humanRuns = () => selectedRuns().filter((r) => isHuman(r.config));
 
 /* ---------- stats ---------- */
 function tally(judgements) {
@@ -612,35 +646,6 @@ function spreadOf(pmid, runs) {
 }
 
 const axisMatch = (a, b, i) => !!a && !!b && a.slice(i * 2, i * 2 + 2) === b.slice(i * 2, i * 2 + 2);
-
-/** Consensus of every paper for one configuration, plus agreement against a
-    reference configuration (normally the human pass). */
-function configSummary(config, refConfig) {
-  const runs = selectedInConfig(config);
-  const refRuns = refConfig ? selectedInConfig(refConfig) : [];
-  const rows = DATA.papers.map((p) => {
-    const c = consensus(p.pmid, runs);
-    const ref = refRuns.length ? consensus(p.pmid, refRuns) : null;
-    return {
-      pmid: p.pmid, paper: p, cons: c, ref,
-      exact: ref && c.category && ref.category ? c.category === ref.category : null,
-      sMatch: ref ? axisMatch(c.category, ref.category, 0) : null,
-      dMatch: ref ? axisMatch(c.category, ref.category, 1) : null,
-    };
-  });
-  const scored = rows.filter((r) => r.exact !== null);
-  const withVotes = rows.filter((r) => r.cons.n > 0);
-  return {
-    config, runs, rows,
-    nPapers: withVotes.length,
-    unanimous: withVotes.filter((r) => r.cons.share === 1).length,
-    exact: scored.length ? scored.filter((r) => r.exact).length / scored.length : null,
-    exactN: scored.filter((r) => r.exact).length,
-    scoredN: scored.length,
-    sAgree: scored.length ? scored.filter((r) => r.sMatch).length / scored.length : null,
-    dAgree: scored.length ? scored.filter((r) => r.dMatch).length / scored.length : null,
-  };
-}
 
 /* ---------- reusable components ---------- */
 function codePill(cat, opts) {
@@ -1128,7 +1133,10 @@ function paperDetail() {
 
 /** Per-paper spread of one configuration's repeats. */
 function variationOf(configId) {
-  const runs = selectedInConfig(configId);
+  return { configId, ...variationOfRuns(selectedInConfig(configId)) };
+}
+/** Per-paper vote split across an arbitrary set of runs. */
+function variationOfRuns(runs) {
   const rows = DATA.papers.map((p) => {
     const byRun = J_BY_PAPER.get(p.pmid) || new Map();
     const votes = runs.map((r) => ({ run: r, cat: (byRun.get(r.run_id) || {}).category || "" }))
@@ -1150,12 +1158,12 @@ function variationOf(configId) {
       dissent: ordered.filter((v) => v.cat !== modal),
     };
   }).filter((r) => r.n > 0);
-  return { configId, runs, rows };
+  return { runs, rows };
 }
 
 function viewVariation() {
-  const configs = activeConfigs();
-  if (!configs.length) return el("div", { class: "card empty", text: "No configurations selected — pick at least one above." });
+  const configs = activeConfigs().filter((id) => !isHuman(id));
+  if (!configs.length) return el("div", { class: "card empty", text: "No model configurations selected — pick at least one above. Human reviewers are on the Human variation tab." });
 
   // Default to the first selected configuration that actually has repeats.
   if (!configs.includes(state.config)) {
@@ -1266,18 +1274,146 @@ function viewVariation() {
   return el("div", {}, cards);
 }
 
+/* ---------- view: human variation ---------- */
+/** How much the human reviewers disagree with each other: one vote per
+    selected human run, laid out like a configuration's repeats. */
+function viewHumanVariation() {
+  const runs = humanRuns();
+  if (runs.length < 2) {
+    return el("div", { class: "card empty", text: runs.length
+      ? "Only one human run is in view, so there is nobody to disagree with. Select more human reviewers above."
+      : "No human runs are in view — select the human reviewers above." });
+  }
+  const v = variationOfRuns(runs);
+  const n = runs.length;
+  const label = (r) => configLabel(r.config);
+  const cards = [];
+
+  // A reviewer with several runs in view (e.g. passes under old and new
+  // criteria) gets one vote per run — say so rather than hide it.
+  const perReviewer = {};
+  for (const r of runs) perReviewer[r.config] = (perReviewer[r.config] || 0) + 1;
+  const doubled = Object.keys(perReviewer).filter((id) => perReviewer[id] > 1);
+  if (doubled.length) {
+    cards.push(el("div", { class: "card banner" }, el("div", { class: "card-note", style: "margin:0", text:
+      `${doubled.map((id) => `${configLabel(id)} has ${perReviewer[id]} runs`).join("; ")} in view, and each run counts as a separate vote. `
+      + "Use the Current criteria preset, or trim runs on the Runs tab, to compare one pass per reviewer." })));
+  }
+
+  const unanimous = v.rows.filter((r) => r.distinct === 1).length;
+  const allDiffer = v.rows.filter((r) => r.distinct === r.n && r.n > 1).length;
+  const meanShare = v.rows.length ? v.rows.reduce((a, r) => a + r.share, 0) / v.rows.length : 0;
+  cards.push(el("div", { class: "tiles" }, [
+    tile("Mean agreement", pct(meanShare), `share of reviewers on each paper's majority, over ${v.rows.length} papers`),
+    tile("Unanimous", String(unanimous), `of ${v.rows.length} papers — all ${n} agreed`),
+    tile("Split", String(v.rows.length - unanimous), "papers where the reviewers disagreed"),
+    tile("All different", String(allDiffer), "papers where no two reviewers agreed"),
+  ]));
+
+  // --- pairwise agreement ---------------------------------------------------
+  const pairRows = [];
+  for (let i = 0; i < runs.length; i++) for (let k = i + 1; k < runs.length; k++) {
+    const a = runs[i], b = runs[k];
+    const pairs = DATA.papers.map((p) => {
+      const byRun = J_BY_PAPER.get(p.pmid) || new Map();
+      return [(byRun.get(a.run_id) || {}).category, (byRun.get(b.run_id) || {}).category];
+    }).filter(([x, y]) => x && y);
+    const share = (f) => pairs.length ? pairs.filter(f).length / pairs.length : null;
+    pairRows.push({
+      a, b, n: pairs.length,
+      exact: share(([x, y]) => x === y),
+      s: share(([x, y]) => axisMatch(x, y, 0)),
+      d: share(([x, y]) => axisMatch(x, y, 1)),
+    });
+  }
+  const runName = (r) => perReviewer[r.config] > 1 ? `${label(r)} (${r.run_id})` : label(r);
+  const fmt = (x) => x === null ? "—" : pct(x);
+  cards.push(el("div", { class: "card" }, [
+    el("h2", { text: "Reviewer against reviewer" }),
+    el("div", { class: "card-note", text:
+      "Every pair of reviewers over the papers both judged. Exact is the whole category; S and D axis score each half on its own." }),
+    table(
+      [{ label: "Pair" }, { label: "Papers", num: true }, { label: "Exact", num: true },
+       { label: "S axis", num: true }, { label: "D axis", num: true }],
+      pairRows.map((r) => [
+        nodeCell(el("span", { style: "display:inline-flex; align-items:center; gap:7px; flex-wrap:wrap" }, [
+          el("span", { class: "swatch", style: `background:${configColor(r.a.config)}` }), runName(r.a),
+          el("span", { class: "muted", text: "vs" }),
+          el("span", { class: "swatch", style: `background:${configColor(r.b.config)}` }), runName(r.b),
+        ])),
+        numCell(r.n), numCell(fmt(r.exact)), numCell(fmt(r.s)), numCell(fmt(r.d)),
+      ])),
+  ]));
+
+  // --- who is the odd one out ---------------------------------------------
+  // A reviewer dissents on a paper when they are outside a strict majority;
+  // tied papers have no majority to dissent from, so they are left out.
+  const decided = v.rows.filter((r) => !r.tied);
+  const oddBars = runs.map((r) => {
+    const out = decided.filter((row) => row.dissent.some((d) => d.run.run_id === r.run_id)).length;
+    return { label: runName(r), value: out, color: configColor(r.config),
+             tipTitle: `${runName(r)} — outvoted on ${out} of ${decided.length} papers` };
+  });
+  if (n > 2) {
+    cards.push(chartCard("hv-odd", "Who is the odd one out?",
+      `Papers where each reviewer sits outside the majority, out of the ${decided.length} papers that have one `
+      + `(${v.rows.length - decided.length} tied paper${v.rows.length - decided.length === 1 ? "" : "s"} left out). `
+      + "A reviewer who is outvoted far more often than the others is reading the criteria differently.",
+      () => el("div", { style: "--rl-w:220px" }, simpleBars(oddBars, { unit: "papers outvoted",
+        format: (x) => `${x} paper${x === 1 ? "" : "s"}`, max: Math.max(1, decided.length) })),
+      () => table([{ label: "Reviewer" }, { label: "Outvoted", num: true }, { label: "Share", num: true }],
+        oddBars.map((b) => [b.label, numCell(b.value), numCell(decided.length ? pct(b.value / decided.length) : "—")]))));
+  }
+
+  // --- paper by paper -------------------------------------------------------
+  const sorted = v.rows.slice().sort((a, b) =>
+    state.varSort === "paper"
+      ? (a.paper.title || "").localeCompare(b.paper.title || "")
+      : a.share - b.share || b.distinct - a.distinct);
+  cards.push(el("div", { class: "card" }, [
+    el("div", { class: "card-head" }, [
+      el("h2", { text: "Every paper, every reviewer" }),
+      el("button", { class: "btn", type: "button",
+        onclick: () => { state.varSort = state.varSort === "paper" ? "spread" : "paper"; render(); },
+        text: state.varSort === "paper" ? "Sort by spread" : "Sort by title" }),
+    ]),
+    el("div", { class: "card-note", text:
+      "One cell per reviewer. Cells in the majority take that reviewer's colour; grey cells are reviewers who chose something else, labelled with their category. A tied paper has no majority, so all its cells stay grey. Hover a cell for who it is, or click a row to read every reviewer's reasoning." }),
+    // With three reviewers a tie is everyone disagreeing, so no cell is "the majority".
+    el("div", {}, sorted.map((r) => variationRow(r.tied ? { ...r, modal: null } : r,
+      (vote) => configColor(vote.run.config), "hvar"))),
+  ]));
+
+  // --- where the split lands ----------------------------------------------
+  const humanDissent = (modal, other) =>
+    decided.filter((r) => r.modal === modal)
+      .reduce((a, r) => a + r.dissent.filter((d) => d.cat === other).length, 0);
+  if (CATS.some((m) => CATS.some((o) => humanDissent(m, o) > 0))) {
+    const dissentCount = humanDissent;
+    cards.push(chartCard("hv-drift", "Where do the reviewers split?",
+      "Rows are the majority category for a paper, columns what the outvoted reviewers chose instead. Tied papers have no majority and are left out.",
+      () => driftMatrix(dissentCount),
+      () => table([{ label: "Majority / dissent" }, ...CATS.map((c) => ({ label: c, num: true })), { label: "Total", num: true }],
+        CATS.map((m) => [m, ...CATS.map((o) => numCell(dissentCount(m, o))),
+          numCell(CATS.reduce((a, o) => a + dissentCount(m, o), 0))]))));
+  }
+
+  return el("div", {}, cards);
+}
+
 /** One paper: a cell per run, majority first, each labelled with its category. */
-function variationRow(r, color) {
-  const key = "var:" + state.config + ":" + r.pmid;
+function variationRow(r, color, keyPrefix) {
+  const key = (keyPrefix || "var:" + state.config) + ":" + r.pmid;
   const open = state.openReasons.has(key);
   const cells = r.votes.map((vote) => {
     const isModal = vote.cat === r.modal;
+    const fill = typeof color === "function" ? color(vote) : color;
     return hoverable(el("span", {
       class: "vote-cell" + (isModal ? " modal" : ""), tabindex: "0",
-      style: isModal ? `background:${color}` : null, text: vote.cat,
+      style: isModal ? `background:${fill}` : null, text: vote.cat,
     }), () => [
-      el("div", { class: "tl", text: vote.run.run_id }),
-      tipLine(isModal ? "majority category" : "dissenting vote", vote.cat, isModal ? color : "var(--baseline)"),
+      el("div", { class: "tl", text: `${configLabel(vote.run.config)} · ${vote.run.run_id}` }),
+      tipLine(isModal ? "majority category" : "dissenting vote", vote.cat, isModal ? fill : "var(--baseline)"),
     ]);
   });
   const head = el("button", { class: "jhead", type: "button", "aria-expanded": String(open), onclick: () => {
@@ -1305,7 +1441,7 @@ function variationRow(r, color) {
   return el("div", { class: "jrow" }, kids);
 }
 
-/** Human category (rows) x what the model runs chose (columns), row-normalised
+/** Human category (rows) x the model consensus (columns), row-normalised
     so each row reads as "when the human said X, the models said ...". */
 function substitutionMatrix(used, grid, rowTotal) {
   const cells = [el("div", { class: "hd" })];
@@ -1325,19 +1461,19 @@ function substitutionMatrix(used, grid, rowTotal) {
       }, el("span", { class: "num", text: v ? pct(share) : "" }));
       cells.push(hoverable(cell, () => [
         el("div", { class: "tl", text: `human ${h} → models said ${m}` }),
-        tipLine("of model runs", pct(share)),
-        el("div", { class: "tl", text: `${v} of ${n} runs` }),
+        tipLine("of model consensus calls", pct(share)),
+        el("div", { class: "tl", text: `${v} of ${n}` }),
       ]));
     }
   }
   return el("div", {}, [
     el("div", { class: "scroll-x" }, matrixFrame(
       el("div", { class: "matrix", style: "grid-template-columns: max-content repeat(9, 1fr)" }, cells),
-      "the model runs chose →", "← human said")),
+      "the model consensus chose →", "← human said")),
     el("div", { class: "ramp-legend" }, [
       el("span", { class: "sw", style: "background:var(--surface-2)" }), "0%",
       ...[0, 1, 2, 3, 4, 5, 6].map((i) => el("span", { class: "sw", style: `background:var(--ramp-${i})` })),
-      "100%", el("span", { class: "muted", text: "of that row's model runs · green outline = agreement" }),
+      "100%", el("span", { class: "muted", text: "of that row · green outline = agreement" }),
     ]),
   ]);
 }
@@ -1410,252 +1546,288 @@ function driftMatrix(cellCount) {
   ]);
 }
 
-/* ---------- view: consensus ---------- */
+/* ---------- view: model consensus vs human ---------- */
+const humanConfigs = () => [...new Set(humanRuns().map((r) => r.config))];
+/** One reviewer's category for a paper — the most-chosen across their selected runs. */
+const humanCat = (pmid, h) => consensus(pmid, selectedInConfig(h)).category;
+const listNames = (ids) => {
+  const names = ids.map(configLabel);
+  return names.length < 3 ? names.join(" and ") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+};
+
+/** Every (paper, reviewer) comparison for one configuration: its consensus
+    against each reviewer in refIds. A reviewer is never compared with
+    themselves, so a human row only scores against the others. */
+function pairsFor(arm, refIds) {
+  const runs = selectedInConfig(arm);
+  const refs = refIds.filter((h) => h !== arm);
+  const out = [];
+  for (const p of DATA.papers) {
+    const c = consensus(p.pmid, runs);
+    if (!c.category) continue;
+    for (const h of refs) {
+      const hc = humanCat(p.pmid, h);
+      if (hc) out.push({ pmid: p.pmid, h, hc, mc: c.category, cons: c });
+    }
+  }
+  return out;
+}
+function scorePairs(pairs) {
+  const n = pairs.length;
+  const share = (f) => n ? pairs.filter(f).length / n : null;
+  return {
+    n, exactN: pairs.filter((x) => x.mc === x.hc).length,
+    exact: share((x) => x.mc === x.hc),
+    s: share((x) => axisMatch(x.mc, x.hc, 0)),
+    d: share((x) => axisMatch(x.mc, x.hc, 1)),
+  };
+}
+
 function viewConsensus() {
   const arms = activeConfigs();
-  const modelArms = arms.filter((a) => !isHuman(a));
   if (!arms.length) return el("div", { class: "card empty", text: "No configurations selected — pick at least one above." });
-  const hasHuman = !!HUMAN_ID && arms.includes(HUMAN_ID);
-
-  const summaries = arms.map((a) => configSummary(a, hasHuman && !isHuman(a) ? HUMAN_ID : null));
-  const byArm = new Map(summaries.map((s) => [s.config, s]));
-
-  const head = el("div", { class: "card" }, [
-    el("h2", { text: "Reduce the repeats, then compare" }),
-    el("div", { class: "card-note", text: "Each configuration's repeated runs collapse to the category chosen most often per paper. Ties are marked with * and resolved in taxonomy order for the comparison." }),
-    el("div", { class: "scroll-x" }, el("table", {}, [
-      el("thead", {}, el("tr", {}, [
-        el("th", { text: "Configuration" }), el("th", { class: "num", text: "Runs" }),
-        el("th", { class: "num", text: "Unanimous" }),
-        el("th", { class: "num", text: "Exact" }), el("th", { class: "num", text: "S axis" }),
-        el("th", { class: "num", text: "D axis" }),
-      ])),
-      el("tbody", {}, summaries.map((s) => el("tr", {}, [
-        el("td", {}, el("span", { style: "display:inline-flex; align-items:center; gap:7px" }, [
-          el("span", { class: "swatch", style: `background:${configColor(s.config)}` }), configLabel(s.config)])),
-        el("td", { class: "num", text: String(s.runs.length) }),
-        el("td", { class: "num", text: s.runs.length > 1 ? `${s.unanimous}/${s.nPapers}` : "—" }),
-        el("td", { class: "num", text: s.exact === null ? "—" : `${pct(s.exact)} (${s.exactN}/${s.scoredN})` }),
-        el("td", { class: "num", text: s.sAgree === null ? "—" : pct(s.sAgree) }),
-        el("td", { class: "num", text: s.dAgree === null ? "—" : pct(s.dAgree) }),
-      ]))),
-    ])),
-    el("div", { class: "card-note", style: "margin:10px 0 0",
-      text: "Unanimous counts the papers where every repeat picked the same category. "
-        + "Exact, S axis and D axis are agreement with the human: the whole category, and each axis on its own." }),
-  ]);
-
+  const humans = humanConfigs();
+  if (!humans.length) {
+    return el("div", { class: "card empty", text: "No human reviewers are in view — select at least one above to compare against." });
+  }
+  if (state.consRef !== "combined" && !humans.includes(state.consRef)) state.consRef = "combined";
+  const combined = state.consRef === "combined";
+  const refIds = combined ? humans : [state.consRef];
+  const refName = combined ? "the reviewers" : configLabel(state.consRef);
+  const modelArms = arms.filter((a) => !isHuman(a));
+  // On an individual tab the chosen reviewer is the reference, not a row.
+  const rowArms = arms.filter((a) => combined || a !== state.consRef);
+  const pairs = new Map(rowArms.map((a) => [a, pairsFor(a, refIds)]));
+  const unit = combined ? "comparisons" : "papers";
   const cards = [];
 
-  if (hasHuman && modelArms.length) {
-    const counter = (a) => {
-      const s = byArm.get(a);
-      return (modelCat, humanCat) =>
-        s.rows.filter((r) => r.cons.category === modelCat && r.ref && r.ref.category === humanCat).length;
-    };
-    const sharedMax = Math.max(1, ...modelArms.flatMap((a) => {
+  // --- which reviewer, and what is being measured --------------------------
+  const multi = refIds.filter((h) => selectedInConfig(h).length > 1);
+  cards.push(el("div", { class: "card banner" }, [
+    el("div", { class: "card-head" }, [
+      el("h2", { text: combined ? "Model consensus vs every reviewer" : `Model consensus vs ${refName}` }),
+    ]),
+    el("div", { class: "chips", style: "margin-bottom:12px" }, [
+      ...humans.map((h) => el("button", {
+        class: `chip c${configSlot(h)}`, type: "button", "aria-pressed": String(state.consRef === h),
+        onclick: () => { state.consRef = h; render(); }, text: configLabel(h),
+      })),
+      el("button", {
+        class: "chip", type: "button", "aria-pressed": String(combined),
+        onclick: () => { state.consRef = "combined"; render(); }, text: "Combined",
+      }),
+    ]),
+    el("div", { class: "prose" }, combined ? [
+      para(`Each model configuration's repeats are first reduced to its consensus: the category it chose most often for each paper. `
+        + `That one category is then compared with every reviewer in view separately — ${listNames(humans)} — and the comparisons are pooled. `
+        + `A paper where the consensus matches two of three reviewers counts as 2 of 3, so every reviewer's call is kept and no tie between reviewers ever needs breaking.`),
+      para("Each reviewer is scored the same way against the others, so the human rows are the benchmark: how often one human agrees with another. "
+        + "Every count on this sub-tab is a paper–reviewer comparison, so a panel totals papers × reviewers."),
+    ] : [
+      para(`This sub-tab simply measures each model configuration's consensus against ${refName}. `
+        + `A configuration's repeats are reduced to the category it chose most often for each paper, and that one category is compared with ${refName}'s category for the same paper: it agrees or it doesn't, with no partial credit.`),
+      para(`The other reviewers are listed as rows too, each scored against ${refName} the same way, as a yardstick for how much humans differ among themselves. `
+        + "Pick another reviewer above, or Combined to score against all of them at once."),
+    ]),
+    el("div", { class: "card-note", style: "margin:6px 0 0", text:
+      "Where a configuration's own repeats tie, the category first in taxonomy order is used; the Tied column counts those papers."
+      + (multi.length ? ` ${multi.map((h) => `${configLabel(h)} has ${selectedInConfig(h).length} runs in view, so their category is the one chosen most often across them`).join("; ")}.` : "") }),
+  ]));
+
+  // --- summary table --------------------------------------------------------
+  const fmt = (x) => x === null ? "—" : pct(x);
+  const perHumanCols = combined && humans.length > 1;
+  cards.push(el("div", { class: "card" }, [
+    el("h2", { text: "Agreement by configuration" }),
+    el("div", { class: "card-note", text: combined
+      ? "Exact is the share of paper–reviewer comparisons where the consensus matched the reviewer's category; the vs columns break it down by reviewer. S axis and D axis score each half of the category on its own."
+      : `Exact is the share of papers where the consensus matched ${refName}. S axis and D axis score each half of the category on its own.` }),
+    table([
+      { label: "Configuration" }, { label: "Runs", num: true }, { label: "Unanimous", num: true }, { label: "Tied", num: true },
+      ...(perHumanCols ? humans.map((h) => ({ label: `vs ${configLabel(h).replace(/^Human \((.*)\)$/, "$1")}`, num: true })) : []),
+      { label: "Exact", num: true }, { label: "S axis", num: true }, { label: "D axis", num: true },
+    ], rowArms.map((a) => {
+      const runs = selectedInConfig(a);
+      const conses = DATA.papers.map((p) => consensus(p.pmid, runs)).filter((c) => c.n > 0);
+      const sc = scorePairs(pairs.get(a));
+      return [
+        nodeCell(el("span", { style: "display:inline-flex; align-items:center; gap:7px" }, [
+          el("span", { class: "swatch", style: `background:${configColor(a)}` }), configLabel(a)])),
+        numCell(runs.length),
+        numCell(runs.length > 1 ? `${conses.filter((c) => c.share === 1).length}/${conses.length}` : "—"),
+        numCell(runs.length > 1 ? conses.filter((c) => c.tied.length > 1).length : "—"),
+        ...(perHumanCols ? humans.map((h) => numCell(h === a ? "—" : fmt(scorePairs(pairs.get(a).filter((x) => x.h === h)).exact))) : []),
+        numCell(sc.exact === null ? "—" : `${pct(sc.exact)} (${sc.exactN}/${sc.n})`),
+        numCell(fmt(sc.s)), numCell(fmt(sc.d)),
+      ];
+    })),
+  ]));
+
+  // --- one confusion panel per configuration -------------------------------
+  const panelArms = rowArms.filter((a) => pairs.get(a).length);
+  if (panelArms.length) {
+    const counter = (a) => (mc, hc) => pairs.get(a).filter((x) => x.mc === mc && x.hc === hc).length;
+    const sharedMax = Math.max(1, ...panelArms.flatMap((a) => {
       const f = counter(a);
       return CATS.flatMap((mc) => CATS.map((hc) => f(mc, hc)));
     }));
-    cards.push(chartCard("cm-all", "Where each configuration lands against the human",
-      "One panel per configuration. Rows (left) are the human's category, columns (top) are the configuration's most-chosen one — the same way round as the substitution matrix below. The green outline marks the diagonal where they agree, so anything off it is a disagreement. All panels share one colour scale.",
+    cards.push(chartCard("cm-all", `Where each configuration lands against ${refName}`,
+      `One panel per configuration. Rows (left) are ${combined ? "a reviewer's" : `${refName}'s`} category, columns (top) are the configuration's consensus. `
+      + "The green outline marks the diagonal where they agree, so anything off it is a disagreement. All panels share one colour scale."
+      + (combined ? " Each paper appears once per reviewer." : ""),
       () => el("div", {}, [
-        matrixFrame(el("div", { class: "panel-grid" }, modelArms.map((a) => {
-          const s = byArm.get(a);
+        matrixFrame(el("div", { class: "panel-grid" }, panelArms.map((a) => {
+          const sc = scorePairs(pairs.get(a));
           return el("div", { class: "panel" }, [
             el("div", { class: "panel-cap" }, [
               el("span", { class: "rect", style: `background:${configColor(a)}` }),
               el("span", { style: "min-width:0" }, [
                 el("span", { class: "nm", text: configLabel(a) }),
-                el("span", { class: "sub", text: s.exact === null ? "" : `${s.exactN}/${s.scoredN} papers agree` }),
+                el("span", { class: "sub", text: `${sc.exactN}/${sc.n} ${unit} agree` }),
               ]),
             ]),
-            confusionMatrix(s, counter(a), { compact: true, noLegend: true, noAxis: true, max: sharedMax }),
+            confusionMatrix(null, counter(a), { compact: true, noLegend: true, noAxis: true, max: sharedMax }),
           ]);
-        })), "each configuration chose →", "← human said"),
+        })), "each configuration's consensus →", combined ? "← a reviewer said" : `← ${refName} said`),
         el("div", { style: "margin-top:12px; border-top:1px solid var(--grid); padding-top:10px" },
-          rampLegend(sharedMax, "papers — one scale shared by every panel · green outline = agreement")),
+          rampLegend(sharedMax, `${unit} — one scale shared by every panel · green outline = agreement`)),
       ]),
-      () => el("div", {}, modelArms.map((a) => {
-        const f = counter(a), s = byArm.get(a);
+      () => el("div", {}, panelArms.map((a) => {
+        const f = counter(a);
         return el("div", { style: "margin-bottom:18px" }, [
           el("h3", { style: "margin-bottom:6px", text: configLabel(a) }),
-          table([{ label: "Human / model" }, ...CATS.map((c) => ({ label: c, num: true })), { label: "Total", num: true }],
+          table([{ label: "Human / consensus" }, ...CATS.map((c) => ({ label: c, num: true })), { label: "Total", num: true }],
             CATS.map((hc) => [hc, ...CATS.map((mc) => numCell(f(mc, hc))),
-              numCell(s.rows.filter((r) => r.ref && r.ref.category === hc).length)])),
+              numCell(pairs.get(a).filter((x) => x.hc === hc).length)])),
         ]);
       }))));
   }
 
-  // How the model runs respond to each call the human actually made. Pooled
-  // across every selected model run, so this is run-level, not consensus-level.
-  let swapCard = null;
-  if (hasHuman && modelArms.length) {
-    const modelRuns = selectedRuns().filter((r) => !isHuman(r.config));
-    const grid = Object.fromEntries(CATS.map((h) => [h, Object.fromEntries(CATS.map((m) => [m, 0]))]));
-    for (const p of DATA.papers) {
-      const human = consensus(p.pmid, selectedInConfig(HUMAN_ID)).category;
-      if (!human) continue;
-      const byRun = J_BY_PAPER.get(p.pmid) || new Map();
-      for (const r of modelRuns) {
-        const c = (byRun.get(r.run_id) || {}).category;
-        if (c) grid[human][c]++;
-      }
-    }
-    const rowTotal = (h) => CATS.reduce((a, m) => a + grid[h][m], 0);
-    const used = CATS.filter((h) => rowTotal(h) > 0);
-    if (used.length) {
-      swapCard = chartCard("agree-swap", "What the models pick instead",
-        "Each row is a category the human used, read across as the share of model runs landing in each category. "
-        + "The green outline is the diagonal, where the models matched; everything else in that row is what they chose instead.",
-        () => substitutionMatrix(used, grid, rowTotal),
-        () => table(
-          [{ label: "Human said" }, ...CATS.map((c) => ({ label: c, num: true })), { label: "Runs", num: true }],
-          used.map((h) => [h, ...CATS.map((m) => numCell(grid[h][m] || "—")), numCell(rowTotal(h))])));
-    }
+  // Everything below pools the model configurations only: their consensus
+  // against the reviewer(s), one comparison per paper per reviewer.
+  const modelPairs = modelArms.flatMap((a) => pairs.get(a) || []);
+  if (!modelPairs.length) return el("div", {}, cards);
+
+  // --- what the models pick instead ----------------------------------------
+  const grid = Object.fromEntries(CATS.map((h) => [h, Object.fromEntries(CATS.map((m) => [m, 0]))]));
+  for (const x of modelPairs) grid[x.hc][x.mc]++;
+  const rowTotal = (h) => CATS.reduce((a, m) => a + grid[h][m], 0);
+  const used = CATS.filter((h) => rowTotal(h) > 0);
+  const swapCard = chartCard("agree-swap", "What the models pick instead",
+    `Each row is a category ${refName} used, read across as the share of model configurations whose consensus landed in each category`
+    + (combined ? " (pooled over every reviewer)" : "") + ". "
+    + "The green outline is the diagonal, where the models matched; everything else in that row is what they chose instead.",
+    () => substitutionMatrix(used, grid, rowTotal),
+    () => table(
+      [{ label: "Human said" }, ...CATS.map((c) => ({ label: c, num: true })), { label: unit, num: true }],
+      used.map((h) => [h, ...CATS.map((m) => numCell(grid[h][m] || "—")), numCell(rowTotal(h))])));
+
+  // --- each axis on its own --------------------------------------------------
+  const AXES = [
+    { key: "S", levels: S_AXIS, from: 0, to: 2, label: "Software axis" },
+    { key: "D", levels: D_AXIS, from: 2, to: 4, label: "Data axis" },
+  ];
+  const grids = AXES.map((ax) => ({
+    ...ax,
+    g: Object.fromEntries(ax.levels.map((a) => [a, Object.fromEntries(ax.levels.map((b) => [b, 0]))])),
+  }));
+  let disagree = 0, both = 0;
+  for (const x of modelPairs) {
+    for (const ax of grids) ax.g[x.hc.slice(ax.from, ax.to)][x.mc.slice(ax.from, ax.to)]++;
+    const sDiff = !axisMatch(x.mc, x.hc, 0), dDiff = !axisMatch(x.mc, x.hc, 1);
+    if (sDiff || dDiff) disagree++;
+    if (sDiff && dDiff) both++;
   }
-
-  // The same pooled judgements, split into the two axes the taxonomy is built
-  // from. A category can be wrong on software, on data, or on both, and the
-  // two axes fail in different directions — which the 9x9 view above hides.
-  let axisCard = null;
-  if (hasHuman && modelArms.length) {
-    const modelRuns = selectedRuns().filter((r) => !isHuman(r.config));
-    const AXES = [
-      { key: "S", levels: S_AXIS, from: 0, to: 2, label: "Software axis" },
-      { key: "D", levels: D_AXIS, from: 2, to: 4, label: "Data axis" },
-    ];
-    const grids = AXES.map((ax) => ({
-      ...ax,
-      g: Object.fromEntries(ax.levels.map((a) => [a, Object.fromEntries(ax.levels.map((b) => [b, 0]))])),
-    }));
-    let judged = 0, disagree = 0, both = 0;
-    for (const pa of DATA.papers) {
-      const h = consensus(pa.pmid, selectedInConfig(HUMAN_ID)).category;
-      if (!h) continue;
-      const byRun = J_BY_PAPER.get(pa.pmid) || new Map();
-      for (const r of modelRuns) {
-        const c = (byRun.get(r.run_id) || {}).category;
-        if (!c) continue;
-        judged++;
-        for (const x of grids) x.g[h.slice(x.from, x.to)][c.slice(x.from, x.to)]++;
-        const sDiff = h.slice(0, 2) !== c.slice(0, 2);
-        const dDiff = h.slice(2, 4) !== c.slice(2, 4);
-        if (sDiff || dDiff) disagree++;
-        if (sDiff && dDiff) both++;
-      }
-    }
-    const wrong = (x) => x.levels.reduce((a, h) =>
-      a + x.levels.reduce((b, m) => b + (h === m ? 0 : x.g[h][m]), 0), 0);
-
-    if (judged) {
-      axisCard = chartCard("axis-conf", "Each axis on its own",
-        `Every model judgement scored against the human on one axis at a time — ${fmtNum(judged)} judgements. `
-        + "Rows are the human's level, columns the model's, and each row is normalised to 100% so it reads as "
-        + `"when the human said this, the models said that". Of ${disagree} disagreeing judgements, `
-        + `${disagree - both} (${pct(disagree ? (disagree - both) / disagree : 0)}) are wrong on one axis only — `
-        + "the model usually has half the answer right.",
-        () => el("div", {}, [
-          matrixFrame(el("div", { class: "panel-grid", style: "grid-template-columns: repeat(auto-fit, minmax(230px, 1fr))" },
-            grids.map((x) => el("div", { class: "panel" }, [
-              el("div", { class: "panel-cap" }, [
-                el("span", { class: "rect", style: "background:var(--series-1)" }),
-                el("span", { style: "min-width:0" }, [
-                  el("span", { class: "nm", text: x.label }),
-                  el("span", { class: "sub", text: `${wrong(x)} of ${fmtNum(judged)} disagree` }),
-                ]),
-              ]),
-              axisMatrix(x),
-            ]))), "the model runs chose →", "← human said"),
-          el("div", { class: "ramp-legend" }, [
-            el("span", { class: "sw", style: "background:var(--surface-2)" }), "0%",
-            ...[0, 1, 2, 3, 4, 5, 6].map((i) => el("span", { class: "sw", style: `background:var(--ramp-${i})` })),
-            "100%", el("span", { class: "muted", text: "of that row · green outline = agreement" }),
+  const judged = modelPairs.length;
+  const wrong = (x) => x.levels.reduce((a, h) =>
+    a + x.levels.reduce((b, m) => b + (h === m ? 0 : x.g[h][m]), 0), 0);
+  const axisCard = chartCard("axis-conf", "Each axis on its own",
+    `Every model configuration's consensus scored against ${refName} on one axis at a time — ${fmtNum(judged)} ${unit}. `
+    + `Rows are ${combined ? "the reviewer's" : `${refName}'s`} level, columns the consensus's, and each row is normalised to 100% so it reads as `
+    + `"when the human said this, the models said that". Of ${disagree} disagreeing ${unit}, `
+    + `${disagree - both} (${pct(disagree ? (disagree - both) / disagree : 0)}) are wrong on one axis only.`,
+    () => el("div", {}, [
+      matrixFrame(el("div", { class: "panel-grid", style: "grid-template-columns: repeat(auto-fit, minmax(230px, 1fr))" },
+        grids.map((x) => el("div", { class: "panel" }, [
+          el("div", { class: "panel-cap" }, [
+            el("span", { class: "rect", style: "background:var(--series-1)" }),
+            el("span", { style: "min-width:0" }, [
+              el("span", { class: "nm", text: x.label }),
+              el("span", { class: "sub", text: `${wrong(x)} of ${fmtNum(judged)} disagree` }),
+            ]),
           ]),
-        ]),
-        () => el("div", {}, grids.map((x) => el("div", { style: "margin-bottom:18px" }, [
-          el("h3", { style: "margin-bottom:6px", text: x.label }),
-          table([{ label: "Human said" }, ...x.levels.map((l) => ({ label: l, num: true })), { label: "Runs", num: true }],
-            x.levels.map((h) => {
-              const n = x.levels.reduce((a, m) => a + x.g[h][m], 0);
-              return [`${h} · ${DATA.taxonomy[h].label}`,
-                ...x.levels.map((m) => numCell(n ? `${pct(x.g[h][m] / n)} (${x.g[h][m]})` : "—")),
-                numCell(n)];
-            })),
-        ]))));
-    }
-  }
-
-  // Summary and substitution share the top row; the axis split and the
-  // per-configuration panels follow.
-  cards.unshift(el("div", { class: "card-row" }, swapCard ? [head, swapCard] : [head]));
-  if (axisCard) cards.splice(1, 0, axisCard);
-
-  // Leaderboard: every model run scored against the human's call for that paper.
-  if (hasHuman && modelArms.length) {
-    const modelRuns = selectedRuns().filter((r) => !isHuman(r.config));
-    const board = DATA.papers.map((p) => {
-      const byRun = J_BY_PAPER.get(p.pmid) || new Map();
-      const human = consensus(p.pmid, selectedInConfig(HUMAN_ID)).category;
-      const perConfig = modelArms.map((a) => {
-        const runs = selectedInConfig(a);
-        const votes = runs.map((r) => (byRun.get(r.run_id) || {}).category || "").filter(Boolean);
-        const agree = human ? votes.filter((c) => c === human).length : 0;
-        const other = {};
-        for (const c of votes) if (c !== human) other[c] = (other[c] || 0) + 1;
-        return { id: a, runs: runs.length, votes: votes.length, agree, other };
-      });
-      const agree = perConfig.reduce((x, c) => x + c.agree, 0);
-      const scored = perConfig.reduce((x, c) => x + c.votes, 0);
-      return { paper: p, pmid: p.pmid, human, perConfig, agree, scored,
-               share: scored ? agree / scored : 0 };
-    }).filter((r) => r.human && r.scored);
-
-    const ranked = board.slice().sort((a, b) =>
-      state.boardSort === "worst"
-        ? a.agree - b.agree || (a.paper.title || "").localeCompare(b.paper.title || "")
-        : b.agree - a.agree || (a.paper.title || "").localeCompare(b.paper.title || ""));
-    const total = modelRuns.length;
-    const perfect = board.filter((r) => r.agree === r.scored).length;
-    const zero = board.filter((r) => r.agree === 0).length;
-    const mean = board.length ? board.reduce((x, r) => x + r.share, 0) / board.length : 0;
-
-    const lbCard = el("div", { class: "card" }, [
-      el("div", { class: "card-head" }, [
-        el("h2", { text: "Leaderboard — papers by agreement with the human" }),
-        el("button", { class: "btn", type: "button",
-          onclick: () => { state.boardSort = state.boardSort === "worst" ? "best" : "worst"; render(); },
-          text: state.boardSort === "worst" ? "Most agreed first" : "Least agreed first" }),
+          axisMatrix(x),
+        ]))), "the model consensus chose →", "← human said"),
+      el("div", { class: "ramp-legend" }, [
+        el("span", { class: "sw", style: "background:var(--surface-2)" }), "0%",
+        ...[0, 1, 2, 3, 4, 5, 6].map((i) => el("span", { class: "sw", style: `background:var(--ramp-${i})` })),
+        "100%", el("span", { class: "muted", text: "of that row · green outline = agreement" }),
       ]),
-      el("div", { class: "card-note", text:
-        `Every model run scored against the human's category for that paper — ${total} runs across `
-        + `${modelArms.length} configuration${modelArms.length === 1 ? "" : "s"}. `
-        + "The bar shows which configurations agreed. Click a row for the breakdown." }),
-      el("div", { class: "tiles", style: "margin-bottom:14px" }, [
-        tile("Mean agreement", pct(mean), `across ${board.length} papers`),
-        tile("Full house", String(perfect), `papers where all ${total} runs matched the human`),
-        tile("Nobody agreed", String(zero), "papers where no run matched the human"),
-      ]),
-      el("div", {}, ranked.map((r, i) => leaderboardRow(r, i + 1, total))),
-    ]);
-    if (!board.length) {
-      clear(lbCard).appendChild(el("div", { class: "empty", text: "The human pass has no category recorded for any paper in view." }));
-    }
-    cards.push(lbCard);
-  }
+    ]),
+    () => el("div", {}, grids.map((x) => el("div", { style: "margin-bottom:18px" }, [
+      el("h3", { style: "margin-bottom:6px", text: x.label }),
+      table([{ label: "Human said" }, ...x.levels.map((l) => ({ label: l, num: true })), { label: unit, num: true }],
+        x.levels.map((h) => {
+          const n = x.levels.reduce((a, m) => a + x.g[h][m], 0);
+          return [`${h} · ${DATA.taxonomy[h].label}`,
+            ...x.levels.map((m) => numCell(n ? `${pct(x.g[h][m] / n)} (${x.g[h][m]})` : "—")),
+            numCell(n)];
+        })),
+    ]))));
+
+  cards.push(el("div", { class: "card-row" }, [swapCard, axisCard]));
+
+  // --- leaderboard ------------------------------------------------------------
+  const board = DATA.papers.map((p) => {
+    const perConfig = modelArms.map((a) => {
+      const ps = pairs.get(a).filter((x) => x.pmid === p.pmid);
+      return { id: a, cons: consensus(p.pmid, selectedInConfig(a)),
+               agree: ps.filter((x) => x.mc === x.hc).length, of: ps.length };
+    });
+    const hcats = refIds.map((h) => ({ h, cat: humanCat(p.pmid, h) })).filter((x) => x.cat);
+    const agree = perConfig.reduce((x, c) => x + c.agree, 0);
+    const scored = perConfig.reduce((x, c) => x + c.of, 0);
+    return { paper: p, pmid: p.pmid, hcats, perConfig, agree, scored, share: scored ? agree / scored : 0 };
+  }).filter((r) => r.scored);
+
+  const ranked = board.slice().sort((a, b) =>
+    (state.boardSort === "worst" ? a.share - b.share : b.share - a.share)
+    || (a.paper.title || "").localeCompare(b.paper.title || ""));
+  const mean = board.length ? board.reduce((x, r) => x + r.share, 0) / board.length : 0;
+  const perfect = board.filter((r) => r.agree === r.scored).length;
+  const zero = board.filter((r) => r.agree === 0).length;
+  cards.push(el("div", { class: "card" }, [
+    el("div", { class: "card-head" }, [
+      el("h2", { text: `Leaderboard — papers by agreement with ${refName}` }),
+      el("button", { class: "btn", type: "button",
+        onclick: () => { state.boardSort = state.boardSort === "worst" ? "best" : "worst"; render(); },
+        text: state.boardSort === "worst" ? "Most agreed first" : "Least agreed first" }),
+    ]),
+    el("div", { class: "card-note", text: combined
+      ? `Each paper scored by how many configuration–reviewer pairs matched: ${modelArms.length} model configuration${modelArms.length === 1 ? "" : "s"} × ${humans.length} reviewer${humans.length === 1 ? "" : "s"}. The bar shows which configurations' consensus matched. Click a row for the breakdown.`
+      : `Each paper scored by how many of the ${modelArms.length} model configuration${modelArms.length === 1 ? "" : "s"}' consensus matched ${refName}. Click a row for the breakdown.` }),
+    el("div", { class: "tiles", style: "margin-bottom:14px" }, [
+      tile("Mean agreement", pct(mean), `across ${board.length} papers`),
+      tile("Full house", String(perfect), combined ? "papers where every configuration matched every reviewer" : `papers where every configuration matched ${refName}`),
+      tile("Nobody agreed", String(zero), combined ? "papers where no configuration matched any reviewer" : `papers where no configuration matched ${refName}`),
+    ]),
+    board.length
+      ? el("div", {}, ranked.map((r, i) => leaderboardRow(r, i + 1)))
+      : el("div", { class: "empty", text: "No paper in view has both a model consensus and a reviewer's category." }),
+  ]));
 
   return el("div", {}, cards);
 }
 
 /** One paper on the leaderboard, expandable to the per-configuration split. */
-function leaderboardRow(r, rank, total) {
-  const key = "lb:" + r.pmid;
+function leaderboardRow(r, rank) {
+  const key = "lb:" + state.consRef + ":" + r.pmid;
   const open = state.openReasons.has(key);
   const segs = r.perConfig.filter((c) => c.agree > 0).map((c) =>
     hoverable(el("span", { tabindex: "0", class: "lb-seg",
-      style: `width:${(c.agree / Math.max(1, total)) * 100}%; background:${configColor(c.id)}` }), () => [
+      style: `width:${(c.agree / Math.max(1, r.scored)) * 100}%; background:${configColor(c.id)}` }), () => [
       el("div", { class: "tl", text: r.paper.title || r.pmid }),
-      tipLine(`${configLabel(c.id)} runs matching ${r.human}`, `${c.agree}/${c.votes}`, configColor(c.id)),
+      tipLine(`${configLabel(c.id)} consensus ${c.cons.category} matched`, `${c.agree}/${c.of}`, configColor(c.id)),
     ]));
   const head = el("button", { class: "jhead", type: "button", "aria-expanded": String(open), onclick: () => {
     open ? state.openReasons.delete(key) : state.openReasons.add(key);
@@ -1665,31 +1837,31 @@ function leaderboardRow(r, rank, total) {
     el("span", { class: "lb-rank num", text: `${rank}` }),
     el("span", { class: "lb-score num", text: `${r.agree}/${r.scored}` }),
     el("span", { class: "lb-bar" }, segs),
-    codePill(r.human, { title: `human: ${categoryTitle(r.human)}` }),
+    ...r.hcats.map((x) => codePill(x.cat, { title: `${configLabel(x.h)}: ${categoryTitle(x.cat)}` })),
     el("span", { class: "snip", style: "color:var(--text-primary); white-space:normal", text: r.paper.title || r.pmid }),
   ]);
   const kids = [head];
   if (open) {
     kids.push(el("div", { style: "padding: 4px 0 14px 22px" }, [
       el("div", { class: "card-note", style: "margin-bottom:8px" }, [
-        el("span", { text: `${r.paper.field || ""} · ${r.paper.year || ""} · the human called this ` }),
-        el("b", { text: r.human }),
-        el("span", { text: ` — ${categoryTitle(r.human)}` }),
+        el("span", { text: `${r.paper.field || ""} · ${r.paper.year || ""} · ` }),
+        ...r.hcats.flatMap((x, i) => [
+          i ? el("span", { text: ", " }) : null,
+          el("span", { text: `${configLabel(x.h)} called this ` }), el("b", { text: x.cat }),
+        ]).filter(Boolean),
       ]),
       table(
-        [{ label: "Configuration" }, { label: "Agreed", num: true }, { label: "What the rest said" }],
+        [{ label: "Configuration" }, { label: "Consensus" }, { label: "Repeats behind it", num: true }, { label: "Matched", num: true }],
         r.perConfig.map((c) => [
           nodeCell(el("span", { style: "display:inline-flex; align-items:center; gap:7px" }, [
             el("span", { class: "swatch", style: `background:${configColor(c.id)}` }), configLabel(c.id)])),
-          nodeCell(el("span", { class: "match " + (c.agree === c.votes ? "yes" : c.agree ? "part" : "no") },
-            [el("span", { class: "dot" }), `${c.agree}/${c.votes}`]), true),
-          nodeCell(el("span", { style: "display:inline-flex; gap:6px; flex-wrap:wrap" },
-            Object.keys(c.other).length
-              ? Object.keys(c.other).sort((x, y) => CATS.indexOf(x) - CATS.indexOf(y)).map((cat) =>
-                  el("span", { class: "code", title: axisMatch(cat, r.human, 0) ? "software axis matches"
-                    : axisMatch(cat, r.human, 1) ? "data axis matches" : categoryTitle(cat),
-                    text: `${cat} ×${c.other[cat]}` }))
-              : [el("span", { class: "muted", text: "—" })])),
+          nodeCell(el("span", { style: "display:inline-flex; gap:6px; align-items:center" }, [
+            codePill(c.cons.category),
+            c.cons.tied.length > 1 ? el("span", { class: "code tied", title: `tied with ${c.cons.tied.slice(1).join(", ")}`, text: "tie" }) : null,
+          ])),
+          numCell(`${c.cons.count}/${c.cons.n}`),
+          nodeCell(el("span", { class: "match " + (c.agree === c.of ? "yes" : c.agree ? "part" : "no") },
+            [el("span", { class: "dot" }), `${c.agree}/${c.of}`]), true),
         ])),
       el("button", { class: "btn", type: "button", style: "margin-top:10px",
         onclick: () => { state.paper = r.pmid; state.tab = "papers"; render(); },
@@ -1755,10 +1927,10 @@ const para = (text) => el("p", { class: "prose", text });
 
 /** Papers where the human's category is one no model run picked. */
 function zeroAgreementCases() {
-  const humanRuns = selectedInConfig(HUMAN_ID);
+  const humans = humanRuns();
   const modelRuns = selectedRuns().filter((r) => !isHuman(r.config));
   return DATA.papers.map((p) => {
-    const human = consensus(p.pmid, humanRuns).category;
+    const human = consensus(p.pmid, humans).category;
     const byRun = J_BY_PAPER.get(p.pmid) || new Map();
     const votes = modelRuns.map((r) => ({ run: r, cat: (byRun.get(r.run_id) || {}).category }))
       .filter((v) => v.cat);
@@ -1767,7 +1939,11 @@ function zeroAgreementCases() {
     const ranked = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || CATS.indexOf(a) - CATS.indexOf(b));
     return {
       paper: p, human, votes, counts, ranked,
-      humanRun: humanRuns[0] || null,
+      // One quote per human configuration: whichever of its runs judged this paper.
+      humanQuotes: [...new Set(humans.map((r) => r.config))].map((id) => {
+        const r = humans.find((h) => h.config === id && (byRun.get(h.run_id) || {}).category);
+        return r ? { run: r, j: byRun.get(r.run_id) } : null;
+      }).filter(Boolean),
       agree: human ? votes.filter((v) => v.cat === human).length : 0,
     };
   }).filter((c) => c.human && c.votes.length && c.agree === 0)
@@ -1777,7 +1953,7 @@ function zeroAgreementCases() {
 function viewReasoning() {
   const configs = activeConfigs();
   if (!configs.length) return el("div", { class: "card empty", text: "No configurations selected — pick at least one above." });
-  if (!HUMAN_ID || !selectedInConfig(HUMAN_ID).length) {
+  if (!humanRuns().length) {
     return el("div", { class: "card empty", text: "This tab compares model reasoning against the human's, so the human pass needs to be in view." });
   }
 
@@ -1840,7 +2016,7 @@ function caseRow(c) {
   }}, [
     el("span", { class: "caret", text: open ? "▾" : "▸" }),
     el("span", { class: "case-verdict" }, [
-      el("span", { class: "swatch", style: `background:${configColor(HUMAN_ID)}` }),
+      el("span", { class: "swatch", style: `background:${HUMAN_COLOR}` }),
       codePill(c.human, { title: `human: ${categoryTitle(c.human)}` }),
       el("span", { class: "muted", text: "vs" }),
       codePill(top, { title: `models: ${categoryTitle(top)}` }),
@@ -1866,8 +2042,8 @@ function caseRow(c) {
         el("span", { text: `${c.paper.field || ""} · ${c.paper.year || ""} · the models spread over ` }),
         el("b", { text: c.ranked.map((r) => `${r} ×${c.counts[r]}`).join(", ") }),
       ]),
-      c.humanRun ? quoteBlock(configLabel(HUMAN_ID), configColor(HUMAN_ID), c.human,
-        (J_BY_PAPER.get(c.paper.pmid).get(c.humanRun.run_id) || {}).reasoning, c.humanRun.run_id) : null,
+      ...c.humanQuotes.map((q) => quoteBlock(configLabel(q.run.config), configColor(q.run.config), q.j.category,
+        q.j.reasoning, q.run.run_id)),
       ...picks.map((v) => quoteBlock(configLabel(v.run.config), configColor(v.run.config), v.cat,
         (J_BY_PAPER.get(c.paper.pmid).get(v.run.run_id) || {}).reasoning, v.run.run_id,
         `${v.n} of ${v.of} runs said ${v.cat}`)),
@@ -1979,8 +2155,9 @@ function runCard(r) {
 const TABS = [
   { id: "overview", label: "Overview", view: viewOverview },
   { id: "papers", label: "Papers", view: viewPapers },
-  { id: "variation", label: "Variation", view: viewVariation },
-  { id: "consensus", label: "Consensus vs human", view: viewConsensus },
+  { id: "variation", label: "Model variation", view: viewVariation },
+  { id: "human-variation", label: "Human variation", view: viewHumanVariation },
+  { id: "consensus", label: "Model consensus vs human", view: viewConsensus },
   { id: "reasoning", label: "Reasoning", view: viewReasoning },
   { id: "runs", label: "Runs", view: viewRuns },
 ];
@@ -2012,7 +2189,8 @@ function renderFilters() {
     ]), () => configToggleTip(id, runs, nOn)));
   }
   document.getElementById("sel-count").textContent =
-    `${activeConfigs().length} of ${CONFIGS.length} configurations · ${state.runs.size} runs · ${DATA.papers.length} papers`;
+    `${activeConfigs().length} of ${CONFIGS.length} configurations · ${state.runs.size} runs · ${DATA.papers.length} papers`
+    + " · selection remembered in this browser";
 }
 
 /** Hover card for a configuration toggle. */
@@ -2043,6 +2221,7 @@ function renderTabs() {
 
 function render() {
   hideTip();
+  saveSelection();
   renderFilters();
   renderTabs();
   const view = clear(document.getElementById("view"));
@@ -2057,6 +2236,8 @@ document.querySelectorAll("[data-preset]").forEach((b) => b.addEventListener("cl
   if (p === "all") state.runs = new Set(DATA.runs.map((r) => r.run_id));
   else if (p === "none") state.runs = new Set();
   else if (p === "models") state.runs = new Set(DATA.runs.filter((r) => !isHuman(r.config)).map((r) => r.run_id));
+  else if (p === "criteria") state.runs = new Set(DATA.runs
+    .filter((r) => r.criteria_sha === DATA.criteria_sha).map((r) => r.run_id));
   render();
 }));
 

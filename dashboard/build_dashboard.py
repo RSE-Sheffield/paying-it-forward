@@ -199,6 +199,7 @@ def build(experiments: Path, repo_root: Path) -> dict:
         "taxonomy": {k: {"label": v[0], "desc": v[1]} for k, v in TAXONOMY.items()},
         "configs": [configs[cid] for cid in config_order],
         "criteria_md": read("criteria.md"),
+        "criteria_sha": sha(repo_root / "criteria.md") if (repo_root / "criteria.md").exists() else None,
         "task_md": read("task.md"),
         "papers": sorted(papers.values(), key=lambda p: p["pmid"]),
         "runs": runs,

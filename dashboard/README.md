@@ -34,14 +34,30 @@ model or input mode appears on its own:
 | `model` + `content: "metadata"` | *model* · abstract only |
 | `model` is null | Human (*provider*) |
 
-At the time of writing that gives five: Claude Sonnet 5 and Gemma4 12B each
-over full text and abstract-only, plus the manual human pass. Each is assigned
-a colour slot in a fixed order and keeps it across every tab.
+At the time of writing that gives seven: Claude Sonnet 5 and Gemma4 12B each
+over full text and abstract-only, plus a manual pass each from Edwin, Matt and
+Michael. Each is assigned one of eight colour slots in a fixed order and keeps
+it across every tab.
+
+**Comparing against humans.** The Model consensus vs human tab never pools
+the reviewers into a single answer. Each model configuration is reduced to its
+consensus (the category its repeats chose most often per paper) and compared
+with one reviewer at a time. The Reasoning tab still uses the reviewers'
+majority category.
 
 The selector at the top of the page toggles whole configurations on and off,
 and scopes every tab below it. Individual runs can still be added or dropped
 one at a time on the **Runs** tab; when a configuration is only partly
 selected its toggle says so.
+
+**Current criteria** selects the runs (model and human) whose copy of
+`criteria.md` matches the repo's current one, compared by hash.
+
+The selection is saved in the browser's `localStorage`, so it survives
+reloading the page and rebuilding it. What's saved is the list of runs switched
+*off*, so a run added by a later rebuild appears switched on. **All runs**
+resets it. Because it lives in the browser, it isn't shared across browsers or
+machines.
 
 ## Tabs
 
@@ -56,23 +72,34 @@ selected its toggle says so.
   left to widest disagreement on the right; click a dot to open that paper's
   distribution below. The list beside it is sortable by most categories, fewest
   categories, or title, and any run's row expands to its full reasoning.
-- **Variation** — how much a configuration disagrees with *itself*. Mean
+- **Model variation** — how much a model configuration disagrees with *itself*. Mean
   agreement per configuration, how often k of n repeats land on the same
   category, a paper-by-paper strip showing every repeat's vote (majority in
   colour, dissent in grey with its own label), and a matrix of where the
   dissenting votes go when it wavers.
-- **Consensus vs human** — a confusion-matrix panel per configuration (rows
-  the human's category, columns the configuration's most-chosen one, all
-  sharing one colour scale; every matrix on this tab puts the human on the
-  rows, since the human is the reference);
-  a summary of stability and exact/per-axis agreement; which of the human's
-  categories the models agree with most, and what they pick instead when they
-  don't (both pooled across every model run, row-normalised); and a leaderboard
-  ranking every paper by how many model runs matched the human's call, each
-  row expandable to the per-configuration split.
+- **Human variation** — how much the human reviewers disagree with each
+  other, one vote per selected human run. Headline agreement, every pair of
+  reviewers scored on exact category, and each axis, how often each
+  reviewer is outvoted, a paper-by-paper strip (majority cells in each
+  reviewer's colour, dissent in grey), and where the outvoted reviewers go.
+  Tied papers have no majority, so they are left uncoloured and out of the
+  outvoted and split counts. If a reviewer has more than one run in view, each
+  run votes separately and the tab says so.
+- **Model consensus vs human** — one sub-tab per selected reviewer plus
+  **Combined**. A reviewer's sub-tab simply scores each model configuration's
+  consensus against that reviewer's category, paper by paper, with the other
+  reviewers listed as rows for comparison. **Combined** compares the consensus
+  with every reviewer separately and pools the comparisons, so matching two of
+  three reviewers counts as 2 of 3 and no tie between reviewers ever needs
+  breaking; each reviewer is scored against the others the same way, as the
+  benchmark. Every card on the tab (the summary table with a per-reviewer
+  breakdown, one confusion panel per configuration, what the models pick
+  instead, each axis on its own, and the per-paper leaderboard) uses the same
+  consensus-against-reviewer comparison. Ties among a configuration's own
+  repeats are resolved in taxonomy order and counted in the Tied column.
 - **Reasoning** — the free-text justifications rather than the labels. Shows
   the papers where no model run reached the human's category, each expanding to
-  the human's reasoning beside one quote per configuration. The quotes come
+  each human's reasoning beside one quote per model configuration. The quotes come
   straight from the run files; the commentary between them is written by Claude
   and is labelled as such, because it is an LLM's interpretation of unstructured
   text rather than something derived arithmetically from the data.

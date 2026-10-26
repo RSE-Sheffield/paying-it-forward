@@ -1,0 +1,24 @@
+title: Trial 2 — 30-paper balanced subsample of PIF run 1
+description: >
+  30 papers drawn from the PIF run 1 venue-banded sample (OpenAlex, UK-affiliated,
+  2016–2025): citedness bands 8/8/7/7, all 26 fields at least once, restricted to
+  papers whose open-access PDF link returned a real PDF.
+paper_id: openalex_id
+provenance:
+  drawn_by: scripts/draw_30_balanced.py <banded sample> source/subsample.csv --seed 20261023 --pdf-check source/pdf_link_check.csv
+  seed: 20261023
+  pdf_link_check: source/pdf_link_check.csv (2026-10-23; has method/curl/browser-ua columns that the current scripts/check_pdf_links.py does not write)
+  pdf_substitutions: source/pdf_substitutions.csv (W2684263115 is the arXiv version)
+  review_list: source/review_list.csv (the short list prepared for human reviewers)
+  notes: The venue-banded sample the draw reads is not in this repository.
+content:
+  pdf:
+    format: pdf
+    path: content/pdfs/{paper_id}.pdf
+    method: open-access PDFs from oa_pdf_url, downloaded 2026-10-23, plus the substitution above
+    build: uv run python -I factors/datasets/trial2-openalex30/scripts/download_pdfs.py factors/datasets/trial2-openalex30/papers.csv factors/datasets/trial2-openalex30/source/pdf_link_check.csv factors/datasets/trial2-openalex30/content/pdfs
+  text:
+    format: jsonl
+    path: content/text.jsonl
+    method: pdftotext (poppler) over content/pdfs; no separate abstract
+    build: uv run pif dataset extract-text trial2-openalex30

@@ -1,0 +1,7 @@
+description: Gemma 4 12B run locally through Ollama, provider defaults apart from the context window.
+kind: model
+provider: ollama
+model: gemma4:12b
+settings:
+  num_ctx: 262144     # tokens; full text is truncated to fit if needed
+  timeout_s: 600

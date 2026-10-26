@@ -1,0 +1,7 @@
+description: Claude Sonnet 5 through the Anthropic API, forced tool call for the answer, provider defaults otherwise.
+kind: model
+provider: anthropic
+model: claude-sonnet-5
+settings:
+  max_tokens: 600
+  timeout_s: 600

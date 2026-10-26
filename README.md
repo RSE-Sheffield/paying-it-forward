@@ -8,98 +8,158 @@ For this project, we have limited the scope to only software and data. Arguably,
 
 ![Research Output Taxonomy](pif_image_generation/typology.png)
 
-## Spike 0
+Each paper is classified into one of nine categories: software generated / used /
+none (S1–S3) crossed with data generated / used / none (D1–D3). The definitions
+are in [`factors/criteria/`](factors/criteria/).
 
-Spike 0 (`spikes/2026-05-llm-cost/`) tested classification cost and schema
-on 30 UK papers with frontier LLMs (write-up:
-[`proposal-llm-budget.md`](spikes/2026-05-llm-cost/proposal-llm-budget.md)).
-`classify_papers.py` builds on that as a reusable tool: it classifies a
-dataset of papers into S\*D\* categories, one run per invocation, with
-results collected under `Experiments/`.
+## Experiments
 
-###  Getting the data
+An experiment is an attempt to classify a dataset of papers into one of the nine categories based on the current version of the criteria, prompt and reviewer.
 
-The paper corpus isn't committed (mixed licences). Rebuild it from
-`spikes/2026-05-llm-cost/papers_manifest.csv`:
+### How experiments are organised
 
-```
-cd spikes/2026-05-llm-cost
-python -m venv .venv && .venv/bin/pip install -r requirements.txt
-.venv/bin/python fetch_corpus.py   # writes papers/papers_fulltext_30.json (and _10, .json)
-```
+An **experiment** is one combination of five versioned factors, which are kept
+together under `factors/`. A **run** is one pass of an experiment over its
+dataset, and repeat runs are how consistency is measured.
 
-To also download the source PDFs (PMC Open Access papers only, keyed by
-PMCID):
+| Factor | Lives in | Example ids |
+|---|---|---|
+| Dataset — which papers, and where their content is | `factors/datasets/<id>/` | `spike0-pmc30`, `trial2-openalex30` |
+| Criteria — the definitions papers are classified against | `factors/criteria/<id>/criteria.md` | `v1`, `v2` |
+| Prompt — the instructions given to a model | `factors/prompts/<id>/` (`system.md`, `task.md`) | `v1` |
+| Input — what of each paper the reviewer reads | `factors/inputs/<id>.yaml` | `fulltext` (the default), `abstract-only` |
+| Reviewer — a model with its settings, or a person | `factors/reviewers/<id>.yaml` | `gemma4-12b`, `sonnet5`, `human-matt` |
 
-```
-.venv/bin/python download_pdfs.py   # writes papers/pdfs/*.pdf
-```
-
-## Classifying papers
-
-`classify_papers.py` classifies each paper in a dataset into one of nine
-S\*D\* categories (see `criteria.md`), using either a local Ollama model or
-the Claude API. Papers are processed one at a time with no shared context
-between them, and results are written incrementally as it goes.
-
-### 1. Set up `.secrets`
-
-Create a `.secrets` file in the repo root (never committed — it's in
-`.gitignore`) with whichever of these your chosen provider needs:
+Results live under `experiments/`, one folder per experiment:
 
 ```
-OLLAMA_MODEL=gemma4:12b
+experiments/<dataset>/criteria-<id>__prompt-<id>__<input>__<reviewer>/
+    experiment.json        factor ids and their fingerprints
+    run-01/
+        run.json           when, which commit, how far it got, failures, content fingerprints
+        judgements.jsonl   one line per paper: category, reasoning, tokens/time or minutes
+        source.xlsx        (human runs) the review sheet the run was imported from
+    run-02/ ...
+```
+
+**Versions are fixed once used.** Every factor has a fingerprint over everything
+in it that can change a result (descriptions and a dataset's build notes can still be edited). An
+experiment pins the fingerprints it was created with, and running or importing
+into it after one of its factors has changed is refused. To change the criteria,
+copy `factors/criteria/v2/` to `factors/criteria/v3/` and edit that. `uv run pif check` verifies
+every experiment against the registries.
+
+Model settings belong to the reviewer, so `sonnet5` and a hypothetical
+`sonnet5-effort-low` are two reviewers that can be compared like any other pair.
+
+The code is one package, `pif/`, used by everything else:
+
+| Module | Does |
+|---|---|
+| `registry.py` | loads and fingerprints the five factors |
+| `store.py` | reads and writes experiments and runs; loads everything as DataFrames |
+| `runner.py`, `providers.py`, `prompting.py` | run a model reviewer (Ollama or Anthropic) |
+| `human.py` | export a review sheet for a person; import it back as a run |
+| `metrics.py` | consensus, agreement, Cohen's and Fleiss' kappa — shared by the dashboard and the analysis |
+| `content.py` | build a dataset's text from its PDFs |
+| `cli.py` | the `pif` command |
+
+`uv run pytest` tests the pipeline (resuming, the fixed-version check, review
+sheets, the metrics) against a tiny throwaway registry.
+
+### Setup
+
+```
+uv sync
+```
+
+Create `.secrets` in the repo root (gitignored) with what you need:
+
+```
 ANTHROPIC_API_KEY=sk-ant-...
-ANTHROPIC_MODEL=claude-sonnet-5
+OLLAMA_HOST=http://localhost:11434   # optional; this is the default
 ```
 
-For Ollama, make sure the model has been pulled (`ollama pull <model>`) and
-the server is running (`ollama serve`).
+The model a reviewer uses is in its `factors/reviewers/*.yaml` file, not in `.secrets`.
+For Ollama, pull the model (`ollama pull gemma4:12b`) and make sure the server is
+running.
 
-### 2. Run it
-
-```
-python3 classify_papers.py --provider ollama --dataset path/to/papers.json
-python3 classify_papers.py --provider claude --dataset path/to/papers.json
-```
-
-`--dataset` must point at a `.json` file (a list of paper objects with
-`title`/`abstract`/`fulltext` fields, e.g. `spikes/2026-05-llm-cost/papers/papers_fulltext_30.json`).
-
-Useful flags:
-- `--limit N` — only classify the first N papers (handy for a quick test)
-- `--host` — Ollama server URL, if not the default `http://localhost:11434`
-- `--num-ctx` — context window size in tokens for every request, Ollama provider only (default `262144`)
-- `--name` — a label for this run, stored in `run.json`
-
-## Analysis write-up
-
-[`analysis/classification-reliability.md`](analysis/classification-reliability.md)
-is a statistical read of everything currently under `Experiments/` — how
-consistent each configuration is with itself, how well it agrees with the manual
-pass, where the disagreement concentrates, and what full text actually buys.
-Regenerate its figures and statistics with
-`python3 analysis/analyse_experiments.py`.
-
-## Exploring the results
-
-`dashboard/index.html` is a self-contained page for browsing every run in
-`Experiments/`. It groups runs into *configurations* — one model over one kind
-of input — and lets you compare the category each configuration settles on per
-paper, how much a configuration disagrees with its own repeats, the reasoning
-behind any individual judgement, and all of it against the manual human pass.
-Open it directly in a browser; rebuild it with
-`python3 dashboard/build_dashboard.py` after adding a run. See
-[`dashboard/README.md`](dashboard/README.md).
-
-### 3. Find the results
-
-Each run creates a new timestamped folder under `Experiments/`:
+Paper content is not committed. Each `dataset.yaml` says how to rebuild it:
 
 ```
-Experiments/20260918_161014/
-  results.json   # one entry per paper: category, reasoning, tokens, timing
-  run.json       # run metadata: provider, model, and the exact filepaths used
-  criteria.md    # copy of the criteria.md used for this run
-  task.md        # copy of the task.md used for this run
+uv run python factors/datasets/spike0-pmc30/scripts/build_content.py   # after spikes/spike0/fetch_corpus.py and download_pdfs.py
+uv run pif dataset extract-text trial2-openalex30               # text from the downloaded PDFs
 ```
+
+### Running models
+
+```
+uv run pif run --dataset trial2-openalex30 --criteria v2 --prompt v1 --reviewer gemma4-12b sonnet5 --repeats 5
+```
+
+- `--input` defaults to `fulltext`; pass `--input abstract-only` (or both) to change it.
+- Any factor given several ids makes a grid: the command above is two experiments,
+  one per reviewer.
+- `--dry-run` lists each experiment, how many runs it has, and what would be started.
+- `--repeats N` makes sure each experiment has N runs. Unfinished runs (interrupted,
+  or papers whose request failed) are resumed first, judging only the missing
+  papers. Rerunning a command after a crash, or raising `--repeats`, does only the
+  outstanding work.
+- `--limit N` is a trial run on the first N papers. It goes to `experiments/_scratch/`
+  (gitignored), so it never mixes with real results.
+- Every request is one paper with no shared context, and each judgement is written
+  as soon as it arrives.
+
+Reviewer settings: Ollama accepts `num_ctx`, `timeout_s`, `temperature`, `seed`,
+`top_p` and `top_k`. Anthropic accepts `max_tokens`, `timeout_s`, `effort`,
+`thinking` and `tool_choice`. The Messages API has rejected temperature and the
+other sampling parameters since 2026-10-21, and newer Claude models need
+`tool_choice: auto`.
+
+### Human reviewers
+
+```
+uv run pif human export --dataset trial2-openalex30 --criteria v2 --prompt v1 --reviewer human-matt
+# ... the reviewer fills in category, reasoning and minutes for each paper ...
+uv run pif human import review-trial2-openalex30-criteria-v2-human-matt.xlsx
+```
+
+- The sheet has a category drop-down, the task and criteria text, and a hidden sheet
+  that records which experiment it belongs to.
+- On import, the sheet is checked and stored as the next run, with the sheet kept
+  beside the judgements.
+- A second sheet for the same experiment is a repeat pass, `run-02`.
+- `--dry-run` checks a sheet without writing anything. `--allow-incomplete` accepts
+  papers left blank.
+- A sheet made some other way can be imported by naming the experiment with the five
+  factor flags.
+
+To add a reviewer, create `factors/reviewers/human-<name>.yaml` with `kind: human` and `name:`.
+
+### Adding a version of something
+
+- **Criteria or prompt:** add `factors/criteria/<new id>/criteria.md` or `factors/prompts/<new id>/`.
+  `system.md` uses `{task}` and `{criteria}` placeholders.
+- **Dataset:** add `factors/datasets/<id>/` containing:
+  - `dataset.yaml`: title, description, provenance and content sources
+  - `papers.csv`: committed; `paper_id` is the first column
+  - `scripts/`: how it was drawn
+  - `source/`: the raw draw files
+  - `content/`: gitignored
+
+  Content sources are JSONL text (`{paper_id, abstract, text}`) or per-paper PDFs.
+  A different text extraction method is a new content source, read by its own input.
+- **Input:** add `factors/inputs/<id>.yaml` with `body` (a content source name or `none`)
+  and a `template` for the message. The placeholders are `papers.csv` columns plus
+  `{abstract}` and `{text}`.
+- **Reviewer:** add `factors/reviewers/<id>.yaml`.
+
+## Results dashboard
+
+```
+uv run pif dashboard
+```
+
+A Streamlit app that reads `experiments/` directly, so there is nothing to rebuild:
+refresh after a run. See [`dashboard/README.md`](dashboard/README.md).
+

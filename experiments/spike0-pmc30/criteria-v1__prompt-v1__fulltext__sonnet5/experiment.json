@@ -1,0 +1,30 @@
+{
+  "dataset": "spike0-pmc30",
+  "criteria": "v1",
+  "prompt": "v1",
+  "input": "fulltext",
+  "reviewer": "sonnet5",
+  "fingerprints": {
+    "dataset": "d698cada60f6",
+    "criteria": "fae07918518d",
+    "prompt": "0f3a989c11d8",
+    "input": "4e926d166829",
+    "reviewer": "1ff7446f6c2f"
+  },
+  "reviewer_spec": {
+    "description": "Claude Sonnet 5 through the Anthropic API, forced tool call for the answer, provider defaults otherwise.",
+    "kind": "model",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "settings": {
+      "max_tokens": 600,
+      "timeout_s": 600
+    }
+  },
+  "input_spec": {
+    "description": "Title, journal, year and abstract, then the dataset's extracted full text inline.",
+    "body": "text",
+    "template": "TITLE: {title}\n\nJOURNAL: {journal}  YEAR: {year}\n\nABSTRACT:\n{abstract}\n\nFULL TEXT:\n{text}\n"
+  },
+  "created_at": "2026-10-26T14:18:27+00:00"
+}

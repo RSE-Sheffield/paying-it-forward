@@ -1,3 +1,0 @@
-# Dependencies for classify_papers.py
-requests>=2.32
-anthropic>=0.40  # only needed for --provider claude

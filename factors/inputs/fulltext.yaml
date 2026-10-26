@@ -1,0 +1,15 @@
+description: >
+  The whole paper. A model gets title, journal, year and abstract, then the
+  dataset's extracted full text inline; a person reads the full paper. The
+  default input when none is given.
+body: text
+template: |
+  TITLE: {title}
+
+  JOURNAL: {journal}  YEAR: {year}
+
+  ABSTRACT:
+  {abstract}
+
+  FULL TEXT:
+  {text}

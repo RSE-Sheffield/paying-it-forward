@@ -221,3 +221,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Paper content (full text, PDFs): large, and mostly not licensed for
+# redistribution. Each dataset.yaml says how to rebuild it.
+factors/datasets/*/content/
+
+# Trial runs (pif run --limit)
+experiments/_scratch/

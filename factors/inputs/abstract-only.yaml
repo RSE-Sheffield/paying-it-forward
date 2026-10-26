@@ -1,0 +1,9 @@
+description: Title, journal, year and abstract only; no full text.
+body: none
+template: |
+  TITLE: {title}
+
+  JOURNAL: {journal}  YEAR: {year}
+
+  ABSTRACT:
+  {abstract}

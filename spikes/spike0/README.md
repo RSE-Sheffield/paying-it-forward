@@ -48,7 +48,7 @@ The paper texts (`papers/*.json`) are not committed. Their licences are mixed: 2
 ## Reproduce
 
 ```bash
-cd spikes/2026-05-llm-cost
+cd spikes/spike0
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python fetch_corpus.py        # rebuild papers/ (~1 minute)
 .venv/bin/python classify_30_scaling.py # 90 calls, ~15 minutes, ~£2.71 at May 2026 prices

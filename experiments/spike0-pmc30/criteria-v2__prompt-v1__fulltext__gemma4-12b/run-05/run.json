@@ -1,0 +1,34 @@
+{
+  "run": "run-05",
+  "status": "complete",
+  "started_at": "2026-10-12T17:28:26.549272+00:00",
+  "finished_at": "2026-10-12T17:54:09.290154+00:00",
+  "papers_total": 30,
+  "papers_judged": 30,
+  "failures": [],
+  "code": {
+    "commit": null,
+    "dirty": null
+  },
+  "host": null,
+  "migrated_from": "Experiments/20261012_182826_rep5",
+  "legacy": {
+    "run_id": "20261012_182826_rep5",
+    "name": "gemma_fulltext_new_criteria",
+    "started_at": "2026-10-12T17:28:26.549272+00:00",
+    "finished_at": "2026-10-12T17:54:09.290154+00:00",
+    "provider": "ollama",
+    "model": "gemma4:12b",
+    "content": "full",
+    "host": "http://localhost:11434",
+    "num_ctx": 262144,
+    "timeout_s": 600,
+    "limit": null,
+    "dataset_file": "/home/edwin/Documents/paying-it-forward/paying-it-forward/spikes/spike0/papers/papers_fulltext_30.json",
+    "criteria_file": "/home/edwin/Documents/paying-it-forward/paying-it-forward/criteria.md",
+    "task_file": "/home/edwin/Documents/paying-it-forward/paying-it-forward/task.md",
+    "num_papers_total": 30,
+    "num_papers_run": 30,
+    "num_papers_classified": 30
+  }
+}

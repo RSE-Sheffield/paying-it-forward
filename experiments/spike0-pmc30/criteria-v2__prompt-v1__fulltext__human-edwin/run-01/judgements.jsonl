@@ -1,0 +1,30 @@
+{"paper_id": "38110704", "category": "S3D3", "reasoning": "Paper largely reviewing the current understanding in the field of cognitive impairment in schizophrenia. Everything used is previous findings. No software."}
+{"paper_id": "37039129", "category": "S3D3", "reasoning": "The data used is existing findings from systematic review and literature. The ouput are guidelines. I don't think either of these constitutes data created or used. I see no mention of software."}
+{"paper_id": "36888610", "category": "S2D1", "reasoning": "They use an existing piece of research software called TopoToolbox V2 to create a dataset. I do not count the ArcGIS web app as created software."}
+{"paper_id": "37368896", "category": "S1D2", "reasoning": "They have extended a piece of software with a new idea and applied it to existing synthetic datasets"}
+{"paper_id": "37590277", "category": "S3D3", "reasoning": "Although data collection is planned, this paper is a protocol and therefore nothing has happened yet, therefore as following the guidelines, we don't count this as data generated."}
+{"paper_id": "37396047", "category": "S3D1", "reasoning": "Primary data was collected by interviews. The analysis used Excel which we do not count as research software. Although plenty of detail is provided about statistical methods, none of this using research software."}
+{"paper_id": "37193558", "category": "S3D3", "reasoning": "This isn't really a study but more of a special issue explaioning how studies and papers were accepted into the journal."}
+{"paper_id": "37102792", "category": "S2D2", "reasoning": "The dataaset used was collected prior to the study (2018-2019). NiftyReg software was used for the cell density map and i judged it was specialised enough to be considered research software."}
+{"paper_id": "37854674", "category": "S2D2", "reasoning": "Research software is used inthe image processing pipelines (InForm, etc.). Its not clear to me exactly where the data came from but I don't think it has been created in this study as its focused on a new workflow, therefore I think these images were acquired from he Vectra3 platform."}
+{"paper_id": "37930996", "category": "S1D2", "reasoning": "Research software is created by desgining a neural network in Matlab. It is not clear whether the data has come from another study or been collected in this one. It does say in design \"The information utilized in this study was gathered from prvious research\" so I've said D2"}
+{"paper_id": "37186857", "category": "S3D1", "reasoning": "No Software. They create data by doin xrays."}
+{"paper_id": "36862754", "category": "S3D1", "reasoning": "Data was collected. Although invoved statistics was done, there is no evidence to suggest research software was used at any point."}
+{"paper_id": "38100737", "category": "S3D2", "reasoning": "BioBank dataset used. No mention of research software. There is statistical workflows but no significant software mentioned. There is mention of Vision software but its not clear what role this software does other than accessing data."}
+{"paper_id": "37388662", "category": "S3D3", "reasoning": "Opinion piece. No data or software mentioned"}
+{"paper_id": "37353567", "category": "S3D1", "reasoning": "The focus of the paper is to create a new dataset. There is no mention of any research software."}
+{"paper_id": "37933221", "category": "S2D2", "reasoning": "I found this really difficult to determine what they've actually done. In terms of software, they 'apply explainable network models' which I determine as used software. In terms of data, it looks like all the data was collected in previous studies so data used."}
+{"paper_id": "37139088", "category": "S3D3", "reasoning": "Literature review"}
+{"paper_id": "37351094", "category": "S3D1", "reasoning": "They collected a large amopunt of primary data through questionaires. Typical statistical analylsis was then done"}
+{"paper_id": "37359515", "category": "S3D3", "reasoning": "Literature review"}
+{"paper_id": "36911683", "category": "S3D3", "reasoning": "Review of literature, no software or data."}
+{"paper_id": "37113474", "category": "S1D2", "reasoning": "BioBank - Existing dataset. Created their own GAN so created software."}
+{"paper_id": "37257754", "category": "S2D1", "reasoning": "The study created synthetic narritives by changing parameters in a GPT model. metrics were then calcualted on this generated data. The purpose of the study was to understand how these metrics change. This is important, because existing software and metrics are being used, meaning no significant software was created. Data is created  for the analysis to take place."}
+{"paper_id": "37818209", "category": "S3D3", "reasoning": "Although they plan to collect data, this study is only about the protocol and not an actual write up of the study itself"}
+{"paper_id": "37154682", "category": "S3D1", "reasoning": "Data was collected but just standard statistical analysis was done."}
+{"paper_id": "36845047", "category": "S3D2", "reasoning": "The biobank dataset was used but no other data was collected and no software"}
+{"paper_id": "37497700", "category": "S3D3", "reasoning": "Literature review"}
+{"paper_id": "37052999", "category": "S2D2", "reasoning": "Google trend data was processed a software called Joinpoint Regression Programm used to determine when a trend changes in time. the decision here is these are both research data and software or just standard. Both the data and software was vital to the research goals so considering both as research data and software."}
+{"paper_id": "37368901", "category": "S3D1", "reasoning": "Primary data collection was done but no significant softawre used"}
+{"paper_id": "37022989", "category": "S3D3", "reasoning": "Systematic review"}
+{"paper_id": "38144895", "category": "S2D1", "reasoning": "Data was collected from participants. Software was substantially used as part of the hardware"}

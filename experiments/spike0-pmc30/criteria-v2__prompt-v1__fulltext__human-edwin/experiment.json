@@ -1,0 +1,25 @@
+{
+  "dataset": "spike0-pmc30",
+  "criteria": "v2",
+  "prompt": "v1",
+  "input": "fulltext",
+  "reviewer": "human-edwin",
+  "fingerprints": {
+    "dataset": "d698cada60f6",
+    "criteria": "678c5312b1dc",
+    "prompt": "0f3a989c11d8",
+    "input": "4e926d166829",
+    "reviewer": "c5602e54932d"
+  },
+  "reviewer_spec": {
+    "description": "Manual classification by Edwin.",
+    "kind": "human",
+    "name": "Edwin"
+  },
+  "input_spec": {
+    "description": "Title, journal, year and abstract, then the dataset's extracted full text inline.",
+    "body": "text",
+    "template": "TITLE: {title}\n\nJOURNAL: {journal}  YEAR: {year}\n\nABSTRACT:\n{abstract}\n\nFULL TEXT:\n{text}\n"
+  },
+  "created_at": "2026-10-26T14:18:27+00:00"
+}

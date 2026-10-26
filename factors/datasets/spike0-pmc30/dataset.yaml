@@ -1,0 +1,18 @@
+title: Spike 0 — 30 PMC open-access papers
+description: >
+  30 papers with UK-affiliated authors and open-access full text in PubMed
+  Central, spread across fields. Drawn in spike 0 and used for trial 1.
+paper_id: pmid
+provenance:
+  drawn_by: spikes/spike0/fetch_corpus.py (the in_fulltext30 rows of spikes/spike0/papers_manifest.csv)
+content:
+  text:
+    format: jsonl
+    path: content/text.jsonl
+    method: PMC open-access XML abstract and body text, flattened by spikes/spike0/fetch_corpus.py
+    build: run spikes/spike0/fetch_corpus.py, then uv run python factors/datasets/spike0-pmc30/scripts/build_content.py
+  pdf:
+    format: pdf
+    path: content/pdfs/{pmcid}.pdf
+    method: PMC Open Access Subset PDFs, fetched by spikes/spike0/download_pdfs.py
+    build: run spikes/spike0/download_pdfs.py, then uv run python factors/datasets/spike0-pmc30/scripts/build_content.py

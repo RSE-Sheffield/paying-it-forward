@@ -1,13 +1,56 @@
-"""Paper by paper: every experiment's consensus side by side, and every
-judgement with its reasoning for the paper you pick."""
+"""Paper by paper: every experiment's consensus side by side and, for the
+paper you pick, which runs chose each category and every judgement with its
+reasoning."""
 from __future__ import annotations
 
 import pandas as pd
+import plotly.graph_objects as go
 import streamlit as st
 
 from pif import registry
+from pif.taxonomy import CATEGORIES, label
 
-from .common import MISSING, Context, need
+from .common import MISSING, Context, experiment_colors, ink_on, need, show, style, theme
+
+
+def votes(exps: pd.DataFrame, j: pd.DataFrame) -> tuple[go.Figure, pd.DataFrame]:
+    """A bar per category counting the runs that chose it, one segment per
+    experiment, coloured by experiment and labelled with its #n."""
+    t = theme()
+    j = j[j.valid]
+    colors = experiment_colors(exps)
+    fig, rows = go.Figure(), []
+    for _, e in exps.iterrows():
+        mine = j[j.experiment == e.experiment]
+        if mine.empty:
+            continue
+        color = colors[e.experiment]
+        runs = {k: sorted(mine.run[mine.category == k]) for k in CATEGORIES}
+        fig.add_bar(y=CATEGORIES, x=[len(runs[k]) for k in CATEGORIES], orientation="h", width=0.6,
+                    name=e["tagged"], legendgroup=e.reviewer, legendgrouptitle_text=e.reviewer,
+                    marker=dict(color=color, line=dict(color=t["page"], width=2)),
+                    text=[e.tag if runs[k] else "" for k in CATEGORIES], textposition="inside",
+                    insidetextanchor="middle", textangle=0, textfont=dict(color=ink_on(color)),
+                    customdata=[[f"{k} · {label(k)}", ", ".join(runs[k])] for k in CATEGORIES],
+                    hovertemplate=f"%{{customdata[0]}}<br>{e['tagged']}<br>"
+                                  f"%{{x}} of {len(mine)} run(s): %{{customdata[1]}}<extra></extra>")
+        rows += [{"Category": k, "Experiment": e["tagged"], "Runs": len(runs[k]), "Which": ", ".join(runs[k])}
+                 for k in CATEGORIES if runs[k]]
+    totals = j.category.value_counts()
+    for k in CATEGORIES:  # the total at each bar's end
+        if totals.get(k, 0):
+            fig.add_annotation(x=totals[k], y=k, text=str(totals[k]), showarrow=False, xanchor="left", xshift=6,
+                               font=dict(color=t["ink2"]))
+    most = max(totals, default=1)
+    fig.update_xaxes(title="runs", range=[0, most * 1.08], dtick=1 if most <= 10 else 5, showgrid=True)
+    fig.update_yaxes(autorange="reversed", showgrid=False)
+    # Tall enough for the nine bars or the legend (~19px an entry, ~30px a reviewer), whichever is more.
+    shown = exps[exps.experiment.isin(j.experiment)]
+    style(fig, height=max(9 * 34 + 70, 19 * len(shown) + 30 * shown.reviewer.nunique() + 80))
+    fig.update_layout(barmode="stack", barcornerradius=4, uniformtext=dict(mode="hide", minsize=10),
+                      legend=dict(orientation="v", x=1.02, xanchor="left", y=1, yanchor="top",
+                                  traceorder="grouped", groupclick="toggleitem"))
+    return fig, pd.DataFrame(rows)
 
 
 def render(ctx: Context | None) -> None:
@@ -58,6 +101,10 @@ def render(ctx: Context | None) -> None:
     doi = paper.get("doi")
     st.caption(meta + (f" · [doi:{doi}](https://doi.org/{doi})" if doi else "") + f" · id {pid}")
     j = ctx.judgements[(ctx.judgements.paper_id == pid) & ctx.judgements.experiment.isin(exps.experiment)]
+    st.markdown("**Which runs chose each category** — each segment is one experiment's runs (#n as in the "
+                "table above). Each reviewer has its own hue, shaded when it has several experiments. Hover a "
+                "segment to see which runs; click a legend entry to hide that experiment.")
+    show(*votes(exps, j), key="paper_votes")
     for _, e in exps.iterrows():
         mine = j[j.experiment == e.experiment]
         if mine.empty:

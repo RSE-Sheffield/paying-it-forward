@@ -32,16 +32,15 @@ use.
 
 - **Overview.** One row per experiment:
   - runs, run-to-run agreement and agreement with humans
-  - share of papers rated software-generated (S1) and data-generated (D1)
-  - seconds or minutes per paper, and input tokens
+  - seconds per paper
 
-  Below it, the category mix: the share of papers in each of the nine categories,
-  per experiment. Data notes list anything left out, such as unfinished runs,
+  Below it, the category mix: a bar per experiment, split into the nine
+  categories by share of papers. Colour is the data axis and shade the software
+  axis. Data notes list anything left out, such as unfinished runs,
   invalid judgements, or factors edited since an experiment was made.
 - **Compare.**
   - An agreement matrix for every experiment in view, by exact category,
-    software axis, data axis or Cohen's κ.
-  - A table against each human reviewer.
+    software axis or data axis.
   - A drill-down into any two experiments: summary figures, a confusion matrix,
     and every paper they disagree on with both sides' reasoning. Use it for
     criteria v1 vs v2, model vs human, full text vs abstract, and so on.
@@ -50,7 +49,8 @@ use.
   papers the runs split on. A person's repeat passes appear here the same way
   as a model's repeats.
 - **Papers.** Every paper with each experiment's consensus side by side, sorted
-  by disagreement. Select one to read every judgement and its reasoning.
+  by disagreement. Select one for a bar per category showing which runs chose
+  it, and every judgement with its reasoning.
 - **Runs.** Every run's `run.json` and raw judgements.
 - **Factors.** Every version of every factor, which experiments used it, and a
   diff between any two criteria or prompt versions.

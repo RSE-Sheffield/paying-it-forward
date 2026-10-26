@@ -1,6 +1,6 @@
 """Compare experiments with each other: an agreement matrix for everything in
-view, agreement with each human reviewer, and a drill-down into any pair --
-criteria v1 vs v2, model vs human, full text vs abstract, or anything else."""
+view, and a drill-down into any pair -- criteria v1 vs v2, model vs human,
+full text vs abstract, or anything else."""
 from __future__ import annotations
 
 import pandas as pd
@@ -9,18 +9,13 @@ import streamlit as st
 from pif import metrics, registry
 from pif.taxonomy import CATEGORIES
 
-from .common import Context, data_range, heatmap, need, num, pct, share_column, show
+from .common import Context, data_range, heatmap, need, pct, show, theme
 
-METRICS = {
-    "Exact category": ("exact", pct, (0, 1)),
-    "Software axis": ("s", pct, (0, 1)),
-    "Data axis": ("d", pct, (0, 1)),
-    "Cohen's κ": ("kappa", num, (-0.2, 1)),
-}
+METRICS = {"Exact category": "exact", "Software axis": "s", "Data axis": "d"}
 
 
 def matrix(ctx: Context, dataset: str, metric: str):
-    key, fmt, (lo, hi) = METRICS[metric]
+    key = METRICS[metric]
     exps = ctx.experiments[ctx.experiments.dataset == dataset]
     cons = ctx.consensus_map()
     z, hover, rows = [], [], []
@@ -34,39 +29,19 @@ def matrix(ctx: Context, dataset: str, metric: str):
             r = metrics.agreement(cons.get(a.experiment, {}), cons.get(b.experiment, {}))
             v = r[key]
             zr.append(None if pd.isna(v) else v)
-            hr.append(f"{a.label}<br>vs {b.label}<br>{metric}: {fmt(v)} over {r['n']} papers")
+            hr.append(f"{a.label}<br>vs {b.label}<br>{metric}: {pct(v)} over {r['n']} papers")
             rows.append({"A": a.label, "B": b.label, "Papers": r["n"], "Exact": r["exact"],
-                         "Software axis": r["s"], "Data axis": r["d"], "κ": r["kappa"],
-                         "κ software": r["kappa_s"], "κ data": r["kappa_d"]})
+                         "Software axis": r["s"], "Data axis": r["d"]})
         z.append(zr)
         hover.append(hr)
-    zmin, zmax = data_range([v for r in z for v in r], lo, hi)
-    fig = heatmap(z, list(exps.tag), list(exps["tagged"]), zmin=zmin, zmax=zmax, fmt=fmt, hover=hover,
-                  scale_title=metric if key == "kappa" else "agreement")
+    zmin, zmax = data_range([v for r in z for v in r], 0, 1)
+    names = list(exps["tagged"])
+    fig = heatmap(z, names, names, zmin=zmin, zmax=zmax, fmt=pct, hover=hover, scale_title="agreement")
+    # Names along the top too, angled so long ones don't collide; the extra height
+    # (about 5px per character at 45°) keeps the cells from shrinking to make room.
+    fig.update_xaxes(tickangle=-45)
+    fig.update_layout(height=fig.layout.height + 5 * max(map(len, names)))
     return fig, pd.DataFrame(rows)
-
-
-def human_table(ctx: Context, dataset: str) -> pd.DataFrame | None:
-    exps = ctx.experiments[ctx.experiments.dataset == dataset]
-    humans = exps[exps.reviewer_kind == "human"]
-    if humans.empty:
-        return None
-    cons = ctx.consensus_map()
-    rows = []
-    for _, e in exps.iterrows():
-        row, matches, total = {"Experiment": e["tagged"]}, 0, 0
-        for _, h in humans.iterrows():
-            if h.experiment == e.experiment:
-                row[h.label] = None
-                continue
-            a = metrics.agreement(cons.get(e.experiment, {}), cons.get(h.experiment, {}))
-            row[h.label] = a["exact"] if a["n"] else None
-            if a["n"]:
-                matches += a["exact"] * a["n"]
-                total += a["n"]
-        row["Pooled"] = matches / total if total else None
-        rows.append(row)
-    return pd.DataFrame(rows)
 
 
 def judgement_lines(ctx: Context, experiment: str, paper_id: str) -> str:
@@ -92,12 +67,11 @@ def pair(ctx: Context, dataset: str) -> None:
     ca, cb = cons.get(A, {}), cons.get(B, {})
     r = metrics.agreement(ca, cb)
 
-    cols = st.columns(5)
+    cols = st.columns(4)
     cols[0].metric("Papers compared", r["n"])
     cols[1].metric("Exact agreement", pct(r["exact"]))
     cols[2].metric("Software axis", pct(r["s"]))
     cols[3].metric("Data axis", pct(r["d"]))
-    cols[4].metric("Cohen's κ", num(r["kappa"]))
 
     shared = [p for p in ca if p in cb]
     counts = pd.crosstab(pd.Series([ca[p] for p in shared], name="A"),
@@ -108,7 +82,10 @@ def pair(ctx: Context, dataset: str) -> None:
     fig = heatmap(z, CATEGORIES, CATEGORIES, zmin=0, zmax=max(1, counts.values.max()),
                   fmt=lambda v: str(int(v)) if v else "", hover=hover, cell=34,
                   x_title=f"B: {b_label}", y_title=f"A: {a_label}", scale_title="papers")
-    st.markdown("**Where they land** — rows are A's consensus, columns B's; the diagonal is agreement.")
+    for i in range(len(CATEGORIES)):  # outline the agreement diagonal
+        fig.add_shape(type="rect", x0=i - 0.5, x1=i + 0.5, y0=i - 0.5, y1=i + 0.5,
+                      line=dict(color=theme()["ink"], width=2.5), layer="above")
+    st.markdown("**Where they land** — rows are A's consensus, columns B's; the outlined diagonal is agreement.")
     show(fig, counts.reset_index().rename(columns={"index": "A \\ B"}), key=f"confusion_{dataset}")
 
     papers = {p["paper_id"]: p for p in registry.dataset(dataset).papers}
@@ -145,17 +122,6 @@ def render(ctx: Context | None) -> None:
             st.subheader("Agreement between experiments")
             fig, table = matrix(ctx, ds, metric)
             show(fig, table, key=f"matrix_{ds}_{metric}")
-
-            ht = human_table(ctx, ds)
-            if ht is not None:
-                st.subheader("Against each human reviewer")
-                st.caption("Exact agreement of each experiment's consensus with each human experiment. "
-                           "Pooled counts every (paper, human) comparison, so no tie between reviewers needs "
-                           "breaking.")
-                cols = [c for c in ht.columns if c != "Experiment"]
-                ht[cols] = ht[cols].astype(float) * 100
-                st.dataframe(ht, hide_index=True, width="stretch",
-                             column_config={c: share_column() for c in cols})
 
             st.subheader("Any two experiments")
             pair(ctx, ds)

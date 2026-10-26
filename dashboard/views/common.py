@@ -17,12 +17,32 @@ from pif.registry import KINDS
 # on the light surface and the same steps reversed on the dark one, so "more"
 # is always "further from the surface". Model/human are categorical slots 1-2,
 # validated for both modes.
+#
+# The nine categories are too many for distinct hues, so `mix` (in taxonomy
+# order) encodes both axes: hue is the data axis (categorical slots 1-3: blue,
+# orange, aqua) and shade the software axis, S1 furthest from the surface. Blue
+# is the documented ramp; orange and aqua hold their slot's hue at the same
+# lightness steps. Each three-shade ramp passes the ordinal checks in its mode,
+# and every pair of touching segments clears CVD dE 12.
+#
+# `cat` is the eight categorical slots in their fixed order; experiments take
+# their reviewer's slot, in shades between the `shades` lightness bounds (OKLCH
+# L, first experiment furthest from the surface) when a reviewer has several.
+# `page` is Streamlit's own background, for the gaps between touching marks.
 _SEQ = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]
 THEMES = {
-    "light": dict(surface="#fcfcfb", ink="#0b0b0b", ink2="#52514e", muted="#898781",
-                  grid="#e1e0d9", axis="#c3c2b7", seq=_SEQ, model="#2a78d6", human="#eb6834"),
-    "dark": dict(surface="#1a1a19", ink="#f0efec", ink2="#c3c2b7", muted="#898781",
-                 grid="#2c2c2a", axis="#383835", seq=_SEQ[::-1], model="#3987e5", human="#d95926"),
+    "light": dict(surface="#fcfcfb", page="#ffffff", ink="#0b0b0b", ink2="#52514e", muted="#898781",
+                  grid="#e1e0d9", axis="#c3c2b7", seq=_SEQ, model="#2a78d6", human="#eb6834",
+                  mix=["#184f95", "#2a78d6", "#6da7ec", "#892e01", "#c94908", "#fb7744",
+                       "#056041", "#058f62", "#35be88"],
+                  cat=["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"],
+                  shades=(0.42, 0.72)),
+    "dark": dict(surface="#1a1a19", page="#0e1117", ink="#f0efec", ink2="#c3c2b7", muted="#898781",
+                 grid="#2c2c2a", axis="#383835", seq=_SEQ[::-1], model="#3987e5", human="#d95926",
+                 mix=["#9ec5f4", "#3987e5", "#184f95", "#fea98c", "#d95926", "#8a2d01",
+                      "#68dbaa", "#1a9e70", "#036042"],
+                 cat=["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"],
+                 shades=(0.82, 0.45)),
 }
 FONT = "system-ui, -apple-system, 'Segoe UI', sans-serif"
 MISSING = "—"
@@ -48,13 +68,69 @@ def _ramp_at(ramp: list[str], t: float) -> tuple[int, int, int]:
     return tuple(round(x + (y - x) * f) for x, y in zip(a, b))
 
 
+def _linear(c: int) -> float:
+    c /= 255
+    return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+
 def _ink_on(rgb: tuple[int, int, int]) -> str:
     """White or near-black text, whichever reads on this fill."""
-    def lin(c):
-        c /= 255
-        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
-    lum = 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2])
+    lum = 0.2126 * _linear(rgb[0]) + 0.7152 * _linear(rgb[1]) + 0.0722 * _linear(rgb[2])
     return "#0b0b0b" if lum > 0.36 else "#ffffff"
+
+
+def ink_on(fill: str) -> str:
+    return _ink_on(_hex_rgb(fill))
+
+
+def _oklch(h: str) -> tuple[float, float, float]:
+    """sRGB hex -> OKLCH (lightness, chroma, hue in degrees)."""
+    r, g, b = map(_linear, _hex_rgb(h))
+    l, m, s = (x ** (1 / 3) for x in (0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b,
+                                       0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b,
+                                       0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b))
+    L = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s
+    a = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s
+    bb = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+    return L, math.hypot(a, bb), math.degrees(math.atan2(bb, a)) % 360
+
+
+def _oklch_hex(L: float, C: float, H: float) -> str:
+    """OKLCH -> sRGB hex, giving up chroma until the colour fits the gamut."""
+    while True:
+        a, b = C * math.cos(math.radians(H)), C * math.sin(math.radians(H))
+        l, m, s = ((L + 0.3963377774 * a + 0.2158037573 * b) ** 3, (L - 0.1055613458 * a - 0.0638541728 * b) ** 3,
+                   (L - 0.0894841775 * a - 1.2914855480 * b) ** 3)
+        rgb = (4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+               -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+               -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s)
+        if C <= 0 or all(-1e-4 <= x <= 1 + 1e-4 for x in rgb):
+            break
+        C = max(C - 0.005, 0)
+
+    def srgb(x):
+        x = min(max(x, 0.0), 1.0)
+        return 12.92 * x if x <= 0.0031308 else 1.055 * x ** (1 / 2.4) - 0.055
+    return "#" + "".join(f"{round(255 * srgb(x)):02x}" for x in rgb)
+
+
+def experiment_colors(exps: pd.DataFrame) -> dict[str, str]:
+    """A colour per experiment: its reviewer's categorical slot (in the reviewer
+    registry's order, so filters never repaint it), in shades when the reviewer
+    has several experiments here. Reviewers past the eighth slot fold into gray."""
+    t = theme()
+    order = registry.ids("reviewer")
+    out = {}
+    for reviewer, g in exps.groupby("reviewer", sort=False):
+        i = order.index(reviewer) if reviewer in order else len(order)
+        base = t["cat"][i] if i < len(t["cat"]) else t["muted"]
+        if len(g) == 1:
+            out[g.experiment.iloc[0]] = base
+            continue
+        (lo, hi), (_, c, h) = t["shades"], _oklch(base)
+        for n, e in enumerate(g.experiment):
+            out[e] = _oklch_hex(lo + (hi - lo) * n / (len(g) - 1), c, h)
+    return out
 
 
 def style(fig: go.Figure, height: int) -> go.Figure:
@@ -112,19 +188,13 @@ def data_range(values, lo: float, hi: float) -> tuple[float, float]:
     return (a, b) if b > a else (lo, hi)
 
 
-def share_column(label: str | None = None, bar: bool = True):
-    """A 0-1 share shown as a whole percentage (expects the value x100)."""
-    if bar:
-        return st.column_config.ProgressColumn(label, format="%.0f%%", min_value=0, max_value=100)
-    return st.column_config.NumberColumn(label, format="%.0f%%")
+def share_column(label: str | None = None, help: str | None = None):
+    """A 0-1 share shown as a whole percentage bar (expects the value x100)."""
+    return st.column_config.ProgressColumn(label, help=help, format="%.0f%%", min_value=0, max_value=100)
 
 
 def pct(v) -> str:
     return MISSING if v is None or pd.isna(v) else f"{v:.0%}"
-
-
-def num(v, digits=2) -> str:
-    return MISSING if v is None or pd.isna(v) else f"{v:.{digits}f}"
 
 
 # -------------------------------------------------------------------- data
@@ -201,7 +271,7 @@ def build_context() -> Context | None:
     exps = _sort_key(exps)
 
     sb = st.sidebar
-    sb.markdown("### In view")
+    sb.markdown("### Factors")
     chosen = {}
     for k, title in [("dataset", "Datasets"), ("criteria", "Criteria versions"), ("prompt", "Prompt versions"),
                      ("input", "Inputs"), ("reviewer", "Reviewers")]:

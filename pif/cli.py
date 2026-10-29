@@ -50,18 +50,30 @@ def _add_factor_args(p, multiple: bool, required: bool = False):
 
 # ---------------------------------------------------------------- commands
 def cmd_run(args):
+    from .providers import input_problem
     from .runner import RunError, run_experiment
     from .store import Experiment
 
     keys = expand({k: getattr(args, k) for k in KINDS})
     repeats = args.repeats
     root = args.experiments_dir or (paths.SCRATCH if args.limit else paths.EXPERIMENTS)
-    humans = [k for k in keys if registry.reviewer(k.reviewer).is_human]
-    for k in humans:
-        print(f"skipping {k.name}: a person's pass is imported, not run "
-              f"(pif human export ... --reviewer {k.reviewer})")
+    skipped = set()
+    try:
+        for k in keys:
+            reviewer = registry.reviewer(k.reviewer)
+            if reviewer.is_human:
+                why = (f"a person's pass is imported, not run "
+                       f"(pif human export ... --reviewer {k.reviewer})")
+            else:
+                why = input_problem(reviewer, registry.input(k.input))
+            if why:
+                print(f"skipping {k.name}: {why}")
+                skipped.add(k)
+    except RegistryError as e:
+        raise SystemExit(f"error: {e}")
+    keys = [k for k in keys if k not in skipped]
     if args.dry_run:
-        for key in [k for k in keys if k not in humans]:
+        for key in keys:
             runs = Experiment(key, root).runs()
             unfinished = sum(r.status != "complete" for r in runs)
             new = max(0, repeats - len(runs))
@@ -69,7 +81,7 @@ def cmd_run(args):
                                          f"start {new}" if new else ""] if x) or "nothing to do"
             print(f"{key.name}: {len(runs)} run(s) -> {todo}")
         return
-    for key in [k for k in keys if k not in humans]:
+    for key in keys:
         try:
             run_experiment(key, repeats=repeats, root=root, limit=args.limit)
         except (RegistryError, FactorChanged, RunError) as e:

@@ -1,2 +1,0 @@
-openalex_id,pdf_file,pdf_source_url,version,listed_oa_pdf_url,reason,downloaded_at
-W2684263115,content/pdfs/W2684263115.pdf,https://arxiv.org/pdf/1611.07042,arXiv:1611.07042v2 (19 Jun 2017; OpenAlex labels it submittedVersion),https://iopscience.iop.org/article/10.3847/1538-4357/aa767b/pdf,IOP returned an HTML page instead of the PDF at download time,2026-10-23

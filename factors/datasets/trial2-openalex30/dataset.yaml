@@ -1,22 +1,52 @@
-title: Trial 2 — 30-paper balanced subsample of PIF run 1
+title: Trial 2 — 30-paper balanced subsample of PIF run 1 (v2 list)
 description: >
-  30 papers drawn from the PIF run 1 venue-banded sample (OpenAlex, UK-affiliated,
-  2016–2025): citedness bands 8/8/7/7, all 26 fields at least once, restricted to
-  papers whose open-access PDF link returned a real PDF.
+  30 papers from the PIF run 1 sample (OpenAlex, UK-affiliated, 2016–2025), one
+  or more per field: the revised trial 2 list, with every paper read from its
+  publisher's version of record, and two papers whose version of record could
+  not be obtained replaced from the same cell. 20 papers are shared with legacy_trial2.
 paper_id: openalex_id
 provenance:
-  drawn_by: scripts/draw_30_balanced.py <banded sample> source/subsample.csv --seed 20261023 --pdf-check source/pdf_link_check.csv
-  seed: 20261023
-  pdf_link_check: source/pdf_link_check.csv (2026-10-23; has method/curl/browser-ua columns that the current scripts/check_pdf_links.py does not write)
-  pdf_substitutions: source/pdf_substitutions.csv (W2684263115 is the arXiv version)
-  review_list: source/review_list.csv (the short list prepared for human reviewers)
-  notes: The venue-banded sample the draw reads is not in this repository.
+  drawn_by: >
+    source/trial2-papers-v2.csv, as downloaded on 2026-10-27 from the Google Drive folder
+    https://drive.google.com/drive/folders/1YepkSIdxR-WkGrCe_Lf-y8aLMLOq_tqf (line endings
+    changed from CRLF to LF; otherwise byte-identical). The same folder holds
+    run1-manifest-v2.csv and run1-v2-changes.csv, the revised run 1 pool this list was
+    drawn against; they are not copied here.
+  papers_csv: >
+    scripts/build_papers.py source/trial2-papers-v2.csv papers.csv --replacements source/replacements.csv
+    (paper_id first, the empty Classification column dropped, accepted replacements applied)
+  replacements: >
+    source/replacements.csv. On 2026-10-27 two papers of the v2 list whose version of record
+    could not be obtained were replaced from the same (field, band) cell of run1-manifest-v2.csv:
+    W3044666678 (only the UCL Discovery accepted manuscript was available) by W3186554376, and
+    W2783961694 (subscription-only) by W4393952233. Candidates are open-access papers not in
+    the v2 list, in the order printed by scripts/replacement_candidates.py <run1-manifest-v2.csv>
+    source/trial2-papers-v2.csv W3044666678 W2783961694 --seed 20261027; the first candidate was
+    accepted in both slots after checking its PDF by hand.
+  changes_from_legacy_trial2: >
+    The `change` column says what happened to each paper relative to the earlier trial 2
+    list. Five are replacements (W3044421231, W3178473544, W4407087659, W3161996347,
+    W2601136486 for W3034896029, W4390230503, W4412974138, W3159772319, W2590936057).
+    W2684263115, W2950981545 and W2966406727, which legacy_trial2 had swapped out, are kept
+    with publisher PDFs instead, and four other kept papers are re-downloaded from the
+    publisher because the earlier PDF was an accepted manuscript or repository copy.
+  pdf_downloads: >
+    source/pdf_downloads.csv: per paper, how its PDF was obtained (curl from
+    publisher_pdf_url, a copy of the legacy_trial2 PDF for papers marked plain "kept",
+    whose legacy copy came from the same publisher URL, or MANUAL), its sha256, and the
+    share of title words found in its first two pages. Each MANUAL paper's PDF was then
+    downloaded by hand and logged as "manual" on a rerun.
 content:
   pdf:
     format: pdf
     path: content/pdfs/{paper_id}.pdf
-    method: open-access PDFs from oa_pdf_url, downloaded 2026-10-23, plus the substitution above
-    build: uv run python -I factors/datasets/trial2-openalex30/scripts/download_pdfs.py factors/datasets/trial2-openalex30/papers.csv factors/datasets/trial2-openalex30/source/pdf_link_check.csv factors/datasets/trial2-openalex30/content/pdfs
+    method: publisher versions of record; see source/pdf_downloads.csv. Papers marked MANUAL there were downloaded by hand from vor_url with University of Sheffield access.
+    build: >
+      python3 -I factors/datasets/trial2-openalex30/scripts/download_pdfs.py
+      factors/datasets/trial2-openalex30/papers.csv factors/datasets/trial2-openalex30/content/pdfs
+      factors/datasets/trial2-openalex30/source/pdf_downloads.csv
+      --legacy factors/datasets/legacy_trial2/content/pdfs,
+      then save the MANUAL papers' PDFs as content/pdfs/<paper_id>.pdf and rerun it to check and log them
   text:
     format: jsonl
     path: content/text.jsonl

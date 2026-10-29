@@ -89,6 +89,9 @@ def run_experiment(key: ExperimentKey, repeats: int = 1, root: Path | None = Non
     reviewer = registry.reviewer(key.reviewer)
     if reviewer.is_human:
         raise RunError(f"'{reviewer.id}' is a person: export a review sheet with `pif human export` instead")
+    problem = providers.input_problem(reviewer, input)
+    if problem:
+        raise RunError(problem)
 
     papers = dataset.papers[:limit] if limit else dataset.papers
     # Check every paper's content is present before starting, not 200 papers in.

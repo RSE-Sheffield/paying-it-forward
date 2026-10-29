@@ -16,8 +16,8 @@ import requests
 
 from . import paths
 from .prompting import UserMessage
-from .registry import Reviewer
-from .taxonomy import CATEGORIES, RESPONSE_SCHEMA
+from .registry import Input, Reviewer
+from .taxonomy import CATEGORIES, RESPONSE_SCHEMA, label
 
 DEFAULT_OLLAMA_HOST = "http://localhost:11434"
 
@@ -56,7 +56,31 @@ def make(reviewer: Reviewer):
         return Ollama(reviewer)
     if reviewer.provider == "anthropic":
         return Anthropic(reviewer)
+    if reviewer.provider == "ollama-systemone":
+        return SystemOne(reviewer)
     raise ProviderError(f"reviewer '{reviewer.id}': unknown provider '{reviewer.provider}'")
+
+
+def input_problem(reviewer: Reviewer, input: Input) -> str | None:
+    """Why a model reviewer can't be given this input, or None if it can.
+    Checked before a run starts, so a grid skips the pairing instead of
+    failing every paper."""
+    if reviewer.provider == "ollama-systemone" and input.body != "none":
+        return (f"'{reviewer.id}' is a System One model, which reads metadata and the abstract only, "
+                f"not input '{input.id}' (body: {input.body}); use --input abstract-only")
+    return None
+
+
+def _ollama_describe(host: str, model: str) -> dict:
+    """Where an Ollama model ran and exactly which weights, for run.json."""
+    info = {"host": host, "digest": None}
+    try:
+        tags = requests.get(f"{host}/api/tags", timeout=10).json()
+        info["digest"] = next((m["digest"] for m in tags.get("models", [])
+                               if m.get("name") == model), None)
+    except requests.RequestException:
+        pass
+    return info
 
 
 class Ollama:
@@ -78,15 +102,7 @@ class Ollama:
         self.timeout = self.settings.get("timeout_s", 600)
 
     def describe(self) -> dict:
-        """Where the model ran and exactly which weights, for run.json."""
-        info = {"host": self.host, "digest": None}
-        try:
-            tags = requests.get(f"{self.host}/api/tags", timeout=10).json()
-            info["digest"] = next((m["digest"] for m in tags.get("models", [])
-                                   if m.get("name") == self.reviewer.model), None)
-        except requests.RequestException:
-            pass
-        return info
+        return _ollama_describe(self.host, self.reviewer.model)
 
     def _estimate(self, text: str) -> int:
         return len(text) // self.CHARS_PER_TOKEN
@@ -224,4 +240,78 @@ class Anthropic:
             "duration_s": round(elapsed, 2),
             **({"error": error} if error else {}),
             **({"raw_response": raw} if raw else {}),
+        }
+
+
+class SystemOne:
+    """A System One (decision) model through Ollama's /v1/systemone, e.g. nimble.
+
+    It doesn't write text. It is asked one choice question whose options are
+    the nine categories, and returns a probability for each: the category is
+    the most probable (ties broken in taxonomy order), the probabilities and
+    the model's confidence (how concentrated they are, not the chance it is
+    right) are kept, and `reasoning` lists the top three so the judgement
+    reads like any other.
+
+    The system prompt is the question's instructions and the user message its
+    state. The context is fixed at 8k tokens, too small for full text, so it
+    is only given inputs without a body (see input_problem). The endpoint
+    ignores sampling options, so none are accepted.
+    """
+    SETTINGS = {"timeout_s", "keep_alive"}
+
+    def __init__(self, reviewer: Reviewer):
+        self.reviewer = reviewer
+        self.settings = _check_settings(reviewer, self.SETTINGS)
+        self.host = load_secrets().get("OLLAMA_HOST", DEFAULT_OLLAMA_HOST)
+        self.timeout = self.settings.get("timeout_s", 600)
+
+    def describe(self) -> dict:
+        return _ollama_describe(self.host, self.reviewer.model)
+
+    def classify(self, system: str, message: UserMessage) -> dict:
+        if message.text is not None or message.pdf:
+            raise ProviderError("a System One model reads metadata and the abstract only")
+        state, truncated = message.render()
+        payload = {
+            "model": self.reviewer.model,
+            "state": state,
+            "questions": {"category": {
+                "type": "choice",
+                "instructions": system,
+                "criteria": {c: label(c) for c in CATEGORIES},
+            }},
+        }
+        if "keep_alive" in self.settings:
+            payload["keep_alive"] = self.settings["keep_alive"]
+        t0 = time.time()
+        resp = requests.post(f"{self.host}/v1/systemone", json=payload, timeout=self.timeout)
+        if resp.status_code >= 400:
+            # Ollama's message says why, e.g. a request longer than the context
+            raise ProviderError(f"HTTP {resp.status_code}: {resp.text.strip()[:500]}")
+        data = resp.json()
+        elapsed = time.time() - t0
+
+        answer = (data.get("answers") or {}).get("category") or {}
+        probs = answer.get("probabilities") or {}
+        valid = set(probs) == set(CATEGORIES)
+        category, reasoning = None, ""
+        if valid:
+            ranked = sorted(CATEGORIES, key=lambda c: -probs[c])  # stable: ties stay in taxonomy order
+            category = ranked[0]
+            reasoning = " · ".join(f"{c} {probs[c]:.3f}" for c in ranked[:3])
+            if answer.get("confidence") is not None:
+                reasoning += f" (confidence {answer['confidence']:.3f})"
+        usage = data.get("usage") or {}
+        return {
+            "category": category,
+            "reasoning": reasoning,
+            **({"probabilities": {c: probs[c] for c in CATEGORIES},
+                "confidence": answer.get("confidence")} if valid else {}),
+            "truncated": truncated,
+            "prompt_tokens": usage.get("input_tokens"),
+            "output_tokens": usage.get("output_tokens"),
+            "duration_s": round(elapsed, 2),
+            **({} if valid else {"error": "no probability for each category in response",
+                                 "raw_response": resp.text}),
         }

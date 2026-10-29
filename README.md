@@ -58,7 +58,7 @@ The code is one package, `pif/`, used by everything else:
 |---|---|
 | `registry.py` | loads and fingerprints the five factors |
 | `store.py` | reads and writes experiments and runs; loads everything as DataFrames |
-| `runner.py`, `providers.py`, `prompting.py` | run a model reviewer (Ollama or Anthropic) |
+| `runner.py`, `providers.py`, `prompting.py` | run a model reviewer (Ollama, Anthropic, or a System One model through Ollama) |
 | `human.py` | export a review sheet for a person; import it back as a run |
 | `metrics.py` | consensus, agreement, Cohen's and Fleiss' kappa — shared by the dashboard and the analysis |
 | `content.py` | build a dataset's text from its PDFs |
@@ -114,7 +114,31 @@ Reviewer settings: Ollama accepts `num_ctx`, `timeout_s`, `temperature`, `seed`,
 `top_p` and `top_k`. Anthropic accepts `max_tokens`, `timeout_s`, `effort`,
 `thinking` and `tool_choice`. The Messages API has rejected temperature and the
 other sampling parameters since 2026-10-21, and newer Claude models need
-`tool_choice: auto`.
+`tool_choice: auto`. System One models accept `timeout_s` and `keep_alive`.
+
+### System One models
+
+A System One (decision) model such as `nimble-9b` writes no text. It is asked one
+question whose options are the nine categories and gives a probability for each; the
+most probable is the category.
+
+```
+uv run pif run --dataset spike0-pmc30 --criteria v2 --prompt systemone-v1 --input abstract-only --reviewer nimble-9b
+```
+
+- Each judgement keeps all nine `probabilities` and the model's `confidence` (how
+  concentrated the probabilities are, not the chance it is right). Its `reasoning` lists
+  the top three, e.g. `S3D2 0.571 · S3D3 0.416 · S2D2 0.005 (confidence 0.517)`.
+- Its context is fixed at 8k tokens, so it reads metadata and the abstract only. An input
+  with a body, such as `fulltext`, is skipped in a grid and refused on its own. A dataset
+  with no abstracts (trial2-openalex30's extracted text has none) gives it the title,
+  journal and year alone.
+- Use the `systemone-v1` prompt: `v1` without the request for JSON and reasoning. The
+  system prompt becomes the question's instructions and the user message the state it
+  judges.
+- It is deterministic, so repeat runs give the same probabilities. Ollama ignores sampling
+  settings on this endpoint, so the reviewer file refuses them.
+- Reviewer files use `provider: ollama-systemone`. Pull the model with `ollama pull nimble:9b`.
 
 ### Human reviewers
 

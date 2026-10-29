@@ -3,15 +3,19 @@
     uv run pytest
 """
 import json
+from dataclasses import replace
 
 import openpyxl
 import pytest
 
-from pif import human, metrics, paths, prompting, registry, runner
+import requests
+
+from pif import cli, human, metrics, paths, prompting, providers, registry, runner
 from pif.store import Experiment, ExperimentKey, FactorChanged
 
 KEY = ExperimentKey(dataset="tiny", criteria="v1", prompt="v1", input="fulltext", reviewer="fake")
 HUMAN_KEY = ExperimentKey(dataset="tiny", criteria="v1", prompt="v1", input="fulltext", reviewer="human-a")
+NIMBLE_KEY = ExperimentKey(dataset="tiny", criteria="v1", prompt="v1", input="abstract-only", reviewer="nimble")
 
 
 @pytest.fixture
@@ -36,10 +40,14 @@ def repo(tmp_path, monkeypatch):
     (tmp_path / "inputs").mkdir()
     (tmp_path / "inputs" / "fulltext.yaml").write_text(
         "body: text\ntemplate: |\n  TITLE: {title}\n  ABSTRACT: {abstract}\n  TEXT: {text}\n")
+    (tmp_path / "inputs" / "abstract-only.yaml").write_text(
+        "body: none\ntemplate: |\n  TITLE: {title}\n  ABSTRACT: {abstract}\n")
     (tmp_path / "reviewers").mkdir()
     (tmp_path / "reviewers" / "fake.yaml").write_text(
         "description: a stub\nkind: model\nprovider: anthropic\nmodel: fake\n")
     (tmp_path / "reviewers" / "human-a.yaml").write_text("kind: human\nname: A\n")
+    (tmp_path / "reviewers" / "nimble.yaml").write_text(
+        "kind: model\nprovider: ollama-systemone\nmodel: nimble:9b\n")
     registry.load.cache_clear()
     yield tmp_path
     registry.load.cache_clear()
@@ -138,3 +146,64 @@ def test_metrics():
     assert a["n"] == 2 and a["exact"] == 0.5 and a["s"] == 1.0 and a["d"] == 0.5
     perfect = metrics.counts_table([["S1D1"] * 3, ["S2D2"] * 3], ["S1D1", "S2D2"])
     assert metrics.fleiss_kappa(perfect) == pytest.approx(1.0)
+
+
+class FakeSystemOne:
+    """Stands in for Ollama's /v1/systemone: S2D1 is most probable, S1D1 and
+    S3D3 tie for second. Records each request body."""
+
+    def __init__(self):
+        self.requests = []
+
+    def post(self, url, timeout, **kwargs):
+        assert url.endswith("/v1/systemone")
+        self.requests.append(kwargs["json"])
+        probs = {c: 0.01 for c in kwargs["json"]["questions"]["category"]["criteria"]}
+        probs.update(S2D1=0.8, S1D1=0.05, S3D3=0.05)
+        body = {"answers": {"category": {"type": "choice", "choice": "S2D1",
+                                         "probabilities": probs, "confidence": 0.7}},
+                "usage": {"input_tokens": 123, "output_tokens": 0}}
+        resp = requests.Response()
+        resp.status_code, resp._content = 200, json.dumps(body).encode()
+        return resp
+
+
+def offline(*args, **kwargs):
+    raise requests.ConnectionError("no Ollama in tests")
+
+
+def test_system_one_judgement_keeps_probabilities(repo, monkeypatch):
+    fake = FakeSystemOne()
+    monkeypatch.setattr(providers.requests, "post", fake.post)
+    monkeypatch.setattr(providers.requests, "get", offline)  # describe() looks up the model digest
+    exp = runner.run_experiment(NIMBLE_KEY, log=lambda *a: None)
+    [run] = exp.runs()
+    assert run.status == "complete"
+
+    sent = fake.requests[0]
+    assert sent["state"] == "TITLE: One\nABSTRACT: abstract p1\n"
+    question = sent["questions"]["category"]
+    assert question["type"] == "choice" and question["instructions"] == "TASK: Classify it.\nCRITERIA: S1 means generated."
+    assert list(question["criteria"]) == ["S1D1", "S2D1", "S3D1", "S1D2", "S2D2", "S3D2", "S1D3", "S2D3", "S3D3"]
+
+    j = run.judgements()[0]
+    assert j["category"] == "S2D1" and j["confidence"] == 0.7 and j["probabilities"]["S3D3"] == 0.05
+    assert j["reasoning"] == "S2D1 0.800 · S1D1 0.050 · S3D3 0.050 (confidence 0.700)"  # ties in taxonomy order
+    assert j["prompt_tokens"] == 123 and j["truncated"] is False
+
+
+def test_system_one_reads_abstracts_only(repo, capsys):
+    with pytest.raises(runner.RunError, match="abstract only"):
+        runner.run_experiment(replace(NIMBLE_KEY, input="fulltext"), log=lambda *a: None)
+
+    cli.main(["run", "--dataset", "tiny", "--criteria", "v1", "--prompt", "v1", "--reviewer", "nimble",
+              "--input", "fulltext", "abstract-only", "--dry-run", "--experiments-dir", str(repo / "experiments")])
+    out = capsys.readouterr().out
+    assert "skipping tiny/criteria-v1__prompt-v1__fulltext__nimble: 'nimble' is a System One model" in out
+    assert "tiny/criteria-v1__prompt-v1__abstract-only__nimble: 0 run(s) -> start 1" in out
+
+    (repo / "reviewers" / "nimble.yaml").write_text(
+        "kind: model\nprovider: ollama-systemone\nmodel: nimble:9b\nsettings:\n  temperature: 0.5\n")
+    registry.load.cache_clear()
+    with pytest.raises(providers.ProviderError, match="temperature"):  # the endpoint would ignore it
+        providers.make(registry.reviewer("nimble"))

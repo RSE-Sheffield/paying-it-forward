@@ -1,0 +1,9 @@
+description: >
+  Nimble 9B, a System One (decision) model from Bespoke Labs run locally through Ollama.
+  It writes no text: it gives a probability for each of the nine categories and the most
+  probable is the category. Its 8k-token context only takes metadata and the abstract.
+kind: model
+provider: ollama-systemone
+model: nimble:9b
+settings:
+  timeout_s: 600

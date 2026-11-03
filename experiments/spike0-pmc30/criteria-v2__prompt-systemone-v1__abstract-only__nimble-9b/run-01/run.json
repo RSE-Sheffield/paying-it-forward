@@ -1,0 +1,22 @@
+{
+  "run": "run-01",
+  "status": "complete",
+  "started_at": "2026-10-29T15:18:57+00:00",
+  "finished_at": "2026-10-29T15:19:08+00:00",
+  "papers_total": 30,
+  "papers_judged": 30,
+  "limit": null,
+  "failures": [],
+  "code": {
+    "commit": "2be2292cb334696ac096859449f92844a9914881",
+    "dirty": false
+  },
+  "host": "ssfrse1",
+  "provider": {
+    "host": "http://localhost:11434",
+    "digest": "6aa3fde96874d5d9f03306e795016e232610aaa5f19efcb107bf9311c712ccd9"
+  },
+  "content": {
+    "text": "3461291e643b"
+  }
+}

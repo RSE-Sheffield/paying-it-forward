@@ -1,0 +1,29 @@
+{
+  "dataset": "spike0-pmc30",
+  "criteria": "v2",
+  "prompt": "systemone-v1",
+  "input": "abstract-only",
+  "reviewer": "nimble-9b",
+  "fingerprints": {
+    "dataset": "d698cada60f6",
+    "criteria": "678c5312b1dc",
+    "prompt": "fb71cd682763",
+    "input": "316930c53d9f",
+    "reviewer": "db914ac8d589"
+  },
+  "reviewer_spec": {
+    "description": "Nimble 9B, a System One (decision) model from Bespoke Labs run locally through Ollama. It writes no text: it gives a probability for each of the nine categories and the most probable is the category. Its 8k-token context only takes metadata and the abstract.\n",
+    "kind": "model",
+    "provider": "ollama-systemone",
+    "model": "nimble:9b",
+    "settings": {
+      "timeout_s": 600
+    }
+  },
+  "input_spec": {
+    "description": "Title, journal, year and abstract only; no full text.",
+    "body": "none",
+    "template": "TITLE: {title}\n\nJOURNAL: {journal}  YEAR: {year}\n\nABSTRACT:\n{abstract}\n"
+  },
+  "created_at": "2026-10-29T15:18:57+00:00"
+}

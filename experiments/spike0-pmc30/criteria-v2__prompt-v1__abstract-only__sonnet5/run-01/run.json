@@ -1,0 +1,19 @@
+{
+  "run": "run-01",
+  "status": "complete",
+  "started_at": "2026-10-29T17:02:14+00:00",
+  "finished_at": "2026-10-29T17:03:33+00:00",
+  "papers_total": 30,
+  "papers_judged": 30,
+  "limit": null,
+  "failures": [],
+  "code": {
+    "commit": "2be2292cb334696ac096859449f92844a9914881",
+    "dirty": false
+  },
+  "host": "ssfrse1",
+  "provider": {},
+  "content": {
+    "text": "3461291e643b"
+  }
+}

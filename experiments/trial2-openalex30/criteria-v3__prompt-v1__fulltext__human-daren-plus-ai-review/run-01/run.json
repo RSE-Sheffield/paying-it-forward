@@ -1,0 +1,17 @@
+{
+  "run": "run-01",
+  "status": "complete",
+  "started_at": null,
+  "finished_at": null,
+  "imported_at": "2026-11-16T11:44:37+00:00",
+  "reviewed_on": null,
+  "papers_total": 30,
+  "papers_judged": 23,
+  "failures": [],
+  "notes": "From Daren's Google Sheet (tab 'Trail 2 DH'): category is the 'AI review: suggested code' column and reasoning the 'AI review: reasoning (Claude)' column, an AI review of Daren's codes and notes. Daren's own code and the 'AI review: agrees?' column are kept in source.xlsx. 7 papers have no suggested code ('Not coded'): W4362449286, W3044421231, W4407087659, W2601136486 (no annotated PDF to review; Daren did code them) and W3175185222, W2950981545, W3161996347 (Daren flagged 'Wrong paper or version'). Status set to complete by hand: those papers were deliberately left blank, not unfinished.",
+  "code": {
+    "commit": "6f66052583b9f56a161b7cb703e301b80465c6eb",
+    "dirty": false
+  },
+  "source_file": "source.xlsx"
+}

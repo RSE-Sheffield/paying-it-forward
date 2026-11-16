@@ -1,0 +1,23 @@
+{"paper_id": "W3142292507", "category": "S2D1", "reasoning": "Check S3: p6 says whole-brain analysis used SPM12, a specialist neuroimaging package, which reads as S2 under the criteria. Evidence note says fMRI but the paper is PET plus MRI."}
+{"paper_id": "W2684263115", "category": "S2D1", "reasoning": "Consistent with the rules. Worth confirming with the team that simulation output counts as generated data."}
+{"paper_id": "W3182144593", "category": "S3D1", "reasoning": "Question for the team: are R packages for analysis utility (S3) or research software (S2)? Same boundary as paper 6."}
+{"paper_id": "W2941039746", "category": "S3D3", "reasoning": "Confidence not ticked."}
+{"paper_id": "W4280535254", "category": "S2D2", "reasoning": "Check D3: a data-driven machine-learning paper trains on a dataset, so D2 (or D1 if they built it) looks likelier. Weka question goes to the team."}
+{"paper_id": "W2960678304", "category": "S2D1", "reasoning": "Question for the team: a new algorithm implemented in MATLAB could be S1 if claimed as a contribution; rule 2 (unclear means used) gives S2."}
+{"paper_id": "W4404251589", "category": "S3D1", "reasoning": "If the acoustic software is named, S2."}
+{"paper_id": "W4289336805", "category": "S3D1", "reasoning": ""}
+{"paper_id": "W4409667251", "category": "S3D2", "reasoning": "Check D3: by Daren's note this analyses existing trial data, which the rules class as D2. Confidence not ticked."}
+{"paper_id": "W3207598275", "category": "S3D3", "reasoning": ""}
+{"paper_id": "W3178473544", "category": "S3D2", "reasoning": "Check D3: analysing an existing survey is D2 under the rules (statistics derived from a data source)."}
+{"paper_id": "W4406850242", "category": "S2D2", "reasoning": "Check D3: Daren's note and circled passages say they analysed a public dataset, which is D2 at least. Confidence not ticked."}
+{"paper_id": "W2509118011", "category": "S3D2", "reasoning": "Check D3: estimating case numbers from reported case data looks like D2. Confidence not ticked."}
+{"paper_id": "W4295249173", "category": "S3D1", "reasoning": "Confidence not ticked. Rules say physical samples aren't research data; D1 needs measurements or observations generated from them."}
+{"paper_id": "W3186554376", "category": "S2D1", "reasoning": ""}
+{"paper_id": "W4393952233", "category": "S1D1", "reasoning": ""}
+{"paper_id": "W3159641286", "category": "S3D1", "reasoning": "Note for the method paper: under-reporting of instrument and analysis software."}
+{"paper_id": "W4401050146", "category": "S3D3", "reasoning": ""}
+{"paper_id": "W4411069237", "category": "S3D3", "reasoning": "Confidence not ticked."}
+{"paper_id": "W2966406727", "category": "S3D3", "reasoning": "Question for the team: interview or survey quotes collected for the paper would be generated qualitative data (D1)."}
+{"paper_id": "W2945725574", "category": "S3D3", "reasoning": ""}
+{"paper_id": "W2256384913", "category": "S3D3", "reasoning": ""}
+{"paper_id": "W3142058096", "category": "S2D1", "reasoning": "Check S1: 'published analysis software' reads as using existing software (S2), unless the paper released its own."}

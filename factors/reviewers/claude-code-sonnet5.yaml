@@ -1,0 +1,11 @@
+description: >
+  Claude Sonnet 5 as an agent in Claude Code (claude -p): one fresh session per paper in a
+  folder holding only that paper, with the read-only file tools and no web access. Effort set
+  to high, the Messages API default, to match sonnet5; Claude Code's defaults otherwise.
+kind: model
+provider: claude-code
+model: claude-sonnet-5
+settings:
+  tools: [Read, Grep, Glob]
+  effort: high
+  timeout_s: 900

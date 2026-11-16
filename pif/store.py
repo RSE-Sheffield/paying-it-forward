@@ -6,6 +6,8 @@
             run.json        what happened: when, which code, how far it got, any failures
             judgements.jsonl  one line per paper judged
             source.xlsx     (human runs) the sheet the judgements were imported from
+            transcripts/    (agent runs) each paper's session events, <paper_id>.jsonl;
+                            gitignored, as they hold the paper text the agent read
 
 The folder names are for people browsing; code never parses them. Everything
 needed to group or compare runs is in experiment.json and run.json.
@@ -108,6 +110,17 @@ class Run:
             f.write(json.dumps(judgement, ensure_ascii=False) + "\n")
             f.flush()
             os.fsync(f.fileno())
+
+    def write_transcript(self, paper_id: str, events: list[dict]) -> str:
+        """Store an agent's session events for one paper, one per line; returns
+        the path relative to the run folder, which the judgement records."""
+        rel = Path("transcripts") / f"{str(paper_id).replace('/', '_')}.jsonl"
+        path = self.dir / rel
+        path.parent.mkdir(exist_ok=True)
+        tmp = path.with_suffix(".jsonl.tmp")
+        tmp.write_text("".join(json.dumps(e, ensure_ascii=False) + "\n" for e in events))
+        os.replace(tmp, path)
+        return rel.as_posix()
 
     def write_judgements(self, judgements: list[dict]) -> None:
         tmp = self.judgements_path.with_suffix(".jsonl.tmp")

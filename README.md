@@ -39,6 +39,7 @@ experiments/<dataset>/criteria-<id>__prompt-<id>__<input>__<reviewer>/
         run.json           when, which commit, how far it got, failures, content fingerprints
         judgements.jsonl   one line per paper: category, reasoning, tokens/time or minutes
         source.xlsx        (human runs) the review sheet the run was imported from
+        transcripts/       (agent runs) each paper's Claude Code session; gitignored
     run-02/ ...
 ```
 
@@ -58,7 +59,7 @@ The code is one package, `pif/`, used by everything else:
 |---|---|
 | `registry.py` | loads and fingerprints the five factors |
 | `store.py` | reads and writes experiments and runs; loads everything as DataFrames |
-| `runner.py`, `providers.py`, `prompting.py` | run a model reviewer (Ollama, Anthropic, or a System One model through Ollama) |
+| `runner.py`, `providers.py`, `prompting.py` | run a model reviewer (Ollama, Anthropic, a System One model through Ollama, or Claude Code as an agent) |
 | `human.py` | export a review sheet for a person; import it back as a run |
 | `metrics.py` | consensus, agreement, Cohen's and Fleiss' kappa — shared by the dashboard and the analysis |
 | `content.py` | build a dataset's text from its PDFs |
@@ -114,7 +115,71 @@ Reviewer settings: Ollama accepts `num_ctx`, `timeout_s`, `temperature`, `seed`,
 `top_p` and `top_k`. Anthropic accepts `max_tokens`, `timeout_s`, `effort`,
 `thinking` and `tool_choice`. The Messages API has rejected temperature and the
 other sampling parameters since 2026-10-21, and newer Claude models need
-`tool_choice: auto`. System One models accept `timeout_s` and `keep_alive`.
+`tool_choice: auto`. System One models accept `timeout_s` and `keep_alive`. Claude Code
+accepts `tools`, `effort`, `timeout_s`, `max_budget_usd` and `backend`.
+
+### Claude Code (agentic) reviewers
+
+A `provider: claude-code` reviewer such as `claude-code-sonnet5` runs Claude Code headless
+(`claude -p`) once per paper. It can use tools over several turns before it answers, so
+comparing it with `sonnet5` (one Messages API call) tests an agentic approach against
+simple inference.
+
+```
+uv run pif run --dataset trial2-openalex30 --criteria v3 --prompt v1 --input fulltext fulltext-file --reviewer claude-code-sonnet5 --repeats 5
+```
+
+The two inputs make two experiments. With `fulltext-file` the agent has to open and search
+the paper itself: this is the agentic condition. With `fulltext` it gets the paper in its
+message, as `sonnet5` does. That control separates the effect of the Claude Code harness from
+the effect of exploring the paper. To run only the agentic condition, pass `--input fulltext-file`.
+
+- With `--input fulltext-file`, the paper's extracted text is a file, `paper.txt`, in the
+  agent's working folder, and the message says where to find it. An input that names
+  `{file}` in its template works this way (`paper.pdf` for a PDF body). Only Claude Code
+  reviewers can be given one: other models are skipped in a grid. With the ordinary
+  `fulltext` input, the agent gets the text in its message, like `sonnet5`.
+- **Isolation.** Each paper's session runs in a new temporary folder holding only that paper,
+  with `--restricted` (file tools confined to the folder, nothing that runs code, your
+  settings ignored), `--strict-mcp-config` (no MCP servers, so no Google Drive or Sheets) and
+  `--no-session-persistence`. Earlier judgements, review sheets and `~/.claude` are out of
+  reach. Every session's init event is checked: an unexpected or missing tool, an MCP server
+  or an extra directory fails the paper rather than recording a judgement.
+- `tools` defaults to `[Read, Grep, Glob]`. `WebSearch` and `WebFetch` may be added. A tool
+  that runs code, such as Bash, is refused because it could read outside the folder. prompt
+  `v1` tells the model to use only the paper, so a web-enabled reviewer needs a new prompt
+  version.
+- The system prompt is appended to Claude Code's own, which explains its tools, and the answer
+  comes back through `--json-schema`.
+- Each judgement also records `num_turns`, `tool_calls` (e.g. `{"Read": 3, "Grep": 1}`),
+  `cost_usd`, the `models` used, the `claude_code_version` and `permission_denials` (any read
+  the agent tried outside its folder, which should be empty). Token counts are totals over
+  all turns, including cache reads. The full session is in `transcripts/<paper_id>.jsonl`,
+  which is gitignored because it holds the paper text the agent read.
+- **Billing.** It uses the account `claude` is logged in to, or the API if
+  `ANTHROPIC_API_KEY` is set in the environment (the key in `.secrets` is not passed on).
+  Variables from a parent Claude Code session are removed, so `pif run` behaves the same
+  whether it is started from a shell or inside Claude Code.
+
+#### Local models in Claude Code
+
+`backend: ollama` runs a local model in the same harness, with the same tools and isolation:
+Claude Code sends every request to Ollama's Anthropic-compatible API (at `OLLAMA_HOST`)
+instead of Anthropic, and no Anthropic credentials are passed on. `claude-code-gemma4-12b` is
+Gemma 4 12B this way, so with `gemma4-12b`, `sonnet5` and `claude-code-sonnet5` it makes a 2×2
+of model × agentic or not.
+
+```
+ollama create gemma4:12b-256k -f factors/reviewers/modelfiles/gemma4-12b-256k.Modelfile   # once
+uv run pif run --dataset trial2-openalex30 --criteria v3 --prompt v1 --input fulltext fulltext-file --reviewer claude-code-gemma4-12b --repeats 5
+```
+
+- That API can't set the context length per request, so the reviewer's model is a variant with
+  `num_ctx` set in a Modelfile, kept in `factors/reviewers/modelfiles/`. Without it, Ollama
+  uses its default context and silently drops whatever doesn't fit. `run.json` records the
+  `num_ctx` and the weights' digest the run used.
+- `effort` and `max_budget_usd` have no effect on an Ollama model, so they are refused.
+  `cost_usd` is left empty, because Claude Code doesn't know the model's price.
 
 ### System One models
 
@@ -175,7 +240,7 @@ To add a reviewer, create `factors/reviewers/human-<name>.yaml` with `kind: huma
   A different text extraction method is a new content source, read by its own input.
 - **Input:** add `factors/inputs/<id>.yaml` with `body` (a content source name or `none`)
   and a `template` for the message. The placeholders are `papers.csv` columns plus
-  `{abstract}` and `{text}`.
+  `{abstract}` and `{text}`, or `{file}` to give the body as a file to an agent.
 - **Reviewer:** add `factors/reviewers/<id>.yaml`.
 
 ## Results dashboard

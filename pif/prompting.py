@@ -26,6 +26,9 @@ class UserMessage:
     fields: dict
     text: str | None   # inline body text, if the input has one
     pdf: Path | None   # attached PDF, if the input has one
+    # The name the body is given under in the reviewer's working folder, when
+    # the input gives it as a file ({file}); text or pdf is then its content.
+    file_name: str | None = None
 
     def render(self, max_chars: int | None = None) -> tuple[str, bool]:
         """The message, with the body text cut to max_chars if given;
@@ -62,9 +65,13 @@ def user_message(dataset: Dataset, input: Input, paper: dict) -> UserMessage:
     if not input.template:
         raise RegistryError(f"input '{input.id}' has no template, so a model can't be given it")
     fields = {**paper, "abstract": abstract_of(dataset, paper)}
-    text = pdf = None
+    text = pdf = file_name = None
+    if input.as_file and input.body == "none":
+        raise RegistryError(f"input '{input.id}' names {{file}} but has no body to put in it")
     if input.body != "none":
         fmt = dataset.source(input.body).get("format")
+        if input.as_file:
+            file_name = fields["file"] = "paper.pdf" if fmt == "pdf" else "paper.txt"
         if fmt == "jsonl":
             rec = dataset.records(input.body).get(paper["paper_id"])
             if rec is None:
@@ -76,4 +83,4 @@ def user_message(dataset: Dataset, input: Input, paper: dict) -> UserMessage:
                 raise RegistryError(f"{dataset.id}: missing PDF {pdf}")
         else:
             raise RegistryError(f"{dataset.id}: content source '{input.body}' has unknown format '{fmt}'")
-    return UserMessage(template=input.template, fields=fields, text=text, pdf=pdf)
+    return UserMessage(template=input.template, fields=fields, text=text, pdf=pdf, file_name=file_name)

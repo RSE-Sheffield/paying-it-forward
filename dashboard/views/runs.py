@@ -35,6 +35,11 @@ def render(ctx: Context | None) -> None:
             st.info("Judgements of unfinished runs are shown when the sidebar includes unfinished runs.")
             return
         cols = [c for c in ["paper_id", "category", "reasoning", "minutes", "prompt_tokens", "output_tokens",
-                            "duration_s", "truncated", "error"] if c in j and j[c].notna().any()]
-        st.dataframe(j[cols], hide_index=True, width="stretch",
+                            "duration_s", "num_turns", "tool_calls", "cost_usd", "truncated", "error"]
+                if c in j and j[c].notna().any()]
+        shown = j[cols].copy()
+        if "tool_calls" in shown:  # an agent's {tool: count}, shown as "Read 3, Grep 1"
+            shown["tool_calls"] = shown.tool_calls.map(
+                lambda d: ", ".join(f"{k} {v}" for k, v in d.items()) if isinstance(d, dict) else d)
+        st.dataframe(shown, hide_index=True, width="stretch",
                      column_config={"reasoning": st.column_config.TextColumn(width="large")})

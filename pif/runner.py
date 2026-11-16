@@ -60,6 +60,8 @@ def _execute(run: Run, papers: list[dict], system: str, dataset, input, provider
                 failures.append({"paper_id": pid, "error": f"{type(e).__name__}: {e}", "at": now()})
                 log(f"{prefix} FAILED: {type(e).__name__}: {e}")
                 continue
+            if "transcript" in result:  # an agent's session: kept in its own file, not in judgements.jsonl
+                result["transcript"] = run.write_transcript(pid, result["transcript"])
             run.append({"paper_id": pid, **result, "timestamp": now()})
             run.meta["papers_judged"] = len(done) + i - len(failures)
             run.save()

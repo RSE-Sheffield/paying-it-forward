@@ -10,7 +10,12 @@ from __future__ import annotations
 import base64
 import json
 import os
+import shutil
+import subprocess
+import tempfile
 import time
+from collections import Counter
+from pathlib import Path
 
 import requests
 
@@ -58,6 +63,8 @@ def make(reviewer: Reviewer):
         return Anthropic(reviewer)
     if reviewer.provider == "ollama-systemone":
         return SystemOne(reviewer)
+    if reviewer.provider == "claude-code":
+        return ClaudeCode(reviewer)
     raise ProviderError(f"reviewer '{reviewer.id}': unknown provider '{reviewer.provider}'")
 
 
@@ -68,6 +75,9 @@ def input_problem(reviewer: Reviewer, input: Input) -> str | None:
     if reviewer.provider == "ollama-systemone" and input.body != "none":
         return (f"'{reviewer.id}' is a System One model, which reads metadata and the abstract only, "
                 f"not input '{input.id}' (body: {input.body}); use --input abstract-only")
+    if input.as_file and reviewer.provider != "claude-code":
+        return (f"'{reviewer.id}' is sent the paper in its message, but input '{input.id}' puts it in a "
+                f"file for an agent to open; give it an inline input such as fulltext")
     return None
 
 
@@ -238,6 +248,232 @@ class Anthropic:
             "prompt_tokens": resp.usage.input_tokens,
             "output_tokens": resp.usage.output_tokens,
             "duration_s": round(elapsed, 2),
+            **({"error": error} if error else {}),
+            **({"raw_response": raw} if raw else {}),
+        }
+
+
+def _claude_env(ollama: tuple[str, str] | None = None) -> dict:
+    """The environment for a `claude` child process, without the variables a
+    parent Claude Code session sets (CLAUDECODE, CLAUDE_CODE_*, CLAUDE_EFFORT,
+    ...). Started from inside Claude Code, the child would otherwise inherit
+    that session's effort and a link back to it. The two that say how to log
+    in are kept.
+
+    With `ollama` = (host, model), every request goes to Ollama's
+    Anthropic-compatible API instead, background ones included, and no
+    Anthropic credentials are passed on."""
+    keep = {"CLAUDE_CODE_OAUTH_TOKEN", "CLAUDE_CONFIG_DIR"}
+    env = {k: v for k, v in os.environ.items() if k in keep or not k.startswith("CLAUDE")}
+    if ollama:
+        host, model = ollama
+        env = {k: v for k, v in env.items() if not k.startswith("ANTHROPIC_") and k != "CLAUDE_CODE_OAUTH_TOKEN"}
+        env.update(ANTHROPIC_BASE_URL=host, ANTHROPIC_AUTH_TOKEN="ollama",
+                   ANTHROPIC_DEFAULT_HAIKU_MODEL=model, ANTHROPIC_SMALL_FAST_MODEL=model)
+    return env
+
+
+def _ollama_num_ctx(host: str, model: str) -> int | None:
+    """The context length an Ollama model is configured with (its Modelfile's num_ctx)."""
+    try:
+        params = requests.post(f"{host}/api/show", json={"model": model}, timeout=10).json().get("parameters", "")
+    except (requests.RequestException, ValueError):
+        return None
+    for line in params.splitlines():
+        name, _, value = line.strip().partition(" ")
+        if name == "num_ctx" and value.strip().isdigit():
+            return int(value.strip())
+    return None
+
+
+class ClaudeCode:
+    """Claude Code run headless (`claude -p`) as an agent: one fresh session
+    per paper, which can use tools over several turns before answering.
+
+    Each paper gets a new temporary folder holding only that paper (paper.txt
+    or paper.pdf, when the input names {file}), and the session runs there with
+
+        --restricted          file tools confined to that folder, nothing that
+                              runs code, and user/project settings ignored
+        --strict-mcp-config   no MCP servers (so no Google Drive or Sheets)
+        --tools               only the tools the reviewer lists
+
+    so earlier judgements, review sheets and ~/.claude are out of reach. The
+    session's init event is checked against that: any other tool, a missing
+    one, or an MCP server fails the paper instead of giving a judgement.
+    Reads it attempts outside the folder are refused and recorded in the
+    judgement's `permission_denials`.
+
+    The system prompt is appended to Claude Code's own, which tells the model
+    how to use its tools, and the answer comes back through --json-schema.
+    Billing is the logged-in account, or the API if ANTHROPIC_API_KEY is set
+    in the environment (the key in .secrets is not passed on).
+
+    `backend: ollama` runs a local model in the same harness: Claude Code
+    sends its requests to Ollama's Anthropic-compatible API (OLLAMA_HOST).
+    That API can't set num_ctx per request, so the model should be a variant
+    with its context set in a Modelfile (see factors/reviewers/modelfiles/);
+    run.json records the num_ctx it was configured with. effort and
+    max_budget_usd have no effect there, so they are refused, and cost_usd is
+    left empty because Claude Code doesn't know the model's price.
+
+    The session's events are returned as `transcript`, which the runner
+    stores beside the judgements. Token counts are totals over every turn,
+    cache reads included.
+    """
+    SETTINGS = {"tools", "effort", "timeout_s", "max_budget_usd", "backend"}
+    BACKENDS = ("anthropic", "ollama")
+    # Read-only file tools, which --restricted keeps inside the paper's folder,
+    # and the web tools. A tool that runs code (Bash) could read the whole disk.
+    ALLOWED_TOOLS = ("Read", "Grep", "Glob", "WebSearch", "WebFetch")
+    DEFAULT_TOOLS = ("Read", "Grep", "Glob")
+    INTERNAL_TOOLS = {"StructuredOutput"}  # how --json-schema returns the answer
+    EFFORTS = ("low", "medium", "high", "xhigh", "max")
+
+    def __init__(self, reviewer: Reviewer):
+        self.reviewer = reviewer
+        self.settings = _check_settings(reviewer, self.SETTINGS)
+        self.tools = list(self.settings.get("tools", self.DEFAULT_TOOLS))
+        bad = [t for t in self.tools if t not in self.ALLOWED_TOOLS]
+        if bad:
+            raise ProviderError(
+                f"reviewer '{reviewer.id}': tool(s) {', '.join(bad)} not allowed. Allowed: "
+                f"{', '.join(self.ALLOWED_TOOLS)}. Anything that runs code could read outside the paper's folder.")
+        effort = self.settings.get("effort")
+        if effort is not None and effort not in self.EFFORTS:
+            raise ProviderError(f"reviewer '{reviewer.id}': effort must be one of {', '.join(self.EFFORTS)}")
+        self.backend = self.settings.get("backend", "anthropic")
+        if self.backend not in self.BACKENDS:
+            raise ProviderError(f"reviewer '{reviewer.id}': backend must be one of {', '.join(self.BACKENDS)}")
+        self.timeout = self.settings.get("timeout_s", 900)
+        self.host = None
+        if self.backend == "ollama":
+            ignored = sorted({"effort", "max_budget_usd"} & set(self.settings))
+            if ignored:
+                raise ProviderError(f"reviewer '{reviewer.id}': {', '.join(ignored)} has no effect "
+                                    f"on a model served by Ollama")
+            self.host = load_secrets().get("OLLAMA_HOST", DEFAULT_OLLAMA_HOST)
+        self.env = _claude_env((self.host, reviewer.model) if self.host else None)
+
+    def describe(self) -> dict:
+        try:
+            version = subprocess.run(["claude", "--version"], capture_output=True, text=True,
+                                     env=self.env, timeout=60).stdout.strip() or None
+        except (OSError, subprocess.SubprocessError):
+            version = None
+        if self.backend == "ollama":
+            return {"claude_code_version": version, "backend": "ollama",
+                    **_ollama_describe(self.host, self.reviewer.model),
+                    "num_ctx": _ollama_num_ctx(self.host, self.reviewer.model)}
+        return {"claude_code_version": version,
+                "auth": "ANTHROPIC_API_KEY" if self.env.get("ANTHROPIC_API_KEY") else "claude login"}
+
+    def _command(self, system_file: Path) -> list[str]:
+        tools = ",".join(self.tools)
+        cmd = ["claude", "-p", "--restricted", "--strict-mcp-config",
+               "--tools", tools, "--allowedTools", tools,
+               "--model", self.reviewer.model,
+               "--append-system-prompt-file", str(system_file),
+               "--json-schema", json.dumps(RESPONSE_SCHEMA),
+               "--output-format", "stream-json", "--verbose",
+               "--no-session-persistence"]
+        if "effort" in self.settings:
+            cmd += ["--effort", self.settings["effort"]]
+        if "max_budget_usd" in self.settings:
+            cmd += ["--max-budget-usd", str(self.settings["max_budget_usd"])]
+        return cmd
+
+    def _check_isolation(self, init: dict) -> None:
+        tools = set(init.get("tools") or []) - self.INTERNAL_TOOLS
+        extra, missing = tools - set(self.tools), set(self.tools) - tools
+        servers = [s.get("name", s) if isinstance(s, dict) else s for s in init.get("mcp_servers") or []]
+        dirs = init.get("additional_directories") or []  # file tools could reach these too
+        problems = ([f"unexpected tool(s) {', '.join(sorted(extra))}"] if extra else []) \
+            + ([f"missing tool(s) {', '.join(sorted(missing))}"] if missing else []) \
+            + ([f"MCP server(s) {', '.join(map(str, servers))}"] if servers else []) \
+            + ([f"additional directories {', '.join(map(str, dirs))}"] if dirs else [])
+        if problems:
+            raise ProviderError("session not isolated as configured (" + "; ".join(problems)
+                                + "); no judgement recorded")
+
+    def classify(self, system: str, message: UserMessage) -> dict:
+        if message.pdf and not message.file_name:
+            raise ProviderError("Claude Code can't be sent a PDF in its message; use an input that gives it as {file}")
+        user, truncated = message.render()
+        with tempfile.TemporaryDirectory(prefix="pif-claude-code-") as tmp:
+            # The session runs in tmp/paper; the system prompt sits beside it, out of the tools' reach.
+            folder = Path(tmp) / "paper"
+            folder.mkdir()
+            system_file = Path(tmp) / "system.md"
+            system_file.write_text(system)
+            if message.file_name:
+                if message.pdf:
+                    shutil.copyfile(message.pdf, folder / message.file_name)  # a copy, never a link back
+                else:
+                    (folder / message.file_name).write_text(message.text or "")
+            t0 = time.time()
+            try:
+                proc = subprocess.run(self._command(system_file), cwd=folder, input=user, env=self.env,
+                                      capture_output=True, text=True, timeout=self.timeout)
+            except subprocess.TimeoutExpired:
+                raise ProviderError(f"no answer within {self.timeout}s") from None
+            except FileNotFoundError:
+                raise ProviderError("the `claude` command isn't on PATH") from None
+            elapsed = time.time() - t0
+
+        events = []
+        for line in proc.stdout.splitlines():
+            try:
+                events.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+        init = next((e for e in events if e.get("type") == "system" and e.get("subtype") == "init"), None)
+        result = next((e for e in reversed(events) if e.get("type") == "result"), None)
+        stderr = proc.stderr.strip()[:500]
+        if init is None:
+            raise ProviderError(f"claude exited {proc.returncode} before starting a session: {stderr}")
+        self._check_isolation(init)
+        if result is None:
+            raise ProviderError(f"claude exited {proc.returncode} with no result: {stderr}")
+        subtype = result.get("subtype") or ""
+        if result.get("is_error") and not subtype.startswith("error_max"):
+            # An API, auth or usage-limit error: not an answer, so the paper is retried on rerun.
+            raise ProviderError(f"{subtype or 'error'}: {str(result.get('result') or stderr)[:500]}")
+
+        answer = result.get("structured_output") or {}
+        category, reasoning, error, raw = None, "", None, None
+        if subtype.startswith("error_max"):  # a limit the reviewer sets (budget, turns) was reached
+            error = subtype
+        elif answer.get("category") in CATEGORIES:
+            category, reasoning = answer["category"], answer.get("reasoning", "")
+        else:
+            error = "no valid category in response"
+            raw = json.dumps(answer) if answer else str(result.get("result") or "")
+
+        usage = result.get("usage") or {}
+        tool_calls = Counter(
+            b.get("name") for e in events if e.get("type") == "assistant"
+            for b in (e.get("message") or {}).get("content") or []
+            if isinstance(b, dict) and b.get("type") == "tool_use" and b.get("name") not in self.INTERNAL_TOOLS)
+        return {
+            "category": category,
+            "reasoning": reasoning,
+            "truncated": truncated,
+            "prompt_tokens": sum(usage.get(k) or 0 for k in
+                                 ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens")),
+            "output_tokens": usage.get("output_tokens"),
+            "duration_s": round(elapsed, 2),
+            "num_turns": result.get("num_turns"),
+            "cost_usd": result.get("total_cost_usd") if self.backend == "anthropic" else None,
+            "tool_calls": dict(tool_calls),
+            "permission_denials": [{"tool": d.get("tool_name"), "input": d.get("tool_input")}
+                                   for d in result.get("permission_denials") or []],
+            "models": sorted(result.get("modelUsage") or {}),
+            "claude_code_version": init.get("claude_code_version"),
+            # Without the token counters streamed while the model thinks: thousands per paper
+            # from a thinking model, and nothing that isn't in the assistant messages.
+            "transcript": [e for e in events
+                           if not (e.get("type") == "system" and e.get("subtype") == "thinking_tokens")],
             **({"error": error} if error else {}),
             **({"raw_response": raw} if raw else {}),
         }

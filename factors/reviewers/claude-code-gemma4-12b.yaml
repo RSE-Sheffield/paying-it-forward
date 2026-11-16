@@ -1,0 +1,13 @@
+description: >
+  Gemma 4 12B run locally through Ollama, as an agent in Claude Code (claude -p): the same harness,
+  tools and isolation as claude-code-sonnet5, with Claude Code sending its requests to Ollama's
+  Anthropic-compatible API. The model is gemma4:12b with num_ctx fixed at 262144 to match the
+  gemma4-12b reviewer (build it from modelfiles/gemma4-12b-256k.Modelfile). Read-only file tools,
+  no web access; Ollama's defaults otherwise.
+kind: model
+provider: claude-code
+model: gemma4:12b-256k
+settings:
+  backend: ollama
+  tools: [Read, Grep, Glob]
+  timeout_s: 1800

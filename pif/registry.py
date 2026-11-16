@@ -212,6 +212,10 @@ class Input:
     or a PDF source (e.g. `pdf`) to attach the file. `template` lays
     out the user message; placeholders are paper columns plus {abstract} and
     {text}.
+
+    A template that names {file} instead gives the body as a file in the
+    reviewer's working folder (paper.txt or paper.pdf), and {file} is its name.
+    Only an agent with a working folder (a claude-code reviewer) can be given it.
     """
     id: str
     path: Path
@@ -224,6 +228,11 @@ class Input:
     @property
     def template(self) -> str | None:
         return self.spec.get("template")
+
+    @property
+    def as_file(self) -> bool:
+        """Whether the body is given as a file in the working folder rather than in the message."""
+        return "{file}" in (self.template or "")
 
     @property
     def description(self) -> str:

@@ -1,0 +1,7 @@
+# gemma4:12b with its full 256k context, for reviewers that reach Ollama through an
+# API that can't set num_ctx per request (Claude Code through Ollama's Anthropic-compatible
+# API). The same context as the gemma4-12b reviewer, which sets num_ctx per request.
+#
+#   ollama create gemma4:12b-256k -f factors/reviewers/modelfiles/gemma4-12b-256k.Modelfile
+FROM gemma4:12b
+PARAMETER num_ctx 262144

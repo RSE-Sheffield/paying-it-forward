@@ -228,3 +228,7 @@ factors/datasets/*/content/
 
 # Trial runs (pif run --limit)
 experiments/_scratch/
+
+# Agent session transcripts: they hold the paper text the agent read, so are
+# kept locally like content/. The judgements record a summary of each session.
+experiments/**/transcripts/

@@ -1,0 +1,14 @@
+description: >
+  The same as fulltext, except that the dataset's extracted full text is a file, paper.txt, in
+  the reviewer's working folder instead of being in the message, for an agent to open and search
+  with its tools. Only claude-code reviewers can be given it.
+body: text
+template: |
+  TITLE: {title}
+
+  JOURNAL: {journal}  YEAR: {year}
+
+  ABSTRACT:
+  {abstract}
+
+  FULL TEXT: in the file {file} in your working directory.

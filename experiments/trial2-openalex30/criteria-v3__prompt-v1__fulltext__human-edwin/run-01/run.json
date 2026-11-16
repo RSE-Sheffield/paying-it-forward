@@ -1,0 +1,17 @@
+{
+  "run": "run-01",
+  "status": "complete",
+  "started_at": null,
+  "finished_at": null,
+  "imported_at": "2026-11-03T11:36:26+00:00",
+  "reviewed_on": "2026-11-03",
+  "papers_total": 30,
+  "papers_judged": 30,
+  "failures": [],
+  "notes": null,
+  "code": {
+    "commit": "5b815369b112ce4106fe498a6cf466e0c1c8a4cf",
+    "dirty": false
+  },
+  "source_file": "source.xlsx"
+}

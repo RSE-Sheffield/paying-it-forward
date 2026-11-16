@@ -1,0 +1,17 @@
+{
+  "run": "run-01",
+  "status": "incomplete",
+  "started_at": null,
+  "finished_at": null,
+  "imported_at": "2026-11-16T09:24:13+00:00",
+  "reviewed_on": null,
+  "papers_total": 30,
+  "papers_judged": 27,
+  "failures": [],
+  "notes": "Daren annotated the papers; notes transcribed into Daren's Google Sheet (tab 'Trail 2 DH'). Reasoning joins the sheet's software evidence, data evidence, notes and marks columns; confidence and flag are kept in source.xlsx only. The sheet's AI-review columns were left out. 3 papers not classified, flagged 'Wrong paper or version' (not the version of record): W3175185222, W2950981545, W3161996347.",
+  "code": {
+    "commit": "5b815369b112ce4106fe498a6cf466e0c1c8a4cf",
+    "dirty": false
+  },
+  "source_file": "source.xlsx"
+}

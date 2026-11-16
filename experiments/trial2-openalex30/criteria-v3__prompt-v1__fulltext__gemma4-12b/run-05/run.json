@@ -1,0 +1,22 @@
+{
+  "run": "run-05",
+  "status": "interrupted",
+  "started_at": "2026-11-03T13:00:04+00:00",
+  "finished_at": null,
+  "papers_total": 30,
+  "papers_judged": 18,
+  "limit": null,
+  "failures": [],
+  "code": {
+    "commit": "5b815369b112ce4106fe498a6cf466e0c1c8a4cf",
+    "dirty": false
+  },
+  "host": "ssfrse1",
+  "provider": {
+    "host": "http://localhost:11434",
+    "digest": "4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c"
+  },
+  "content": {
+    "text": "bf2d13689160"
+  }
+}

@@ -1,0 +1,30 @@
+{"paper_id": "W3142292507", "category": "S2D1", "reasoning": "\"Here, we characterized the topography of inflammation in semantic variant primary progressive aphasia using high-resolution PET and the tracer 11C-PBR28 as a marker of microglial activation\" New data, no bespoke software made"}
+{"paper_id": "W2684263115", "category": "S2D1", "reasoning": "Definitely new data, talks about a SALT2 fitting program, but is not that explicit on software. I went for D1S2"}
+{"paper_id": "W3182144593", "category": "S3D1", "reasoning": "This one is borderline, because some of the data comes from previous studies, and some is newly re-analysed and genotyped here. So it's salami slicing of previous data, but technically includes some newly generated information. I think it's a bad paper, but we are not markign for integrity. S3 as it's just basic R packages."}
+{"paper_id": "W2941039746", "category": "S3D3", "reasoning": "Waffle"}
+{"paper_id": "W4362449286", "category": "S3D3", "reasoning": "Review paper"}
+{"paper_id": "W4280535254", "category": "S2D1", "reasoning": "A secondary dataset of adult autism cases (Adult ADHD and Autism Service, South West Yorkshire Partnership NHS Foundation Trust) consisting of 192 cases. BUT, they also collect new questionnaire data, so it's D1. For the ML I initially though \"routine\" and S3 but actually they do use some ML platforms beyond the usual pipelines, so S2"}
+{"paper_id": "W2960678304", "category": "S1D1", "reasoning": "\" The software development packages used in this experiment are: LABVIEW software\" plus custom MATLAB code. I think as its custom code (implying new scripts etc) this would be S1. and the data aerw new"}
+{"paper_id": "W4404251589", "category": "S3D1", "reasoning": "Interesting paper! Collecting soundscapes definitely constitutes new data. But the most complex softare they use is Adobe Audition CC which I guess is the sound equivalent of photoshop"}
+{"paper_id": "W4289336805", "category": "S3D1", "reasoning": "BEARCATS!"}
+{"paper_id": "W4409667251", "category": "S3D2", "reasoning": "\"This study is a post-hoc analysis of data from SSaSS \n(ClinicalTrials.gov identifier: NCT02092090).\""}
+{"paper_id": "W3175185222", "category": "S2D1", "reasoning": "\"an original pool of 35 patients\" NO EVIDENCE OF BESPOKE SOFTWARE"}
+{"paper_id": "W3044421231", "category": "S3D3", "reasoning": "A review paper on 2SMR, cancer and T2DM. No software, no data."}
+{"paper_id": "W3207598275", "category": "S3D1", "reasoning": "This paper is problematic, it's very low quality. The case studies do however claim to have collected data on activity levels, and no research software is created or used."}
+{"paper_id": "W3178473544", "category": "S3D2", "reasoning": "Secondary analysis of The Russian Longitudinal Monitoring Survey (RLMS)"}
+{"paper_id": "W4407087659", "category": "S3D3", "reasoning": "No data was used for the research described in the article, and I can't see any software either (Lean?)"}
+{"paper_id": "W2950981545", "category": "S2D1", "reasoning": "\"The code used to model the core dynamics is described in Willis et al. 55 and is\navailable on request from the corresponding author.\" so this I think is S2. I think model and simulation inputs and outputs count as research data as per our metric. S2 D1"}
+{"paper_id": "W4406850242", "category": "S2D2", "reasoning": "Genomic analysis, using research software. Strictly secondary, the 222 samples came from the existing North American Brain Expression Consortium (NABEC) dataset"}
+{"paper_id": "W2509118011", "category": "S3D1", "reasoning": "CDC estimates, so new data. No evidence of any software use beyond basic stats"}
+{"paper_id": "W4295249173", "category": "S3D1", "reasoning": "Gross data was collected https://link.springer.com/article/10.1007/s00436-022-07662-w/figures/1"}
+{"paper_id": "W3186554376", "category": "S2D1", "reasoning": "Clealry primary work was done and data generated. I think they used sufficient research software for this to be S2"}
+{"paper_id": "W3161996347", "category": "S3D1", "reasoning": "\"a Monte Carlo simulation study\" so it's D1, I'll go with S3, these are normal maths tools and not research software"}
+{"paper_id": "W4393952233", "category": "S1D1", "reasoning": "Online tool, and they made some data"}
+{"paper_id": "W3159641286", "category": "S2D1", "reasoning": "Another XRD paper, gernated data, used EVA software"}
+{"paper_id": "W4401050146", "category": "S3D3", "reasoning": "Proper narrative description, \"My analysis of the “Industrial Art in Relation to the Home Exhibition” shows the importance of exhibitions during the interwar period as barometers for gauging the public response to various forms of “good” design.\""}
+{"paper_id": "W4411069237", "category": "S3D3", "reasoning": "Systematic review."}
+{"paper_id": "W2601136486", "category": "S2D1", "reasoning": "It's an XRD struture report, so clearly generated new experimental data, and used research software to process it"}
+{"paper_id": "W2966406727", "category": "S2D1", "reasoning": "CAREFUL, MIGHT BE A MISMATCH"}
+{"paper_id": "W2945725574", "category": "S3D3", "reasoning": "Review paper"}
+{"paper_id": "W2256384913", "category": "S3D1", "reasoning": "Business studies case study. 25 personal interviews, and these are classed as data under our rubric"}
+{"paper_id": "W3142058096", "category": "S2D1", "reasoning": "MRI methods for characterisation, no bespoke software, but IS data"}

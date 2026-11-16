@@ -1,0 +1,30 @@
+{"paper_id": "W3142292507", "category": "S2D1", "reasoning": "Primary data collection as participants are recruited (D1). PMOD software is used for doing data manipulation such as segmentation and normalisation."}
+{"paper_id": "W2684263115", "category": "S2D2", "reasoning": "S2 as it uses Cosmological Monte Carlo that is referenced. D2 - Goal of study is to generate a methodology which we don't count as data"}
+{"paper_id": "W3182144593", "category": "S3D1", "reasoning": "Primary data collection as blood is being taken from animals. I can't see any mention of software although some statistical analysis"}
+{"paper_id": "W2941039746", "category": "S3D3", "reasoning": "Its a review or opinion piece. No data or software."}
+{"paper_id": "W4362449286", "category": "S3D3", "reasoning": "Its a review paper. No research data or software."}
+{"paper_id": "W4280535254", "category": "S2D2", "reasoning": "Uses an existing  dataset of 192 patients from adult ADHD. The software is slightly harder to judge. They use 6 machine learning models but they report to use Weka and default parameters, suggesting no substantial research software. was created by the authors. There is also nobody associated with writing code or software in the contributions."}
+{"paper_id": "W2960678304", "category": "S1D2", "reasoning": "This project implements a Energy grid management system that I am intepreting as software. There is specific mention of MATLAB and suggest they have written their own custom functions (S1). Existing data was used to evaluate software (D2)."}
+{"paper_id": "W4404251589", "category": "S3D1", "reasoning": "SPSS and matlam is used for processing and statistical analysis. As defined in the metric, this doesn't constitute as research software and therefore is S3. Primary data collection does happen (D1)"}
+{"paper_id": "W4289336805", "category": "S3D1", "reasoning": "Collects video data of animal from zoo (D1). Only software used is in running the cctv and statistical analysis of camera data."}
+{"paper_id": "W4409667251", "category": "S3D2", "reasoning": "Uses data from a previous study (SSaSS). This study specifically focuses on the analysis of this data. Statistical analysis was done by SAS which I intepret as generic statistical software and therefore S3."}
+{"paper_id": "W3175185222", "category": "S2D1", "reasoning": "SPM12 software was used for processing fMRI data. I'm considering this as research software (S2). I think the MRI data was collected as part of this survey (D1) although its not completely clear."}
+{"paper_id": "W3044421231", "category": "S3D3", "reasoning": "Discussion piece"}
+{"paper_id": "W3207598275", "category": "S3D3", "reasoning": "The data used is literature which we do not consider data. No data mentioned either. Output of study is a suggested model of working."}
+{"paper_id": "W3178473544", "category": "S3D2", "reasoning": "Study uses The Russian Longitudinal Monitoring Survey (D2). No mention of software (S3)"}
+{"paper_id": "W4407087659", "category": "S3D3", "reasoning": "No data or software"}
+{"paper_id": "W2950981545", "category": "S1D3", "reasoning": "Numerical modelling here can be intepreted as software (S1). No data used. (D3)"}
+{"paper_id": "W4406850242", "category": "S2D2", "reasoning": "Samples used were from the North American\nBrain Expression Consortium (D2). Software for analysis includes ensembl Genome Browser and EBOSS (S2)"}
+{"paper_id": "W2509118011", "category": "S3D2", "reasoning": "No mention of software (S3). Uses an existing data (D2)"}
+{"paper_id": "W4295249173", "category": "S3D3", "reasoning": "N oSoftware (S3). Physical samples do not count as data and therefore no data generated (D3)"}
+{"paper_id": "W3186554376", "category": "S2D1", "reasoning": "The study collects water samples (D1). A plethora of different research software was used for the analysis including VICTOR for protein-based heiracherial clustering trees."}
+{"paper_id": "W3161996347", "category": "S3D2", "reasoning": "Difficult to follow but there is a discussion of real data analysis suggesting D2. Although I find it odd if no software was used, I can't find any mention of code or software in the paper."}
+{"paper_id": "W4393952233", "category": "S1D2", "reasoning": "Study creates a metric, in itself neither data or software. However, there is an online tool for using the metric, so thats S1. Metric was created and evaluated using existing data D2."}
+{"paper_id": "W3159641286", "category": "S3D3", "reasoning": "Really unsure on this one. No mention of software (S3). The study did some physical experiments in a lab, resulting in some findings. I can't really point at anything specifically that I would call research data, Therefore, D3."}
+{"paper_id": "W4401050146", "category": "S3D3", "reasoning": "Analysis of feedback from an art exhibiton. No formal data collection done. Is this data used? IT feels more like hearsay than anything as formal as a dataset. S3D3"}
+{"paper_id": "W4411069237", "category": "S3D3", "reasoning": "Systematic review of the literature"}
+{"paper_id": "W2601136486", "category": "S3D1", "reasoning": "Study outputs structural data of a compound (D1). No software mentioned (S3)"}
+{"paper_id": "W2966406727", "category": "S3D1", "reasoning": "7 interviews were conducted so D1. Qualititative data analysis software was used for transcription (Nvivo). I'm torn on whether this is considered research software. I think this is probabaly generic enough to not be considered research software."}
+{"paper_id": "W2945725574", "category": "S3D3", "reasoning": "Review piece"}
+{"paper_id": "W2256384913", "category": "S3D3", "reasoning": "Can't find any concrete mentions of research software or data"}
+{"paper_id": "W3142058096", "category": "S3D1", "reasoning": "Data is collected from microscropes amongst other things (D1). Its not clear whether any reseach software was created or used (S3)."}

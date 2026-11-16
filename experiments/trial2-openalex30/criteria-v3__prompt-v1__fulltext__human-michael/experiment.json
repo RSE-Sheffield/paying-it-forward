@@ -1,0 +1,25 @@
+{
+  "dataset": "trial2-openalex30",
+  "criteria": "v3",
+  "prompt": "v1",
+  "input": "fulltext",
+  "reviewer": "human-michael",
+  "fingerprints": {
+    "dataset": "fdfd8a5dd60e",
+    "criteria": "205c5500049a",
+    "prompt": "0f3a989c11d8",
+    "input": "4e926d166829",
+    "reviewer": "bb712ec415ea"
+  },
+  "reviewer_spec": {
+    "description": "Manual classification by Michael.",
+    "kind": "human",
+    "name": "Michael"
+  },
+  "input_spec": {
+    "description": "The whole paper. A model gets title, journal, year and abstract, then the dataset's extracted full text inline; a person reads the full paper. The default input when none is given.\n",
+    "body": "text",
+    "template": "TITLE: {title}\n\nJOURNAL: {journal}  YEAR: {year}\n\nABSTRACT:\n{abstract}\n\nFULL TEXT:\n{text}\n"
+  },
+  "created_at": "2026-11-03T11:35:37+00:00"
+}

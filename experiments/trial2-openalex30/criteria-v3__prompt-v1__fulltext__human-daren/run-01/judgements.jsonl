@@ -1,0 +1,27 @@
+{"paper_id": "W3142292507", "category": "S3D1", "reasoning": "Data: fMRI across many pages. Marks: p2 PET tracer, p3 participants recruited, p4 MRI acquisition, p6 data availability, p10 supplementary material."}
+{"paper_id": "W2684263115", "category": "S2D1", "reasoning": "Software: Uses highlighted Monte Carlo simulation package. Data: Runs a number of simulations; simulations count as D1. No DAS (data availability statement)."}
+{"paper_id": "W3182144593", "category": "S3D1", "reasoning": "Data: Samples of tick/cattle interaction. Used R packages for analysis."}
+{"paper_id": "W2941039746", "category": "S3D3", "reasoning": "Some literature classification but not claimed as data; more a lit review."}
+{"paper_id": "W4362449286", "category": "S3D3", "reasoning": "Review artricle."}
+{"paper_id": "W4280535254", "category": "S2D3", "reasoning": "Not sure where the boundary is between SPSS/R and specialist packages like Weka."}
+{"paper_id": "W2960678304", "category": "S2D1", "reasoning": "Designed an algorithm using MATLAB and ran an experiment to validate. Does this count as S2?."}
+{"paper_id": "W4404251589", "category": "S3D1", "reasoning": "May have used some specific acoustic research software. Marks: p10 data availability (dataset link)."}
+{"paper_id": "W4289336805", "category": "S3D1", "reasoning": "Zoo observational analysis."}
+{"paper_id": "W4409667251", "category": "S3D3", "reasoning": "Post-hoc analysis of existing study."}
+{"paper_id": "W3044421231", "category": "S3D3", "reasoning": ""}
+{"paper_id": "W3207598275", "category": "S3D3", "reasoning": ""}
+{"paper_id": "W3178473544", "category": "S3D3", "reasoning": "Analysis of existing survey."}
+{"paper_id": "W4407087659", "category": "S3D3", "reasoning": ""}
+{"paper_id": "W4406850242", "category": "S2D3", "reasoning": "Software: R genomics packages. Analysis of a public dataset. Marks: p3 samples from NABEC dbGaP dataset circled, 'derived?'; p8 data availability circled."}
+{"paper_id": "W2509118011", "category": "S3D3", "reasoning": ""}
+{"paper_id": "W4295249173", "category": "S3D1", "reasoning": "Fish sample collection."}
+{"paper_id": "W3186554376", "category": "S2D1", "reasoning": "Research software used to analyse marine sample genomes/data. Marks: p3 surface water samples; p12-13 ticks."}
+{"paper_id": "W4393952233", "category": "S1D1", "reasoning": "Metric presented as software; extends data with software. Marks: p10 Table S12 tick."}
+{"paper_id": "W3159641286", "category": "S3D1", "reasoning": "Data: Pharma sample analysis. Only stats software mentioned, although so much more would have been used. Marks: p16 mark."}
+{"paper_id": "W4401050146", "category": "S3D3", "reasoning": ""}
+{"paper_id": "W4411069237", "category": "S3D3", "reasoning": "Review article."}
+{"paper_id": "W2601136486", "category": "S2D1", "reasoning": ""}
+{"paper_id": "W2966406727", "category": "S3D3", "reasoning": "Includes some quotes which could be considered data."}
+{"paper_id": "W2945725574", "category": "S3D3", "reasoning": "Review article."}
+{"paper_id": "W2256384913", "category": "S3D3", "reasoning": ""}
+{"paper_id": "W3142058096", "category": "S1D1", "reasoning": "Materials characterisation with published analysis software."}

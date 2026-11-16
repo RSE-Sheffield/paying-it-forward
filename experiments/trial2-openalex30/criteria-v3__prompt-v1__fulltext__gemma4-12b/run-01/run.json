@@ -1,10 +1,10 @@
 {
   "run": "run-01",
-  "status": "running",
+  "status": "complete",
   "started_at": "2026-11-03T11:18:47+00:00",
-  "finished_at": null,
+  "finished_at": "2026-11-03T11:43:45+00:00",
   "papers_total": 30,
-  "papers_judged": 1,
+  "papers_judged": 30,
   "limit": null,
   "failures": [],
   "code": {

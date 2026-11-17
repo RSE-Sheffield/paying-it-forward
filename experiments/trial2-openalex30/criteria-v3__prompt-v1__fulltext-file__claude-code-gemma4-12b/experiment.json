@@ -1,0 +1,35 @@
+{
+  "dataset": "trial2-openalex30",
+  "criteria": "v3",
+  "prompt": "v1",
+  "input": "fulltext-file",
+  "reviewer": "claude-code-gemma4-12b",
+  "fingerprints": {
+    "dataset": "fdfd8a5dd60e",
+    "criteria": "205c5500049a",
+    "prompt": "0f3a989c11d8",
+    "input": "8ac0ad2aee27",
+    "reviewer": "aed85fb5cdd7"
+  },
+  "reviewer_spec": {
+    "description": "Gemma 4 12B run locally through Ollama, as an agent in Claude Code (claude -p): the same harness, tools and isolation as claude-code-sonnet5, with Claude Code sending its requests to Ollama's Anthropic-compatible API. The model is gemma4:12b with num_ctx fixed at 262144 to match the gemma4-12b reviewer (build it from modelfiles/gemma4-12b-256k.Modelfile). Read-only file tools, no web access; Ollama's defaults otherwise.\n",
+    "kind": "model",
+    "provider": "claude-code",
+    "model": "gemma4:12b-256k",
+    "settings": {
+      "backend": "ollama",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "timeout_s": 1800
+    }
+  },
+  "input_spec": {
+    "description": "The same as fulltext, except that the dataset's extracted full text is a file, paper.txt, in the reviewer's working folder instead of being in the message, for an agent to open and search with its tools. Only claude-code reviewers can be given it.\n",
+    "body": "text",
+    "template": "TITLE: {title}\n\nJOURNAL: {journal}  YEAR: {year}\n\nABSTRACT:\n{abstract}\n\nFULL TEXT: in the file {file} in your working directory.\n"
+  },
+  "created_at": "2026-11-16T16:21:54+00:00"
+}

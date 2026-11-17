@@ -1,0 +1,25 @@
+{
+  "run": "run-04",
+  "status": "complete",
+  "started_at": "2026-11-17T04:03:22+00:00",
+  "finished_at": "2026-11-17T07:34:27+00:00",
+  "papers_total": 30,
+  "papers_judged": 30,
+  "limit": null,
+  "failures": [],
+  "code": {
+    "commit": "12fe0bee59e2e1afdb2f354681f2c3ffbe49f95d",
+    "dirty": false
+  },
+  "host": "ssfrse1",
+  "provider": {
+    "claude_code_version": "2.1.325 (Claude Code)",
+    "backend": "ollama",
+    "host": "http://localhost:11434",
+    "digest": "777e7f8ad07dbeeea0fd26ce3a2535ee77e7b810884203e4b694fa7740445c70",
+    "num_ctx": 262144
+  },
+  "content": {
+    "text": "bf2d13689160"
+  }
+}

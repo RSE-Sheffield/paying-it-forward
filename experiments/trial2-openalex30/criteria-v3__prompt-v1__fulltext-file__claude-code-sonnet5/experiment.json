@@ -1,0 +1,35 @@
+{
+  "dataset": "trial2-openalex30",
+  "criteria": "v3",
+  "prompt": "v1",
+  "input": "fulltext-file",
+  "reviewer": "claude-code-sonnet5",
+  "fingerprints": {
+    "dataset": "fdfd8a5dd60e",
+    "criteria": "205c5500049a",
+    "prompt": "0f3a989c11d8",
+    "input": "8ac0ad2aee27",
+    "reviewer": "309a24aeeca9"
+  },
+  "reviewer_spec": {
+    "description": "Claude Sonnet 5 as an agent in Claude Code (claude -p): one fresh session per paper in a folder holding only that paper, with the read-only file tools and no web access. Effort set to high, the Messages API default, to match sonnet5; Claude Code's defaults otherwise.\n",
+    "kind": "model",
+    "provider": "claude-code",
+    "model": "claude-sonnet-5",
+    "settings": {
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "effort": "high",
+      "timeout_s": 900
+    }
+  },
+  "input_spec": {
+    "description": "The same as fulltext, except that the dataset's extracted full text is a file, paper.txt, in the reviewer's working folder instead of being in the message, for an agent to open and search with its tools. Only claude-code reviewers can be given it.\n",
+    "body": "text",
+    "template": "TITLE: {title}\n\nJOURNAL: {journal}  YEAR: {year}\n\nABSTRACT:\n{abstract}\n\nFULL TEXT: in the file {file} in your working directory.\n"
+  },
+  "created_at": "2026-11-16T14:34:23+00:00"
+}

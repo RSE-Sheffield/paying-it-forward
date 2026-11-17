@@ -1,0 +1,17 @@
+{
+  "run": "run-01",
+  "status": "complete",
+  "started_at": null,
+  "finished_at": null,
+  "imported_at": "2026-11-17T13:04:49+00:00",
+  "reviewed_on": null,
+  "papers_total": 30,
+  "papers_judged": 30,
+  "failures": [],
+  "notes": "From Edwin's Google Sheet (tab 'PIF_Trail2_papers'): category is the 'AI Review Classification' column and reasoning the 'AI reasoning' column, an AI review of Edwin's codes and reasoning. Edwin's own code and reasoning (renamed \"Edwin's classification\" and \"Edwin's reasoning\") and the 'Agreement?' column are kept in source.xlsx. The review changed 13 of Edwin's 30 codes and kept 17. For 5 papers the AI reasoning is only 'Agreed' (W4362449286, W4411069237, W4407087659, W3044421231, W2509118011); Edwin's reasoning for them is in source.xlsx. 'Agreement?' was =G=I in the sheet and reads FALSE for W2941039746 and W4407087659 only because the AI code had a trailing space; the codes match. The AI reasoning for W2601136486 ends mid-sentence in the sheet.",
+  "code": {
+    "commit": "f6fb825c57e194c7ecc23f77a8d3cccd5f9c9dc5",
+    "dirty": false
+  },
+  "source_file": "source.xlsx"
+}

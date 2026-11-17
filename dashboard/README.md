@@ -14,6 +14,11 @@ up on refresh. There is no build step and no generated HTML.
 - **The sidebar scopes every page.** It filters on the five factors: dataset,
   criteria, prompt, input and reviewer. Unfinished runs are hidden unless you
   switch them on, so every run in view covers its whole dataset.
+- **Save as default** in the sidebar keeps the current filters in
+  `dashboard/.saved_filters.json` (gitignored, so it stays on your computer),
+  and the dashboard opens with them from then on. A value added after you
+  saved, such as a new reviewer, starts selected rather than hidden. Reset
+  filters goes back to the saved default; Forget saved default deletes it.
 - **Experiments are labelled by the factors that differ** between those in view.
   Each also gets a number (`#3`) that stays the same across pages, for axes and
   columns too narrow for the full label.
@@ -36,8 +41,12 @@ use.
 
   Below it, the category mix: a bar per experiment, split into the nine
   categories by share of papers. Colour is the data axis and shade the software
-  axis. Data notes list anything left out, such as unfinished runs,
-  invalid judgements, or factors edited since an experiment was made.
+  axis. Under it, the same split by axis as a dot plot: each experiment's share
+  of papers at every software level (S1–S3) and data level (D1–D3), with
+  models, humans and humans + AI review (reviewer ids ending
+  `-plus-ai-review`) side by side and a bar spanning each group's spread. Data
+  notes list anything left out, such as unfinished runs, invalid judgements,
+  or factors edited since an experiment was made.
 - **Compare.**
   - An agreement matrix for every experiment in view, by exact category,
     software axis or data axis.

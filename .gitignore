@@ -232,3 +232,6 @@ experiments/_scratch/
 # Agent session transcripts: they hold the paper text the agent read, so are
 # kept locally like content/. The judgements record a summary of each session.
 experiments/**/transcripts/
+
+# The dashboard's saved default filters ("Save as default"): one person's view
+dashboard/.saved_filters.json

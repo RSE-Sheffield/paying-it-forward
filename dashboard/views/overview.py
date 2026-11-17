@@ -2,9 +2,12 @@
 with the humans, what it costs, and how it spreads papers across categories."""
 from __future__ import annotations
 
+import math
+
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from plotly.subplots import make_subplots
 
 from pif import metrics
 from pif.taxonomy import CATEGORIES, DATA, SOFTWARE, data, label, software
@@ -61,6 +64,107 @@ def category_mix(ctx: Context) -> tuple[go.Figure, pd.DataFrame]:
     table = counts.rename(index=dict(zip(exps.experiment, exps.label))).rename_axis(index="Experiment",
                                                                                      columns=None)
     return fig, table.assign(Papers=totals.values).reset_index()
+
+
+def _dodge(values: list[float], eps: float, step: float) -> list[float]:
+    """Horizontal offsets so dots closer than `eps` in value don't sit on top of
+    each other: each takes the nearest free slot 0, +step, -step, +2·step, ..."""
+    placed: list[tuple[float, float]] = []
+    out = [0.0] * len(values)
+    for i in sorted(range(len(values)), key=lambda i: values[i]):
+        n = 0
+        while True:
+            slot = (n + 1) // 2 * step * (1 if n % 2 else -1)
+            if all(abs(values[i] - v) >= eps or abs(slot - s) > 1e-9 for v, s in placed):
+                break
+            n += 1
+        placed.append((values[i], slot))
+        out[i] = slot
+    return out
+
+
+# Reviewer groups in the axis dot plot, in their left-to-right order: (key,
+# legend name, plural, theme colour). A human reviewer whose id ends in
+# AI_REVIEW_SUFFIX is a person's codes revised by an AI review of them.
+AI_REVIEW_SUFFIX = "-plus-ai-review"
+GROUPS = [("model", "Model", "Models", "model"), ("human", "Human", "Humans", "human"),
+          ("human-ai", "Human + AI review", "Human + AI reviews", "human_ai")]
+
+
+def reviewer_group(reviewer: str, kind: str) -> str:
+    if kind != "human":
+        return "model"
+    return "human-ai" if reviewer.endswith(AI_REVIEW_SUFFIX) else "human"
+
+
+def axis_mix(ctx: Context) -> tuple[go.Figure, pd.DataFrame]:
+    """A dot plot per axis: each experiment's share of papers at every software
+    level, and beside it every data level. Within a level, models, humans and
+    humans with an AI review sit side by side, and a faint bar behind each group
+    spans its lowest to highest dot, so the bar's height is how far reviewers in
+    that group disagree on how often the level applies."""
+    t = theme()
+    cons = ctx.consensus()
+    exps = ctx.experiments.reset_index(drop=True)
+    axes = [("Software", SOFTWARE, cons.category.map(software)), ("Data", DATA, cons.category.map(data))]
+    counts = [pd.crosstab(cons.experiment, levels).reindex(index=exps.experiment, columns=list(names),
+                                                           fill_value=0)
+              for _, names, levels in axes]
+    totals = counts[0].sum(axis=1)
+    shares = [c.div(totals.where(totals > 0), axis=0) for c in counts]
+    top = min(1.0, math.ceil(max(float(s.max().max()) for s in shares) * 4 + 0.2) / 4) or 1.0
+
+    group = pd.Series([reviewer_group(r, k) for r, k in zip(exps.reviewer, exps.reviewer_kind)], index=exps.index)
+    groups = [g for g in GROUPS if (group == g[0]).any()]
+    # Groups spread evenly around each level's tick; narrower with three.
+    spacing = {1: 0.0, 2: 0.38, 3: 0.29}[len(groups)]
+    offsets = {g[0]: (i - (len(groups) - 1) / 2) * spacing for i, g in enumerate(groups)}
+    bar_width, step, dot = (0.3, 0.065, 10) if len(groups) < 3 else (0.24, 0.056, 9)
+
+    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, horizontal_spacing=0.05,
+                        subplot_titles=[title for title, _, _ in axes])
+    for col, ((title, names, _), c, s) in enumerate(zip(axes, counts, shares), start=1):
+        for kind, kind_name, plural, color_key in groups:
+            color = t[color_key]
+            mine = exps[group == kind]
+            xs, ys, hover = [], [], []
+            for i, (level, level_name) in enumerate(names.items()):
+                vals = s.loc[mine.experiment, level]
+                vals = vals[vals.notna()]
+                if vals.empty:
+                    continue
+                x = i + offsets[kind]
+                if len(vals) > 1:
+                    lo, hi = float(vals.min()), float(vals.max())
+                    fig.add_bar(x=[x], y=[max(hi - lo, 0.004)], base=[lo], width=bar_width, row=1, col=col,
+                                marker=dict(color=color, opacity=0.18), showlegend=False,
+                                hovertemplate=f"{plural} · {level} {level_name.lower()}<br>"
+                                              f"{pct(lo)} to {pct(hi)} across {len(vals)} experiments"
+                                              "<extra></extra>")
+                for e, dx in zip(vals.index, _dodge(list(vals), eps=0.03 * top, step=step)):
+                    row = mine.set_index("experiment").loc[e]
+                    xs.append(x + dx)
+                    ys.append(float(vals[e]))
+                    hover.append(f"{row.tagged}<br>{level} · {level_name}<br>"
+                                 f"{c.at[e, level]} of {totals[e]} papers ({pct(vals[e])})")
+            fig.add_scatter(x=xs, y=ys, mode="markers", cliponaxis=False, row=1, col=col, name=kind_name,
+                            legendgroup=kind, showlegend=col == 1, customdata=hover,
+                            hovertemplate="%{customdata}<extra></extra>",
+                            marker=dict(size=dot, color=color, line=dict(color=t["page"], width=1.5)))
+        fig.update_xaxes(row=1, col=col, range=[-0.55, len(names) - 0.45], tickvals=list(range(len(names))),
+                         ticktext=[f"<b>{k}</b><br>{v}" for k, v in names.items()])
+
+    style(fig, height=420)
+    fig.update_xaxes(showgrid=False, zeroline=False, fixedrange=True)
+    fig.update_yaxes(range=[0, top], dtick=0.25, tickformat=".0%", showgrid=True, fixedrange=True)
+    fig.update_yaxes(title="Share of papers", row=1, col=1)
+    fig.update_annotations(font=dict(size=13, color=t["ink"]))
+    fig.update_layout(barmode="overlay", barcornerradius=4, margin=dict(t=32, b=8),
+                      legend=dict(orientation="v", x=1.01, xanchor="left", y=1, yanchor="top"))
+
+    table = pd.concat(counts, axis=1).rename(index=dict(zip(exps.experiment, exps.label)))
+    table = table.rename_axis(index="Experiment", columns=None).assign(Papers=totals.values)
+    return fig, table.reset_index()
 
 
 HUMAN_AGREEMENT_HELP = (
@@ -124,3 +228,12 @@ def render(ctx: Context | None) -> None:
                "shade the software axis. Shares, not counts, so datasets of different sizes line up. Click a "
                "legend entry to hide that category.")
     show(*category_mix(ctx), key="mix")
+
+    st.markdown("**Software and data, separately**")
+    st.caption("The same consensus categories split by axis. Each dot is one experiment's share of papers at "
+               "that level; within a level, models are on the left, then humans, then humans whose codes were "
+               "revised by an AI review. The faint bar behind each group runs from its lowest to its highest dot, "
+               "so a tall bar means reviewers in that group disagree on how often the level applies. Hover a "
+               "dot for the experiment and its counts. Filter to one dataset in the sidebar to compare like with "
+               "like.")
+    show(*axis_mix(ctx), key="axis_mix")

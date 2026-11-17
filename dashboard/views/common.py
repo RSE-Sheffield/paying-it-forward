@@ -1,9 +1,11 @@
 """Data loading, the sidebar filters, and chart helpers shared by every page."""
 from __future__ import annotations
 
+import json
 import math
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -15,8 +17,10 @@ from pif.registry import KINDS
 # ------------------------------------------------------------------ palette
 # The dataviz reference palette. Sequential is one hue (blue), light -> dark
 # on the light surface and the same steps reversed on the dark one, so "more"
-# is always "further from the surface". Model/human are categorical slots 1-2,
-# validated for both modes.
+# is always "further from the surface". Model/human/human_ai (a person's codes
+# revised by an AI review) are categorical slots 1-3, validated together for
+# both modes; slot 3 is a darker step in light mode (#0ca06c), since the slot's
+# own #1baf7a is under 3:1 against the surface.
 #
 # The nine categories are too many for distinct hues, so `mix` (in taxonomy
 # order) encodes both axes: hue is the data axis (categorical slots 1-3: blue,
@@ -33,12 +37,14 @@ _SEQ = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d36
 THEMES = {
     "light": dict(surface="#fcfcfb", page="#ffffff", ink="#0b0b0b", ink2="#52514e", muted="#898781",
                   grid="#e1e0d9", axis="#c3c2b7", seq=_SEQ, model="#2a78d6", human="#eb6834",
+                  human_ai="#0ca06c",
                   mix=["#184f95", "#2a78d6", "#6da7ec", "#892e01", "#c94908", "#fb7744",
                        "#056041", "#058f62", "#35be88"],
                   cat=["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"],
                   shades=(0.42, 0.72)),
     "dark": dict(surface="#1a1a19", page="#0e1117", ink="#f0efec", ink2="#c3c2b7", muted="#898781",
                  grid="#2c2c2a", axis="#383835", seq=_SEQ[::-1], model="#3987e5", human="#d95926",
+                 human_ai="#199e70",
                  mix=["#9ec5f4", "#3987e5", "#184f95", "#fea98c", "#d95926", "#8a2d01",
                       "#68dbaa", "#1a9e70", "#036042"],
                  cat=["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"],
@@ -261,6 +267,34 @@ def _sort_key(df: pd.DataFrame) -> pd.DataFrame:
         ["dataset", "criteria", "prompt", "_h", "input", "reviewer"]).drop(columns="_h")
 
 
+# The sidebar filters a person saved as their default: local to this checkout,
+# not committed. For each factor it keeps what was selected and what could have
+# been, so a value that appears later (a new reviewer, say) starts selected
+# rather than silently hidden.
+FILTERS_FILE = Path(__file__).resolve().parent.parent / ".saved_filters.json"
+
+
+def _saved_filters() -> dict:
+    try:
+        saved = json.loads(FILTERS_FILE.read_text())
+    except (OSError, ValueError):
+        return {}
+    return saved if isinstance(saved, dict) else {}
+
+
+def _saved_default(saved: dict, kind: str, options: list[str]) -> list[str]:
+    s = saved.get(kind)
+    if not isinstance(s, dict):
+        return options
+    selected, seen = set(s.get("selected", [])), set(s.get("options", []))
+    return [o for o in options if o in selected or o not in seen]
+
+
+def _save_filters(chosen: dict[str, list[str]], options: dict[str, list[str]], unfinished: bool) -> None:
+    saved = {k: {"selected": chosen[k], "options": options[k]} for k in chosen}
+    FILTERS_FILE.write_text(json.dumps({**saved, "unfinished": unfinished}, indent=2) + "\n")
+
+
 def build_context() -> Context | None:
     registry.load.cache_clear()  # pick up registry edits without restarting
     stamp = _stamp()
@@ -272,18 +306,34 @@ def build_context() -> Context | None:
 
     sb = st.sidebar
     sb.markdown("### Factors")
-    chosen = {}
+    saved = _saved_filters()
+    chosen, options = {}, {}
     for k, title in [("dataset", "Datasets"), ("criteria", "Criteria versions"), ("prompt", "Prompt versions"),
                      ("input", "Inputs"), ("reviewer", "Reviewers")]:
-        options = list(dict.fromkeys(exps[k]))
-        chosen[k] = sb.multiselect(title, options, default=options, key=f"f_{k}")
-    unfinished = sb.toggle("Include unfinished runs", value=False, key="f_unfinished",
+        options[k] = list(dict.fromkeys(exps[k]))
+        chosen[k] = sb.multiselect(title, options[k], default=_saved_default(saved, k, options[k]), key=f"f_{k}")
+    unfinished = sb.toggle("Include unfinished runs", value=bool(saved.get("unfinished", False)), key="f_unfinished",
                            help="Runs that were interrupted or had failed requests. Off by default so every "
                                 "run in view covers the whole dataset.")
-    if sb.button("Reset filters"):
+    save_col, reset_col = sb.columns(2)
+    if save_col.button("Save as default", width="stretch",
+                       help="Open the dashboard with these filters from now on. Saved on this computer only."):
+        _save_filters(chosen, options, unfinished)
+        st.toast("Saved these filters as your default.", icon=":material/bookmark:")
+        saved = _saved_filters()
+    if reset_col.button("Reset filters", width="stretch",
+                        help="Back to your saved default, or to everything if none is saved."):
         for k in [*KINDS, "unfinished"]:
             st.session_state.pop(f"f_{k}", None)
         st.rerun()
+    if saved:
+        sb.caption("Opening with your saved filters. Values added since you saved them start selected.")
+        if sb.button("Forget saved default", type="tertiary",
+                     help="Delete the saved filters, so the dashboard opens showing everything."):
+            FILTERS_FILE.unlink(missing_ok=True)
+            for k in [*KINDS, "unfinished"]:
+                st.session_state.pop(f"f_{k}", None)
+            st.rerun()
 
     mask = pd.Series(True, index=exps.index)
     for k in KINDS:

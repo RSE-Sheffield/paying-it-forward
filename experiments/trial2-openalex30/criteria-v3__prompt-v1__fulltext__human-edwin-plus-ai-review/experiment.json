@@ -12,7 +12,7 @@
     "reviewer": "aa0d5dd86943"
   },
   "reviewer_spec": {
-    "description": "Edwin's classification after an AI review of Edwin's codes and reasoning, taking the review's suggested code and reasoning.",
+    "description": "Edwin's classification after an AI review (Claude Opus, run in claude.ai) of Edwin's codes and reasoning, taking the review's suggested code and reasoning.",
     "kind": "human",
     "name": "Edwin + AI review"
   },

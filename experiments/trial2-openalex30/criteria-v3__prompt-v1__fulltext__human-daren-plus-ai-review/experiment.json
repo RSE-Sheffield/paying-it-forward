@@ -12,7 +12,7 @@
     "reviewer": "2cb794a9620c"
   },
   "reviewer_spec": {
-    "description": "Daren's classification after an AI review (Claude) of Daren's codes and notes, taking the review's suggested code and reasoning.",
+    "description": "Daren's classification after an AI review (Claude Opus, run in Claude Code) of Daren's codes and notes, taking the review's suggested code and reasoning.",
     "kind": "human",
     "name": "Daren + AI review"
   },

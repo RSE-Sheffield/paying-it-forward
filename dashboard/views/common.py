@@ -194,11 +194,6 @@ def data_range(values, lo: float, hi: float) -> tuple[float, float]:
     return (a, b) if b > a else (lo, hi)
 
 
-def share_column(label: str | None = None, help: str | None = None):
-    """A 0-1 share shown as a whole percentage bar (expects the value x100)."""
-    return st.column_config.ProgressColumn(label, help=help, format="%.0f%%", min_value=0, max_value=100)
-
-
 def pct(v) -> str:
     return MISSING if v is None or pd.isna(v) else f"{v:.0%}"
 

@@ -1,6 +1,6 @@
 """Compare experiments with each other: an agreement matrix for everything in
-view, and a drill-down into any pair -- criteria v1 vs v2, model vs human,
-full text vs abstract, or anything else."""
+view, where they disagree (see splits.py), and a drill-down into any pair --
+criteria v1 vs v2, model vs human, full text vs abstract, or anything else."""
 from __future__ import annotations
 
 import pandas as pd
@@ -9,6 +9,7 @@ import streamlit as st
 from pif import metrics, registry
 from pif.taxonomy import CATEGORIES
 
+from . import splits
 from .common import Context, data_range, heatmap, need, pct, show, theme
 
 METRICS = {"Exact category": "exact", "Software axis": "s", "Data axis": "d"}
@@ -122,6 +123,9 @@ def render(ctx: Context | None) -> None:
             st.subheader("Agreement between experiments")
             fig, table = matrix(ctx, ds, metric)
             show(fig, table, key=f"matrix_{ds}_{metric}")
+
+            st.subheader("Where they disagree")
+            splits.render(ctx, ds)
 
             st.subheader("Any two experiments")
             pair(ctx, ds)

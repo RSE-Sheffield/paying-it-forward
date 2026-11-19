@@ -35,21 +35,29 @@ use.
 
 ## Pages
 
-- **Overview.** One row per experiment:
-  - runs, run-to-run agreement and agreement with humans
-  - seconds per paper
+- **Overview.** On the left, one row per experiment with its runs and papers.
+  On the right, what the papers were classified as: every reviewer in view has
+  one vote per paper, and a paper counts towards the category most of them
+  chose. A reviewer with several experiments in view votes for the category
+  most of them chose. Papers where two or more categories share the most votes
+  are counted as tied.
 
-  Below it, the category mix: a bar per experiment, split into the nine
-  categories by share of papers. Colour is the data axis and shade the software
-  axis. Under it, the same split by axis as a dot plot: each experiment's share
-  of papers at every software level (S1–S3) and data level (D1–D3), with
+  Below it, the category mix. First a dot plot by axis: each experiment's
+  share of papers at every software level (S1–S3) and data level (D1–D3), with
   models, humans and humans + AI review (reviewer ids ending
-  `-plus-ai-review`) side by side and a bar spanning each group's spread. Data
-  notes list anything left out, such as unfinished runs, invalid judgements,
-  or factors edited since an experiment was made.
+  `-plus-ai-review`) side by side and a bar spanning each group's spread. Under
+  it, a bar per experiment split into all nine categories by share of papers.
+  Colour is the data axis and shade the software axis. Data notes list
+  anything left out, such as unfinished runs, invalid judgements, or factors
+  edited since an experiment was made.
 - **Compare.**
   - An agreement matrix for every experiment in view, by exact category,
     software axis or data axis.
+  - Where they disagree, among everyone in view or one group (models, humans,
+    humans + AI review). A bar per boundary between levels (S2 / S3, D1 / D3
+    and so on) counts the papers that split on it. Below it, a grid of papers
+    by experiments for each axis shows the level each chose, most split papers
+    first; a divided cell is an experiment whose runs chose more than one level.
   - A drill-down into any two experiments: summary figures, a confusion matrix,
     and every paper they disagree on with both sides' reasoning. Use it for
     criteria v1 vs v2, model vs human, full text vs abstract, and so on.
